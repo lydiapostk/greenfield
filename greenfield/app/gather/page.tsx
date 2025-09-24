@@ -8,8 +8,8 @@ export default function GatherStartupInfo() {
     return (
         <div className="flex flex-col justify-center items-center w-full">
             <TextInputField
-                leftIcon={<Icon name={"search"} size={"md"} color="indigo" />}
                 className=" w-3/5"
+                leftIcon={<Icon name={"search"} size={"md"} color="indigo" />}
             />
         </div>
     );
