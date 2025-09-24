@@ -6,6 +6,7 @@ interface IconProps extends React.SVGProps<SVGSVGElement> {
     name: IconName;
     size?: "sm" | "md" | "lg" | number;
     color?: string;
+    active?: boolean;
 }
 
 const sizeMap = {
@@ -16,9 +17,10 @@ const sizeMap = {
 
 export default function Icon({
     name,
-    size = 24,
+    size = "sm",
     className,
     color = "currentColor",
+    strokeWidth = 1.5,
     ...props
 }: IconProps) {
     const SvgIcon = icons[name];

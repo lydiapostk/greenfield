@@ -1,13 +1,11 @@
 "use client";
 
-import { ReactNode, useState } from "react";
 import { InputFieldType } from "./input-types";
 
 interface InputTextFieldProp extends InputFieldType<string> {}
 
 export default function TextInputField({
     setValue,
-    placeholder,
     disabled,
     leftIcon,
     rightIcon,
@@ -32,7 +30,7 @@ export default function TextInputField({
             <input
                 type="text"
                 onChange={handleChange}
-                className={`focus:outline-none active:outline-none px-2 text-left w-full placeholder:text-gray-700`}
+                className={`focus:outline-none active:outline-none text-left w-full placeholder:text-gray-700`}
                 {...props}
             />
             {rightIcon}
