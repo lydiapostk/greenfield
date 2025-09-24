@@ -29,14 +29,12 @@ export default function TextInputField({
           ${className ?? ""}`}
         >
             {leftIcon}
-            <div className="transition ease-in-out duration-150 sm:text-sm sm:leading-5 w-full">
-                <input
-                    type="text"
-                    onChange={handleChange}
-                    className={`focus:outline-none active:outline-none px-2 text-left min-w-full placeholder:text-gray-700`}
-                    {...props}
-                />
-            </div>
+            <input
+                type="text"
+                onChange={handleChange}
+                className={`focus:outline-none active:outline-none px-2 text-left w-full placeholder:text-gray-700`}
+                {...props}
+            />
             {rightIcon}
         </div>
     );
