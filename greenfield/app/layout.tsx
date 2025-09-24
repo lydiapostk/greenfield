@@ -25,13 +25,13 @@ export default function RootLayout({
     return (
         <html lang="en">
             <body
-                className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gradient-to-r from-purple-500 to-blue-500`}
+                className={`${geistSans.variable} ${geistMono.variable} antialiased items-center justify-items-center bg-gradient-to-r from-purple-500 to-blue-500`}
             >
-                <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-                    <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
+                <div className="flex flex-col h-screen items-center justify-center font-sans min-h-screen w-full">
+                    <main className="flex-[9] flex flex-col justify-center items-center sm:items-start w-full">
                         {children}
                     </main>
-                    <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
+                    <footer className="flex-[1] row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
                         A prototype.
                     </footer>
                 </div>
