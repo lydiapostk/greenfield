@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-    title: "Innovation Co-pilot",
+    title: "scout.",
     description: "Greenfield project",
 };
 
