@@ -20,7 +20,6 @@ export function ScoutIcon({
     useEffect(() => {
         if (showAnimation) {
             let i = 0;
-            console.log(i, fullText.length);
             const interval = setInterval(() => {
                 setText(fullText.slice(0, i + 1));
                 i++;
