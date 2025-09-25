@@ -24,7 +24,6 @@ export default function Icon({
     ...props
 }: IconProps) {
     const SvgIcon = icons[name];
-    // width={size} height={size}
 
     return (
         <SvgIcon
@@ -32,6 +31,7 @@ export default function Icon({
                 typeof size === "number" ? `w-${size} h-${size}` : sizeMap[size]
             } ${className ?? ""}`}
             stroke={color}
+            strokeWidth={strokeWidth}
             {...props}
         />
     );
