@@ -7,6 +7,7 @@ from openai import OpenAI
 from sqlmodel import Session, select
 from api.database import init_db, get_session
 from api.models import Startup
+from api.routers import check_domain
 
 load_dotenv()
 
@@ -22,6 +23,8 @@ app = FastAPI(title="Startups API", lifespan=lifespan)
 client = OpenAI(
     api_key=os.getenv("OPENAI_API_KEY"),
 )
+
+app.include_router(check_domain.router, prefix="/check-domain")
 
 
 @app.get("/startups/", response_model=list[Startup])
