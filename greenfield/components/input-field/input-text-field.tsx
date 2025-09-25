@@ -7,7 +7,6 @@ interface InputTextFieldProp extends InputFieldType<string> {}
 
 export default function TextInputField({
     setValue,
-    disabled,
     leftIcon,
     rightIcon,
     className,
@@ -41,7 +40,7 @@ export default function TextInputField({
                 <input
                     type="text"
                     onChange={handleChange}
-                    className={`focus:outline-none active:outline-none text-left w-full placeholder:text-gray-700`}
+                    className={`focus:outline-none active:outline-none text-left w-full disabled:text-gray-500 disabled:cursor-not-allowed placeholder:text-gray-700`}
                     {...props}
                 />
                 {rightIcon}
