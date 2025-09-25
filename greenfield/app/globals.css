@@ -2,6 +2,10 @@
 
 /* globals.css */
 
+div {
+    font-family: var(--font-inter), sans-serif;
+}
+
 @keyframes slideIn {
     from {
         transform: translateX(100%);
