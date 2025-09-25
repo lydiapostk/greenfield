@@ -95,9 +95,6 @@ export default function StartupDrawer({ startup, onClose }: UserDrawerProp) {
                                 <span className="font-bold">
                                     Funding stage:
                                 </span>{" "}
-                                <span className="font-bold">
-                                    Funding stage:
-                                </span>{" "}
                                 {textOrUnknown(startup.funding_stage)}
                             </p>
                         </div>
