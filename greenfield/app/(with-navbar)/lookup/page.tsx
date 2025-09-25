@@ -14,12 +14,19 @@ export default function LookupStartupInfo() {
         }
     };
 
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === "Enter") {
+            onSearch();
+        }
+    };
+
     return (
         <div className="flex flex-col self-center justify-center items-center w-full">
             <TextInputField
                 value={startupURL}
                 setValue={setStartupURL}
                 className=" w-3/5 py-3 px-3 gap-3"
+                onKeyDown={handleKeyDown}
                 placeholder="Find start-up by its website..."
                 leftIcon={<Icon name={"search"} size={"md"} color="blue" />}
                 rightIcon={
@@ -27,10 +34,10 @@ export default function LookupStartupInfo() {
                         name={"arrowRight"}
                         size={"md"}
                         color="blue"
+                        onClick={onSearch}
                         className={`hover:stroke-[2] transition ease-in-out delay-100 duration-300 ${
                             startupURL == "" ? "opacity-0" : "opacity-100"
                         }`}
-                        onClick={onSearch}
                     />
                 }
             />
