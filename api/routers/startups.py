@@ -50,6 +50,7 @@ def lookup_startup(
     )
     startup_info = json.loads(response.output_text)
     startup = Startup.model_validate(startup_info)
+    startup.company_website = startup_url
     session.add(startup)
     session.commit()
     session.refresh(startup)
