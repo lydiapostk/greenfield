@@ -1,3 +1,5 @@
+import os
+from dotenv import load_dotenv
 from fastapi import APIRouter, Query
 from urllib.parse import urlparse
 import socket
@@ -5,6 +7,10 @@ import ipaddress
 import httpx
 from pydantic import BaseModel
 from typing import Optional
+
+load_dotenv()
+
+CA_CERT_PATH = os.getenv("CA_CERT_PATH", None)
 
 router = APIRouter()
 
@@ -38,7 +44,11 @@ async def try_protocols(hostname: str) -> Optional[str]:
     # Try HTTPS
     try:
         https_url = f"https://{hostname}"
-        async with httpx.AsyncClient(timeout=3, follow_redirects=True) as client:
+        async with httpx.AsyncClient(
+            timeout=3,
+            follow_redirects=True,
+            verify=CA_CERT_PATH or True,  # fallback to default cert store
+        ) as client:
             resp = await client.head(https_url)
             if resp.status_code < 400:
                 return https_url
