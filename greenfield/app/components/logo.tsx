@@ -1,4 +1,5 @@
 "use client";
+import { typingEffect } from "@/components/animate-text";
 import { Sora } from "next/font/google";
 import { useEffect, useState } from "react";
 
@@ -19,13 +20,7 @@ export function ScoutIcon({
 
     useEffect(() => {
         if (showAnimation) {
-            let i = 0;
-            const interval = setInterval(() => {
-                setText(fullText.slice(0, i + 1));
-                i++;
-                if (i === fullText.length) clearInterval(interval);
-            }, 300); // typing speed
-            return () => clearInterval(interval);
+            typingEffect(setText, fullText);
         } else {
             setText(fullText);
         }
