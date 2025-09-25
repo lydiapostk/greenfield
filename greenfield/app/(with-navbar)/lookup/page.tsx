@@ -5,11 +5,11 @@ import Icon from "@/components/icon/icon";
 import TextInputField from "@/components/input-field/input-text-field";
 import { useState } from "react";
 
-export default function GatherStartupInfo() {
+export default function LookupStartupInfo() {
     const [startupURL, setStartupURL] = useState<string>("");
 
     return (
-        <div className="flex flex-col justify-center items-center w-full">
+        <div className="flex flex-col self-center justify-center items-center w-full">
             <TextInputField
                 value={startupURL}
                 setValue={setStartupURL}
