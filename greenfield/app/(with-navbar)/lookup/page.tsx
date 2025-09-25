@@ -1,13 +1,12 @@
 "use client";
 
-import { paths } from "@/app/types/api"; // generated from openapi-typescript
+import { components } from "@/app/types/api"; // generated from openapi-typescript
 import { typingEffect } from "@/components/animate-text";
 import Icon from "@/components/icon/icon";
 import TextInputField from "@/components/input-field/input-text-field";
 import { useEffect, useState } from "react";
 
-type DomainCheckResponse =
-    paths["/check-domain/"]["get"]["responses"]["200"]["content"]["application/json"];
+type DomainCheckResponse = components["schemas"]["CheckDomainResponse"];
 
 export default function LookupStartupInfo() {
     const [startupURL, setStartupURL] = useState<string>("");
