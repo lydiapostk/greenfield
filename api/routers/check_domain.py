@@ -75,7 +75,7 @@ async def check_domain(url: str = Query(...)):
 
         # Block private/internal IPs
         if not is_public_ip(hostname):
-            response.error = "Private or internal IP not allowed"
+            response.error = "Only public IPs are allowed"
             return response
 
         # Strip www. for root preference

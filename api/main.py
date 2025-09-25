@@ -3,6 +3,7 @@ import json
 import os
 from dotenv import load_dotenv
 from fastapi import FastAPI, Depends
+from fastapi.middleware.cors import CORSMiddleware
 from openai import OpenAI
 from sqlmodel import Session, select
 from api.database import init_db, get_session
@@ -22,6 +23,16 @@ async def lifespan(app: FastAPI):
 app = FastAPI(title="Startups API", lifespan=lifespan)
 client = OpenAI(
     api_key=os.getenv("OPENAI_API_KEY"),
+)
+# Allow localhost:3000 (Next.js dev server)
+origins = ["http://localhost:3000", "http://127.0.0.1:3000"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,  # list of allowed origins
+    allow_credentials=True,
+    allow_methods=["*"],  # allow all HTTP methods (GET, POST, etc.)
+    allow_headers=["*"],  # allow all headers
 )
 
 app.include_router(check_domain.router, prefix="/check-domain")
