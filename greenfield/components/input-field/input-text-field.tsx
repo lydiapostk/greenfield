@@ -23,7 +23,7 @@ export default function TextInputField({
         <div
             className={`flex flex-row bg-stone-200 rounded-md p-2 ${
                 error ? "border-red-500" : "border-gray-300"
-            } shadow-md shadow-slate-500/70 hover:shadow-slate-500/25 active:shadow-slate-500/25 items-center justify-stretch
+            } transition delay-100 duration-300 shadow-xl shadow-slate-500/70 hover:shadow-slate-500/25 active:shadow-slate-500/25 items-center justify-stretch
           ${className ?? ""}`}
         >
             {leftIcon}
