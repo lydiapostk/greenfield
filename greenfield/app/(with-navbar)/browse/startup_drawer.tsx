@@ -10,7 +10,7 @@ export interface UserDrawerProp {
 }
 
 const textOrUnknown = (text: string | undefined | null) =>
-    text ? text : "Unknown";
+    text ? text : <p className="text-gray-700">Unknown</p>;
 
 export default function StartupDrawer({ startup, onClose }: UserDrawerProp) {
     const [isClosing, setIsClosing] = useState(false);
@@ -95,11 +95,13 @@ export default function StartupDrawer({ startup, onClose }: UserDrawerProp) {
                                 <span className="font-bold">
                                     Funding stage:
                                 </span>{" "}
+                                <span className="font-bold">
+                                    Funding stage:
+                                </span>{" "}
                                 {textOrUnknown(startup.funding_stage)}
                             </p>
                         </div>
                     </div>
-
                     <div className="mt-6">
                         <h3 className="font-bold text-lg mb-2">
                             Technology Offering
@@ -115,6 +117,59 @@ export default function StartupDrawer({ startup, onClose }: UserDrawerProp) {
                         <p className="text-gray-700">
                             {textOrUnknown(startup.uvp)}
                         </p>
+                    </div>
+
+                    <div className="mt-6 grid grid-cols-2 justify-between w-full">
+                        <div>
+                            <h3 className="font-bold mb-2">Founders</h3>
+                            {startup.founders ? (
+                                Object.entries(startup.founders).map(
+                                    ([founder, maybeLIURL]) => (
+                                        <span
+                                            key={founder}
+                                            className=" w-full text-gray-700 flex flex-row gap-3 justify-start items-center "
+                                        >
+                                            <span className="font-medium whitespace-nowrap">
+                                                {founder}
+                                            </span>
+                                            {maybeLIURL && (
+                                                <a
+                                                    href={maybeLIURL}
+                                                    target="_blank"
+                                                    className="hover:text-indigo-900 hover:underline truncate"
+                                                >
+                                                    <Icon
+                                                        name="linkedin"
+                                                        className="fill-indigo-900"
+                                                    />
+                                                </a>
+                                            )}
+                                        </span>
+                                    )
+                                )
+                            ) : (
+                                <p className="text-gray-700">"Unknown"</p>
+                            )}
+                        </div>
+                        <div>
+                            <h3 className="font-bold mb-2">
+                                Notable Investors
+                            </h3>
+                            {startup.investors ? (
+                                <ul className="list-disc pl-5">
+                                    {startup.investors.map((investor) => (
+                                        <li
+                                            key={investor}
+                                            className=" w-full text-gray-700 font-medium whitespace-nowrap"
+                                        >
+                                            {investor}
+                                        </li>
+                                    ))}
+                                </ul>
+                            ) : (
+                                <p className="text-gray-700">"Unknown"</p>
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>
