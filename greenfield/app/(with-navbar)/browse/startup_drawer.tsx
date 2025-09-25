@@ -9,6 +9,9 @@ export interface UserDrawerProp {
     onClose: () => void;
 }
 
+const textOrUnknown = (text: string | undefined | null) =>
+    text ? text : "Unknown";
+
 export default function StartupDrawer({ startup, onClose }: UserDrawerProp) {
     const [isClosing, setIsClosing] = useState(false);
     // Trigger slide-out animation before closing
@@ -49,18 +52,70 @@ export default function StartupDrawer({ startup, onClose }: UserDrawerProp) {
                     <h2 className="text-3xl font-bold pb-10">
                         {startup.company_name}
                     </h2>
-                </div>
-                <p>
-                    <span className="font-bold">Website:</span>{" "}
-                    {startup.company_website}
-                </p>
+                    {startup.company_website && (
+                        <a
+                            href={startup.company_website}
+                            target="_blank"
+                            className="relative flex flex-row justify-start items-center gap-3 cursor-pointer"
+                        >
+                            <Icon name={"website"} size="md" />
+                            <span className="hover:text-indigo-900 hover:underline">
+                                {startup.company_website}
+                            </span>
+                        </a>
+                    )}
 
-                <div className="mt-6">
-                    <h3 className="font-bold text-lg mb-2">About</h3>
-                    <p className="text-gray-700">
-                        This is where you can display extra details about the
-                        user, such as bio, recent activity, or notes.
-                    </p>
+                    <div className="grid grid-cols-2 justify-between gap-2 w-full">
+                        <div className="flex flex-col justify-start w-full gap-2">
+                            <p>
+                                <span className="font-bold">Country:</span>{" "}
+                                {textOrUnknown(startup.country)}
+                            </p>
+                            <p>
+                                <span className="font-bold">Year founded:</span>{" "}
+                                {textOrUnknown(startup.year_founded)}
+                            </p>
+                            <p>
+                                <span className="font-bold">
+                                    No. employees:
+                                </span>{" "}
+                                {textOrUnknown(startup.num_employees)}
+                            </p>
+                        </div>
+                        <div className="flex flex-col justify-start w-full gap-2">
+                            <p>
+                                <span className="font-bold">TRL:</span>{" "}
+                                {textOrUnknown(startup.trl)}
+                            </p>
+                            <p>
+                                <span className="font-bold">Funds raised:</span>{" "}
+                                {textOrUnknown(startup.funds_raised)}
+                            </p>
+                            <p>
+                                <span className="font-bold">
+                                    Funding stage:
+                                </span>{" "}
+                                {textOrUnknown(startup.funding_stage)}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div className="mt-6">
+                        <h3 className="font-bold text-lg mb-2">
+                            Technology Offering
+                        </h3>
+                        <p className="text-gray-700">
+                            {textOrUnknown(startup.tech_offering)}
+                        </p>
+                    </div>
+                    <div className="mt-6">
+                        <h3 className="font-bold text-lg mb-2">
+                            Unique Value Proposition
+                        </h3>
+                        <p className="text-gray-700">
+                            {textOrUnknown(startup.uvp)}
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
