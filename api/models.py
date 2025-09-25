@@ -10,6 +10,25 @@ class Startup(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     company_name: str
     company_website: Optional[str] = None
+    year_founded: Optional[str] = (None,)
+    country: Optional[str] = (None,)
+    num_employees: Optional[str] = Field(
+        default=None,
+        sa_column=Column(
+            ENUM(
+                "1-5",
+                "5-10",
+                "10-20",
+                "20-100",
+                "100-200",
+                "200-500",
+                "500-1000",
+                ">1000",
+                name="num_employees",
+                create_type=False,
+            )
+        ),
+    )
 
     founders: Optional[Dict[str, Optional[str]]] = Field(
         default=None, sa_column=Column(JSON)

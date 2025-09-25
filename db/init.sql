@@ -21,12 +21,26 @@ CREATE TYPE funds_raised AS ENUM(
     '>$10M'
 );
 
+CREATE TYPE num_employees AS ENUM(
+    '1-5',
+    '5-10',
+    '10-20',
+    '20-100',
+    '100-200',
+    '200-500',
+    '500-1000',
+    '>1000'
+);
+
 -- Create startups table
 CREATE TABLE
     startups (
         id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
         company_name TEXT NOT NULL,
         company_website TEXT,
+        year_founded VARCHAR(4),
+        country TEXT,
+        num_employees num_employees,
         -- Founders and investors are JSONB for flexibility
         founders JSONB, -- e.g. [{ "name": "Alice", "linkedin": "..." }]
         investors JSONB, -- e.g. [ "Investor A", "Investor B" ]

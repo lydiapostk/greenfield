@@ -105,6 +105,22 @@ export interface components {
             company_name: string;
             /** Company Website */
             company_website?: string | null;
+            /**
+             * Year Founded
+             * @default [
+             *       null
+             *     ]
+             */
+            year_founded: string | null;
+            /**
+             * Country
+             * @default [
+             *       null
+             *     ]
+             */
+            country: string | null;
+            /** Num Employees */
+            num_employees?: string | null;
             /** Founders */
             founders?: {
                 [key: string]: string | null;
