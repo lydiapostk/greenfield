@@ -1,9 +1,10 @@
 "use client";
 
 import { paths } from "@/app/types/api"; // generated from openapi-typescript
+import { typingEffect } from "@/components/animate-text";
 import Icon from "@/components/icon/icon";
 import TextInputField from "@/components/input-field/input-text-field";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type DomainCheckResponse =
     paths["/check-domain/"]["get"]["responses"]["200"]["content"]["application/json"];
@@ -11,11 +12,13 @@ type DomainCheckResponse =
 export default function LookupStartupInfo() {
     const [startupURL, setStartupURL] = useState<string>("");
     const [error, setError] = useState<string>("");
+    const [explanation, setExplanation] = useState<string>("");
     const [loading, setLoading] = useState(false);
 
     const onSearch = () => {
         if (startupURL !== "") {
             setLoading(true);
+            setError("");
             fetch(
                 `${
                     process.env.NEXT_PUBLIC_API_URL
@@ -28,7 +31,6 @@ export default function LookupStartupInfo() {
                         data.error && setError(data.error);
                         data.normalized && setStartupURL(data.normalized);
                         if (data.exists) {
-                            setError("");
                             console.log(`Search for start-up ${startupURL}`);
                         }
                     })
@@ -45,6 +47,14 @@ export default function LookupStartupInfo() {
             onSearch();
         }
     };
+
+    useEffect(() => {
+        if (loading) {
+            typingEffect(setExplanation, "Validating URL...", 10);
+        } else {
+            setExplanation("");
+        }
+    }, [loading]);
 
     return (
         <div className="flex flex-col self-center justify-center items-center w-full h-full">
@@ -70,20 +80,27 @@ export default function LookupStartupInfo() {
                                         : "opacity-100"
                                 }`}
                             />
-                            <Icon
-                                name={"spinner"}
-                                size={"md"}
-                                color="blue"
-                                onClick={onSearch}
-                                style={{ pointerEvents: "none" }}
-                                className={`absolute inset-0  text-stone-200 fill-indigo-600  transition ease-in-out delay-100 duration-300 ${
-                                    loading ? "opacity-100" : "opacity-0"
-                                }`}
-                            />
                         </div>
                     }
                     disabled={loading}
                 />
+                {loading && (
+                    <div className="flex flex-row align-start gap-3">
+                        <Icon
+                            name={"spinner"}
+                            size={"md"}
+                            color="blue"
+                            onClick={onSearch}
+                            style={{ pointerEvents: "none" }}
+                            className={`text-stone-200 fill-indigo-600  transition ease-in-out delay-100 duration-300 ${
+                                loading ? "opacity-100" : "opacity-0"
+                            }`}
+                        />
+                        <div className="font-mono text-stone-200">
+                            {explanation}
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );
