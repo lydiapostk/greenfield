@@ -58,7 +58,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/lookup/startups/{startup_url}": {
+    "/startups/lookup": {
         parameters: {
             query?: never;
             header?: never;
@@ -66,7 +66,7 @@ export interface paths {
             cookie?: never;
         };
         /** Lookup Startup */
-        get: operations["lookup_startup_lookup_startups__startup_url__get"];
+        get: operations["lookup_startup_startups_lookup_get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -103,9 +103,11 @@ export interface components {
             id?: number | null;
             /** Company Name */
             company_name: string;
+            /** Company Website */
+            company_website?: string | null;
             /** Founders */
             founders?: {
-                [key: string]: unknown;
+                [key: string]: string | null;
             } | null;
             /** Investors */
             investors?: string[] | null;
@@ -228,13 +230,13 @@ export interface operations {
             };
         };
     };
-    lookup_startup_lookup_startups__startup_url__get: {
+    lookup_startup_startups_lookup_get: {
         parameters: {
-            query?: never;
-            header?: never;
-            path: {
+            query: {
                 startup_url: string;
             };
+            header?: never;
+            path?: never;
             cookie?: never;
         };
         requestBody?: never;

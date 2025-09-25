@@ -11,7 +11,9 @@ class Startup(SQLModel, table=True):
     company_name: str
     company_website: Optional[str] = None
 
-    founders: Optional[Dict] = Field(default=None, sa_column=Column(JSON))
+    founders: Optional[Dict[str, Optional[str]]] = Field(
+        default=None, sa_column=Column(JSON)
+    )
     investors: Optional[List[str]] = Field(default=None, sa_column=Column(JSON))
 
     funding_stage: Optional[str] = Field(
