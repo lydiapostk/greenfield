@@ -56,4 +56,6 @@ CREATE TABLE
         uvp TEXT,
         ref_uvp JSONB, -- reference/notes about uvp e.g. [ "Quote A (website.com)", "Quote B (website.org)" ]
         uvp_embedding VECTOR (1536) -- embedding for uvp
+        trl TEXT,
+        trl_explanation TEXT,
     );

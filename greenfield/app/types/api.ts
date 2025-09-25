@@ -145,6 +145,10 @@ export interface components {
             ref_uvp?: string[] | null;
             /** Uvp Embedding */
             uvp_embedding?: number[] | null;
+            /** Trl */
+            trl?: string | null;
+            /** Trl Explanation */
+            trl_explanation?: string | null;
         };
         /** ValidationError */
         ValidationError: {

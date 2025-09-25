@@ -80,3 +80,6 @@ class Startup(SQLModel, table=True):
     uvp_embedding: Optional[List[float]] = Field(
         default=None, sa_column=Column(Vector(1536))
     )
+
+    trl: Optional[str] = None
+    trl_explanation: Optional[str] = None
