@@ -5,7 +5,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from openai import OpenAI
 from api.database import init_db
-from api.routers import check_domain, startups
+from api.routers import check_domain, startups, openai
 
 load_dotenv()
 
@@ -34,3 +34,4 @@ app.add_middleware(
 
 app.include_router(check_domain.router, prefix="/check-domain")
 app.include_router(startups.router, prefix="/startups")
+app.include_router(openai.router, prefix="/openai")
