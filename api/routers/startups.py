@@ -19,7 +19,7 @@ client = OpenAI(
 
 @router.get("/", response_model=list[Startup])
 def list_startups(session: Session = Depends(get_session)):
-    return session.exec(select(Startup)).all()
+    return session.exec(select(Startup).order_by(Startup.company_name)).all()
 
 
 @router.get("/{startup_id}", response_model=Startup)
