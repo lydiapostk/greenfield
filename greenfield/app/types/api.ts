@@ -4,26 +4,6 @@
  */
 
 export interface paths {
-    "/check-domain/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Check Domain
-         * @description Validate URL, prefer root domain but fallback to www if needed.
-         */
-        get: operations["check_domain_check_domain__get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/startups/": {
         parameters: {
             query?: never;
@@ -41,7 +21,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/startups/lookup/by_website": {
+    "/startups/fetch/by_website": {
         parameters: {
             query?: never;
             header?: never;
@@ -49,7 +29,7 @@ export interface paths {
             cookie?: never;
         };
         /** Get Startup By Website */
-        get: operations["get_startup_by_website_startups_lookup_by_website_get"];
+        get: operations["get_startup_by_website_startups_fetch_by_website_get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -58,15 +38,18 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/startups/lookup": {
+    "/lookup/check_url": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** Lookup Startup */
-        get: operations["lookup_startup_startups_lookup_get"];
+        /**
+         * Check Url
+         * @description Validate URL, prefer root domain but fallback to www if needed.
+         */
+        get: operations["check_url_lookup_check_url_get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -75,7 +58,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/openai/lookup": {
+    "/lookup/query_llm": {
         parameters: {
             query?: never;
             header?: never;
@@ -83,7 +66,7 @@ export interface paths {
             cookie?: never;
         };
         /** Lookup Startup */
-        get: operations["lookup_startup_openai_lookup_get"];
+        get: operations["lookup_startup_lookup_query_llm_get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -185,37 +168,6 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
-    check_domain_check_domain__get: {
-        parameters: {
-            query: {
-                url: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CheckDomainResponse"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
     list_startups_startups__get: {
         parameters: {
             query?: never;
@@ -236,7 +188,7 @@ export interface operations {
             };
         };
     };
-    get_startup_by_website_startups_lookup_by_website_get: {
+    get_startup_by_website_startups_fetch_by_website_get: {
         parameters: {
             query: {
                 lookup_url: string;
@@ -267,10 +219,10 @@ export interface operations {
             };
         };
     };
-    lookup_startup_startups_lookup_get: {
+    check_url_lookup_check_url_get: {
         parameters: {
             query: {
-                startup_url: string;
+                url: string;
             };
             header?: never;
             path?: never;
@@ -284,7 +236,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Startup"];
+                    "application/json": components["schemas"]["CheckDomainResponse"];
                 };
             };
             /** @description Validation Error */
@@ -298,7 +250,7 @@ export interface operations {
             };
         };
     };
-    lookup_startup_openai_lookup_get: {
+    lookup_startup_lookup_query_llm_get: {
         parameters: {
             query: {
                 startup_url: string;

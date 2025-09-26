@@ -1,18 +1,28 @@
-import os
+import ipaddress
+import socket
+from typing import Optional
+from urllib.parse import urlparse
 from dotenv import load_dotenv
 from fastapi import APIRouter, Query
-from urllib.parse import urlparse
-import socket
-import ipaddress
+import json
+from fastapi import Depends
 import httpx
+from openai import OpenAI
+import os
 from pydantic import BaseModel
-from typing import Optional
+from sqlmodel import Session
+from api.database import get_session
+from api.models import Startup
 
 load_dotenv()
 
-CA_CERT_PATH = os.getenv("CA_CERT_PATH", None)
-
 router = APIRouter()
+
+client = OpenAI(
+    api_key=os.getenv("OPENAI_API_KEY"),
+)
+
+CA_CERT_PATH = os.getenv("CA_CERT_PATH", None)
 
 
 class CheckDomainResponse(BaseModel):
@@ -68,8 +78,8 @@ async def try_protocols(hostname: str) -> Optional[str]:
     return None
 
 
-@router.get("/", response_model=CheckDomainResponse)
-async def check_domain(url: str = Query(...)):
+@router.get("/check_url", response_model=CheckDomainResponse)
+async def check_url(url: str = Query(...)):
     """Validate URL, prefer root domain but fallback to www if needed."""
     response = CheckDomainResponse(
         exists=False, normalized=None, error=None, note=None, hostname=None
@@ -116,3 +126,32 @@ async def check_domain(url: str = Query(...)):
     except Exception as e:
         response.error = str(e)
         return response
+
+
+@router.get("/query_llm", response_model=Startup)
+def lookup_startup(
+    startup_url: str = Query(...), session: Session = Depends(get_session)
+):
+    with open("api/instruction.txt", "r", encoding="utf-8") as f:
+        instruction = f.read()
+    with open("api/input_template.txt", "r", encoding="utf-8") as f:
+        input_template = f.read()
+    input = f"{', '.join(startup_url)}: {input_template}"
+    response = client.responses.create(
+        model="gpt-5-mini",
+        reasoning={"effort": "low"},
+        instructions=instruction,
+        input=input,
+        store=True,
+        tools=[{"type": "web_search"}],
+        stream=False,
+    )
+    startup_info = json.loads(response.output_text)
+    startup = Startup.model_validate(startup_info)
+    startup.company_website = startup_url
+    session.add(startup)
+    session.commit()
+    session.refresh(startup)
+    if not startup:
+        return {"error": "Startup not found"}
+    return startup
