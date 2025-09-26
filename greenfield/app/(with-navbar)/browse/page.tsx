@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import StartupTable from "./startup_table";
 import { StartupType } from "./startup-data-type";
 import StartupDrawer from "./startup_drawer";
+import Icon from "@/components/icon/icon";
 
 export default function BrowseStartups() {
     const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -17,6 +18,7 @@ export default function BrowseStartups() {
             .then((res) =>
                 res.json().then((data: StartupType[]) => {
                     setStartups(data);
+                    setIsLoading(false);
                 })
             )
             .catch(() => setIsLoading(false));
@@ -29,6 +31,7 @@ export default function BrowseStartups() {
                 startups={startups}
                 setSelectedStartup={setSelectedStartup}
             />
+            {isLoading && <Icon name={"spinner"} size={"md"} color="blue" />}
             {selectedStartup && (
                 <StartupDrawer
                     startup={selectedStartup}

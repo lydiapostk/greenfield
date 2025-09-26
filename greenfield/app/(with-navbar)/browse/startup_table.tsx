@@ -10,7 +10,7 @@ export default function StartupTable({
     setSelectedStartup,
 }: StartupTableProp) {
     return (
-        <div className="">
+        <div className="pb-6">
             {/* Table */}
             <div className="bg-white/10 backdrop-blur-md rounded-2xl shadow-lg overflow-hidden">
                 <table className="w-full text-left">
