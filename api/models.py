@@ -9,7 +9,7 @@ class Startup(SQLModel, table=True):
 
     id: Optional[int] = Field(default=None, primary_key=True)
     company_name: str
-    company_website: Optional[str] = None
+    company_website: Optional[str] = Field(default=None, unique=True)
     year_founded: Optional[str] = (None,)
     country: Optional[str] = (None,)
     num_employees: Optional[str] = Field(

@@ -37,7 +37,7 @@ CREATE TABLE
     startups (
         id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
         company_name TEXT NOT NULL,
-        company_website TEXT,
+        company_website TEXT UNIQUE,
         year_founded VARCHAR(4),
         country TEXT,
         num_employees num_employees,
