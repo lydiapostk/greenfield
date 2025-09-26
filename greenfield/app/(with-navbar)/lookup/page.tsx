@@ -44,6 +44,8 @@ export default function LookupStartupInfo() {
         error && setError(`Unexpected error: ${error}`);
         setLoading(false);
         setStep(lookupSteps[0]);
+        setSuggestedRecord(null);
+        setShowSideBar(false);
     };
 
     const checkURL = async (url: string): Promise<string | null> => {
@@ -125,9 +127,11 @@ export default function LookupStartupInfo() {
             const normalisedURL = await checkURL(startupURL);
             if (!normalisedURL) return; // TODO: Implement website URL suggestion
             const maybeRecord = await checkDB(normalisedURL);
+            setStep(lookupSteps[3]);
             if (maybeRecord) {
-                setStep(lookupSteps[3]);
-                setSuggestedRecord(maybeRecord);
+                setTimeout(() => {
+                    setSuggestedRecord(maybeRecord); // Give the UI time to type out instructions before displaying result
+                }, 300);
             } else {
                 lookupStartupOnline(normalisedURL);
             }
