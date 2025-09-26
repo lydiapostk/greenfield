@@ -5,39 +5,106 @@ import { typingEffect } from "@/components/animate-text";
 import Icon from "@/components/icon/icon";
 import TextInputField from "@/components/input-field/input-text-field";
 import { useEffect, useState } from "react";
+import { StartupType } from "../browse/startup-data-type";
 
 type DomainCheckResponse = components["schemas"]["CheckDomainResponse"];
+
+const lookupSteps = ["userInput", "checkURL", "dbCheck", "queryLLM"];
+const lookupExplanations: { [step: LookupStep]: string } = {
+    checkURL: "Validating url is a valid web page...",
+    dbCheck: "Checking if database has a record for this startup...",
+    queryLLM: "Looking up the internet to gather information...",
+};
+type LookupStep = (typeof lookupSteps)[number];
 
 export default function LookupStartupInfo() {
     const [startupURL, setStartupURL] = useState<string>("");
     const [error, setError] = useState<string>("");
     const [explanation, setExplanation] = useState<string>("");
     const [loading, setLoading] = useState(false);
+    const [step, setStep] = useState<LookupStep>(lookupSteps[0]);
 
-    const onSearch = () => {
+    const resetLookupStatus = (error: any) => {
+        setLoading(false);
+        setError(`Unexpected error: ${error}`);
+        setStep(lookupSteps[0]);
+    };
+
+    const checkURL = async (url: string): Promise<string | null> => {
+        setStep(lookupSteps[1]);
+        try {
+            const res = await fetch(
+                `${
+                    process.env.NEXT_PUBLIC_API_URL
+                }/lookup/check_url?url=${encodeURIComponent(url)}`
+            );
+
+            const data: DomainCheckResponse = await res.json();
+
+            if (data.exists && data.hostname) {
+                setStartupURL(data.hostname);
+                return data.hostname;
+            }
+
+            resetLookupStatus(data.error);
+            return null;
+        } catch (error) {
+            resetLookupStatus(error);
+            return null;
+        }
+    };
+
+    const checkDB = async (url: string): Promise<StartupType[] | null> => {
+        setStep(lookupSteps[2]);
+        try {
+            const res = await fetch(
+                `${
+                    process.env.NEXT_PUBLIC_API_URL
+                }/startups/fetch/by_website?lookup_url=${encodeURIComponent(
+                    url
+                )}`
+            );
+
+            const data: StartupType[] = await res.json();
+            return data;
+        } catch (error) {
+            resetLookupStatus(error);
+            return null;
+        }
+    };
+
+    const queryLLM = async (url: string): Promise<StartupType | null> => {
+        setStep(lookupSteps[3]);
+        try {
+            const res = await fetch(
+                `${
+                    process.env.NEXT_PUBLIC_API_URL
+                }/lookup/query_llm?startup_url=${encodeURIComponent(url)}`
+            );
+
+            const data: StartupType = await res.json();
+            return data;
+        } catch (error) {
+            resetLookupStatus(error); // TODO: handle what happens if this fails (e.g. if a gaming page is sent instead.)
+            return null;
+        }
+    };
+
+    const onSearch = async () => {
         if (startupURL !== "") {
             setLoading(true);
             setError("");
-            fetch(
-                `${
-                    process.env.NEXT_PUBLIC_API_URL
-                }/check-domain/?url=${encodeURIComponent(startupURL)}`
-            )
-                .then((res) =>
-                    res.json().then((data: DomainCheckResponse) => {
-                        setLoading(false);
-                        console.log(data);
-                        data.error && setError(data.error);
-                        data.hostname && setStartupURL(data.hostname);
-                        if (data.exists) {
-                            console.log(`Search for start-up ${data.hostname}`);
-                        }
-                    })
-                )
-                .catch((error) => {
-                    setLoading(false);
-                    setError(`Unexpected error: ${error}`);
-                });
+            const normalisedURL = await checkURL(startupURL);
+            if (!normalisedURL) return; // TODO: Implement website URL suggestion
+            const maybeRecords = await checkDB(normalisedURL);
+            if (!maybeRecords) return; // An error happened for some reason.
+            if (maybeRecords.length > 0) {
+                // TODO: display the list of suggested records...
+                setLoading(false);
+            } else {
+                // const maybeRecord = await queryLLM(normalisedURL);
+                setLoading(false);
+            }
         }
     };
 
@@ -48,12 +115,12 @@ export default function LookupStartupInfo() {
     };
 
     useEffect(() => {
-        if (loading) {
-            typingEffect(setExplanation, "Validating URL...", 10);
+        if (loading && step != lookupSteps[0]) {
+            typingEffect(setExplanation, lookupExplanations[step], 0);
         } else {
             setExplanation("");
         }
-    }, [loading]);
+    }, [loading, step]);
 
     return (
         <div className="flex flex-col self-center justify-center items-center w-full h-full">
