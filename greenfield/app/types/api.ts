@@ -92,6 +92,10 @@ export interface components {
             /** Hostname */
             hostname?: string | null;
         };
+        /** Founders */
+        Founders: {
+            [key: string]: string | null;
+        };
         /** HTTPValidationError */
         HTTPValidationError: {
             /** Detail */
@@ -121,10 +125,7 @@ export interface components {
             country: string | null;
             /** Num Employees */
             num_employees?: string | null;
-            /** Founders */
-            founders?: {
-                [key: string]: string | null;
-            } | null;
+            founders?: components["schemas"]["Founders"] | null;
             /** Investors */
             investors?: string[] | null;
             /** Funding Stage */

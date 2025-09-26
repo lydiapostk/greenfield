@@ -4,29 +4,45 @@ import { components } from "@/app/types/api"; // generated from openapi-typescri
 import { typingEffect } from "@/components/animate-text";
 import Icon from "@/components/icon/icon";
 import TextInputField from "@/components/input-field/input-text-field";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { StartupType } from "../(startup-display-components)/startup-data-type";
+import StartupTable from "../(startup-display-components)/startup_table";
+import StartupDrawer from "../(startup-display-components)/startup_drawer";
 
 type DomainCheckResponse = components["schemas"]["CheckDomainResponse"];
 
-const lookupSteps = ["userInput", "checkURL", "dbCheck", "queryLLM"];
+const lookupSteps = [
+    "userInput",
+    "checkURL",
+    "dbCheck",
+    "foundDBRecords",
+    "queryLLM",
+];
 const lookupExplanations: { [step: LookupStep]: string } = {
+    userInput: "",
     checkURL: "Validating url is a valid web page...",
     dbCheck: "Checking if database has a record for this startup...",
+    foundDBRecords: "Is this what you are looking for...",
     queryLLM: "Looking up the internet to gather information...",
 };
 type LookupStep = (typeof lookupSteps)[number];
 
 export default function LookupStartupInfo() {
-    const [startupURL, setStartupURL] = useState<string>("");
+    const [step, setStep] = useState<LookupStep>(lookupSteps[0]);
     const [error, setError] = useState<string>("");
     const [explanation, setExplanation] = useState<string>("");
     const [loading, setLoading] = useState(false);
-    const [step, setStep] = useState<LookupStep>(lookupSteps[0]);
 
-    const resetLookupStatus = (error: any) => {
+    const [startupURL, setStartupURL] = useState<string>("");
+    const [suggestedRecord, setSuggestedRecord] = useState<StartupType | null>(
+        null
+    );
+    const [showSideBar, setShowSideBar] = useState<boolean>(false);
+    const typingInterval = useRef<ReturnType<typeof setInterval> | null>(null);
+
+    const resetLookupStatus = (error?: any) => {
+        error && setError(`Unexpected error: ${error}`);
         setLoading(false);
-        setError(`Unexpected error: ${error}`);
         setStep(lookupSteps[0]);
     };
 
@@ -41,9 +57,9 @@ export default function LookupStartupInfo() {
 
             const data: DomainCheckResponse = await res.json();
 
-            if (data.exists && data.hostname) {
-                setStartupURL(data.hostname);
-                return data.hostname;
+            if (data.exists && data.normalized) {
+                setStartupURL(data.normalized);
+                return data.normalized;
             }
 
             resetLookupStatus(data.error);
@@ -54,7 +70,7 @@ export default function LookupStartupInfo() {
         }
     };
 
-    const checkDB = async (url: string): Promise<StartupType[] | null> => {
+    const checkDB = async (url: string): Promise<StartupType | null> => {
         setStep(lookupSteps[2]);
         try {
             const res = await fetch(
@@ -65,7 +81,7 @@ export default function LookupStartupInfo() {
                 )}`
             );
 
-            const data: StartupType[] = await res.json();
+            const data: StartupType = await res.json();
             return data;
         } catch (error) {
             resetLookupStatus(error);
@@ -73,8 +89,8 @@ export default function LookupStartupInfo() {
         }
     };
 
-    const queryLLM = async (url: string): Promise<StartupType | null> => {
-        setStep(lookupSteps[3]);
+    const _queryLLM = async (url: string): Promise<StartupType | null> => {
+        setStep(lookupSteps[4]);
         try {
             const res = await fetch(
                 `${
@@ -90,20 +106,30 @@ export default function LookupStartupInfo() {
         }
     };
 
+    const lookupStartupOnline = async (url: string) => {
+        // TODO: SOMETHING
+        const startupRecord = await _queryLLM(url);
+        startupRecord && confirmStartup(startupRecord);
+    };
+
+    const confirmStartup = (startup: StartupType) => {
+        resetLookupStatus();
+        // TODO: SOMETHING
+        console.log(startup);
+    };
+
     const onSearch = async () => {
         if (startupURL !== "") {
             setLoading(true);
             setError("");
             const normalisedURL = await checkURL(startupURL);
             if (!normalisedURL) return; // TODO: Implement website URL suggestion
-            const maybeRecords = await checkDB(normalisedURL);
-            if (!maybeRecords) return; // An error happened for some reason.
-            if (maybeRecords.length > 0) {
-                // TODO: display the list of suggested records...
-                setLoading(false);
+            const maybeRecord = await checkDB(normalisedURL);
+            if (maybeRecord) {
+                setStep(lookupSteps[3]);
+                setSuggestedRecord(maybeRecord);
             } else {
-                // const maybeRecord = await queryLLM(normalisedURL);
-                setLoading(false);
+                lookupStartupOnline(normalisedURL);
             }
         }
     };
@@ -115,19 +141,20 @@ export default function LookupStartupInfo() {
     };
 
     useEffect(() => {
-        if (loading && step != lookupSteps[0]) {
-            typingEffect(setExplanation, lookupExplanations[step], 0);
-        } else {
-            setExplanation("");
-        }
-    }, [loading, step]);
+        typingEffect(
+            setExplanation,
+            lookupExplanations[step],
+            10,
+            typingInterval
+        );
+    }, [step]);
 
     return (
         <div className="flex flex-col self-center justify-center items-center w-full h-full">
             <h1 className="text-4xl pb-6 text-stone-200 font-bold mb-6">
                 Lookup
             </h1>
-            <div className="min-w-3/5">
+            <div className="min-w-3/5 flex flex-col justify-start gap-3">
                 <TextInputField
                     value={startupURL}
                     setValue={setStartupURL}
@@ -154,20 +181,55 @@ export default function LookupStartupInfo() {
                     disabled={loading}
                 />
                 {loading && (
-                    <div className="flex flex-row align-start gap-3">
-                        <Icon
-                            name={"spinner"}
-                            size={"md"}
-                            color="blue"
-                            onClick={onSearch}
-                            style={{ pointerEvents: "none" }}
-                            className={`text-stone-200 fill-indigo-600  transition ease-in-out delay-100 duration-300 ${
-                                loading ? "opacity-100" : "opacity-0"
-                            }`}
-                        />
-                        <div className="font-mono text-stone-200">
+                    <div className="flex flex-col justify-start">
+                        <div className="font-mono flex flex-row gap-2 pb-6 justify-start items-center text-stone-200">
+                            <Icon
+                                name={"spinner"}
+                                size={"md"}
+                                color="blue"
+                                onClick={onSearch}
+                                style={{ pointerEvents: "none" }}
+                                className={`text-stone-200 fill-indigo-600  transition ease-in-out delay-100 duration-300 ${
+                                    loading ? "opacity-100" : "opacity-0"
+                                }`}
+                            />
                             {explanation}
                         </div>
+                        {suggestedRecord && (
+                            <div className="flex flex-col justify-start gap-3">
+                                <div className="flex flex-row justify-start items-center gap-3">
+                                    <Icon
+                                        name={"tick"}
+                                        size={"md"}
+                                        className="hover:stroke-[2] transition ease-in-out delay-100 duration-300"
+                                        onClick={() => {
+                                            confirmStartup(suggestedRecord);
+                                        }}
+                                    />
+                                    <Icon
+                                        name={"cross"}
+                                        size={"md"}
+                                        className="hover:stroke-[2] transition ease-in-out delay-100 duration-300"
+                                        onClick={() => {
+                                            lookupStartupOnline(startupURL);
+                                            setSuggestedRecord(null);
+                                        }}
+                                    />
+                                </div>
+                                <StartupTable
+                                    startups={[suggestedRecord]}
+                                    onClickStartup={() => {
+                                        setShowSideBar(!showSideBar);
+                                    }}
+                                />
+                            </div>
+                        )}
+                        {suggestedRecord && showSideBar && (
+                            <StartupDrawer
+                                startup={suggestedRecord}
+                                onClose={() => setShowSideBar(!showSideBar)}
+                            />
+                        )}
                     </div>
                 )}
             </div>
