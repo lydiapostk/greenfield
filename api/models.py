@@ -1,7 +1,21 @@
-from typing import Optional, List, Dict
+from typing import Optional, List
+from pydantic import HttpUrl, RootModel, field_serializer, field_validator
 from sqlmodel import SQLModel, Field, Column, JSON
 from sqlalchemy.dialects.postgresql import ENUM
 from pgvector.sqlalchemy import Vector
+
+
+# Define a Pydantic model for the JSON field
+class Founders(RootModel[dict[str, Optional[HttpUrl]]]):
+    def model_dump(self, *args, **kwargs):
+        # return the inner dict instead of {"root": {...}}
+        return self.root
+
+    @classmethod
+    def __get_pydantic_json_schema__(cls, core_schema, handler):
+        # Fixes OpenAPI schema so it shows as an object, not {"root": {...}}
+        schema = handler(core_schema)  # noqa: F841
+        return {"type": "object", "additionalProperties": {"type": "string"}}
 
 
 class Startup(SQLModel, table=True):
@@ -30,8 +44,9 @@ class Startup(SQLModel, table=True):
         ),
     )
 
-    founders: Optional[Dict[str, Optional[str]]] = Field(
-        default=None, sa_column=Column(JSON)
+    founders: Optional[Founders] = Field(
+        default=None,
+        sa_column=Column(JSON),
     )
     investors: Optional[List[str]] = Field(default=None, sa_column=Column(JSON))
 
@@ -83,3 +98,21 @@ class Startup(SQLModel, table=True):
 
     trl: Optional[str] = None
     trl_explanation: Optional[str] = None
+
+    @field_validator("founders", mode="before")
+    def coerce_founders(cls, v):
+        if isinstance(v, dict):
+            return Founders(v)  # wrap dict in RootModel
+        return v
+
+    @field_validator("founders", mode="after")
+    def coerce_after(cls, v):
+        if isinstance(v, dict):
+            return Founders(v)
+        return v
+
+    @field_serializer("founders")
+    def serialize_founders(self, v: Optional[Founders], _info):
+        if (v is None) or isinstance(v, dict):
+            return v
+        return v.root  # unwrap when returning in responses
