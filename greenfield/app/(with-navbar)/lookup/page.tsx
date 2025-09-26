@@ -5,7 +5,7 @@ import { typingEffect } from "@/components/animate-text";
 import Icon from "@/components/icon/icon";
 import TextInputField from "@/components/input-field/input-text-field";
 import { useEffect, useState } from "react";
-import { StartupType } from "../browse/startup-data-type";
+import { StartupType } from "../(startup-display-components)/startup-data-type";
 
 type DomainCheckResponse = components["schemas"]["CheckDomainResponse"];
 

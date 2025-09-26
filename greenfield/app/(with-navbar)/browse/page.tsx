@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import StartupTable from "./startup_table";
-import { StartupType } from "./startup-data-type";
-import StartupDrawer from "./startup_drawer";
+import StartupTable from "@/startup_display/startup_table";
+import { StartupType } from "@/startup_display/startup-data-type";
+import StartupDrawer from "@/startup_display/startup_drawer";
 import Icon from "@/components/icon/icon";
 
 export default function BrowseStartups() {
