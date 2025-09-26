@@ -26,7 +26,7 @@ export default function BrowseStartups() {
 
     return (
         <div className="flex flex-col justify-start items-center w-full h-full text-white">
-            <h1 className="text-xl font-bold mb-6">Browse Database</h1>
+            <h1 className="text-xl font-bold my-6">Browse Database</h1>
             <StartupTable
                 startups={startups}
                 onClickStartup={setSelectedStartup}

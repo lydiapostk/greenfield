@@ -14,7 +14,7 @@ export default function WithNavbarLayout({
     const currPath = usePathname();
 
     return (
-        <div className="h-full w-full flex flex-col gap-10 justify-center items-center">
+        <div className="h-full w-full flex flex-col justify-center items-center">
             <Navbar
                 leftIcon={
                     <a href={"/"}>

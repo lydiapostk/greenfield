@@ -20,7 +20,7 @@ const browseNavItem = (className?: string) => (
     />
 );
 
-export type ValidInternalPaths = "/browse" | "/lookup";
+export type ValidInternalPaths = "/browse" | "/lookup" | "/double-click";
 
 export const navItems = (className?: string) => [
     lookupNavItem(className),
@@ -36,5 +36,7 @@ export const inactiveNavItems = (
             return [lookupNavItem(className)];
         case "/lookup":
             return [browseNavItem(className)];
+        case "/double-click":
+            return navItems(className);
     }
 };
