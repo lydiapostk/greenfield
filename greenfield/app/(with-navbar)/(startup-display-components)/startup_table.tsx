@@ -2,12 +2,12 @@ import { StartupType } from "./startup-data-type";
 
 interface StartupTableProp {
     startups: StartupType[];
-    setSelectedStartup: (startup: StartupType | null) => void;
+    onClickStartup?: (startup: StartupType | null) => void;
 }
 
 export default function StartupTable({
     startups,
-    setSelectedStartup,
+    onClickStartup: setSelectedStartup,
 }: StartupTableProp) {
     return (
         <div className="pb-6">
@@ -25,7 +25,10 @@ export default function StartupTable({
                         {startups.map((startup) => (
                             <tr
                                 key={startup.id}
-                                onClick={() => setSelectedStartup(startup)}
+                                onClick={() => {
+                                    if (setSelectedStartup)
+                                        setSelectedStartup(startup);
+                                }}
                                 className="cursor-pointer hover:bg-white/20 transition"
                             >
                                 <td className="p-4 max-w-md truncate">

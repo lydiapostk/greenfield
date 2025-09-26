@@ -29,7 +29,7 @@ export default function BrowseStartups() {
             <h1 className="text-xl font-bold mb-6">Browse Database</h1>
             <StartupTable
                 startups={startups}
-                setSelectedStartup={setSelectedStartup}
+                onClickStartup={setSelectedStartup}
             />
             {isLoading && <Icon name={"spinner"} size={"md"} color="blue" />}
             {selectedStartup && (
