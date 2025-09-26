@@ -10,7 +10,7 @@ export default function StartupTable({
     onClickStartup: setSelectedStartup,
 }: StartupTableProp) {
     return (
-        <div className="pb-6 transition animate-fadeIn">
+        <div className="pb-6 animate-fadeIn">
             {/* Table */}
             <div className="bg-white/10 backdrop-blur-md rounded-2xl shadow-lg overflow-hidden">
                 <table className="w-full text-left">
