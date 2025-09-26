@@ -57,6 +57,9 @@ export default function LookupStartupInfo() {
 
     return (
         <div className="flex flex-col self-center justify-center items-center w-full h-full">
+            <h1 className="text-4xl pb-6 text-stone-200 font-bold mb-6">
+                Lookup
+            </h1>
             <div className="min-w-3/5">
                 <TextInputField
                     value={startupURL}
