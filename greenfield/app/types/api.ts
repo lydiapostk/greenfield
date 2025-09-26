@@ -41,15 +41,15 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/startups/{startup_id}": {
+    "/startups/lookup/by_website": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** Get Startup */
-        get: operations["get_startup_startups__startup_id__get"];
+        /** Get Startup By Website */
+        get: operations["get_startup_by_website_startups_lookup_by_website_get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -67,6 +67,23 @@ export interface paths {
         };
         /** Lookup Startup */
         get: operations["lookup_startup_startups_lookup_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/openai/lookup": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lookup Startup */
+        get: operations["lookup_startup_openai_lookup_get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -219,13 +236,44 @@ export interface operations {
             };
         };
     };
-    get_startup_startups__startup_id__get: {
+    get_startup_by_website_startups_lookup_by_website_get: {
         parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                startup_id: number;
+            query: {
+                lookup_url: string;
             };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Startup"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    lookup_startup_startups_lookup_get: {
+        parameters: {
+            query: {
+                startup_url: string;
+            };
+            header?: never;
+            path?: never;
             cookie?: never;
         };
         requestBody?: never;
@@ -250,7 +298,7 @@ export interface operations {
             };
         };
     };
-    lookup_startup_startups_lookup_get: {
+    lookup_startup_openai_lookup_get: {
         parameters: {
             query: {
                 startup_url: string;
