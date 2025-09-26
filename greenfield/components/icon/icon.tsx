@@ -28,7 +28,7 @@ export default function Icon({
     return (
         <SvgIcon
             className={`${
-                typeof size === "number" ? `w-${size} h-${size}` : sizeMap[size]
+                typeof size == "number" ? `w-${size} h-${size}` : sizeMap[size]
             } ${className ?? ""}`}
             stroke={color}
             strokeWidth={strokeWidth}

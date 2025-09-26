@@ -3,6 +3,8 @@
 import Icon from "@/components/icon/icon";
 import { StartupType } from "./startup-data-type";
 import { useEffect, useState } from "react";
+import ExpandableSection from "./collapsible-section";
+import { refInfo } from "./refs";
 
 export interface UserDrawerProp {
     startup: StartupType;
@@ -14,6 +16,18 @@ const textOrUnknown = (text: string | undefined | null) =>
 
 export default function StartupDrawer({ startup, onClose }: UserDrawerProp) {
     const [isClosing, setIsClosing] = useState(false);
+    const trlExplanation = (
+        <div className="pb-6">
+            <h4 className="italic">How was TRL estimated?</h4>{" "}
+            <p className="font-mono">{startup.trl_explanation}</p>
+        </div>
+    );
+
+    const fundInfoExpansion = ExpandableSection(refInfo(startup, "fund"));
+    const techInfoExpansion = ExpandableSection(refInfo(startup, "tech"));
+    const uvpInfoExpansion = ExpandableSection(refInfo(startup, "uvp"));
+    const trlExpansion = ExpandableSection(trlExplanation);
+
     // Trigger slide-out animation before closing
     const triggerClose = () => {
         setIsClosing(true);
@@ -83,15 +97,31 @@ export default function StartupDrawer({ startup, onClose }: UserDrawerProp) {
                             </p>
                         </div>
                         <div className="flex flex-col justify-start w-full gap-2">
-                            <p>
+                            <p className="flex flex-row whitespace-nowrap justify-start items-center w-full gap-1">
                                 <span className="font-bold">TRL:</span>{" "}
                                 {textOrUnknown(startup.trl)}
+                                {
+                                    <Icon
+                                        name={"info"}
+                                        key={"funds_raised"}
+                                        className="stroke-indigo-600 hover:stroke-[2]"
+                                        onClick={trlExpansion.controlFn}
+                                    />
+                                }
                             </p>
-                            <p>
+                            <p className="flex flex-row whitespace-nowrap justify-start items-center w-full gap-1">
                                 <span className="font-bold">Funds raised:</span>{" "}
                                 {textOrUnknown(startup.funds_raised)}
+                                {
+                                    <Icon
+                                        name={"info"}
+                                        key={"funds_raised"}
+                                        className="stroke-indigo-600 hover:stroke-[2]"
+                                        onClick={fundInfoExpansion.controlFn}
+                                    />
+                                }
                             </p>
-                            <p>
+                            <p className="flex flex-row whitespace-nowrap justify-start items-center w-full gap-1">
                                 <span className="font-bold">
                                     Funding stage:
                                 </span>{" "}
@@ -99,18 +129,41 @@ export default function StartupDrawer({ startup, onClose }: UserDrawerProp) {
                             </p>
                         </div>
                     </div>
+                    {fundInfoExpansion.component}
+                    {trlExpansion.component}
+
                     <div className="mt-6">
-                        <h3 className="font-bold text-lg mb-2">
-                            Technology Offering
-                        </h3>
+                        <div className="flex flex-row whitespace-nowrap justify-start items-center w-full gap-1">
+                            <h3 className="font-bold text-lg">
+                                Technology Offering
+                            </h3>
+                            {
+                                <Icon
+                                    name={"info"}
+                                    className="stroke-indigo-600 hover:stroke-[2]"
+                                    onClick={techInfoExpansion.controlFn}
+                                />
+                            }
+                        </div>
+                        {techInfoExpansion.component}
                         <p className="text-gray-700">
                             {textOrUnknown(startup.tech_offering)}
                         </p>
                     </div>
                     <div className="mt-6">
-                        <h3 className="font-bold text-lg mb-2">
-                            Unique Value Proposition
-                        </h3>
+                        <div className="flex flex-row whitespace-nowrap justify-start items-center w-full gap-1">
+                            <h3 className="font-bold text-lg">
+                                Unique Value Proposition
+                            </h3>
+                            {
+                                <Icon
+                                    name={"info"}
+                                    className="stroke-indigo-600 hover:stroke-[2]"
+                                    onClick={uvpInfoExpansion.controlFn}
+                                />
+                            }
+                        </div>
+                        {uvpInfoExpansion.component}
                         <p className="text-gray-700">
                             {textOrUnknown(startup.uvp)}
                         </p>
