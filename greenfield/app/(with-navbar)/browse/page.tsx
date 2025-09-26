@@ -6,6 +6,7 @@ import { StartupType } from "./startup-data-type";
 import StartupDrawer from "./startup_drawer";
 
 export default function BrowseStartups() {
+    const [isLoading, setIsLoading] = useState<boolean>(true);
     const [startups, setStartups] = useState<StartupType[]>([]);
     const [selectedStartup, setSelectedStartup] = useState<StartupType | null>(
         null
@@ -18,7 +19,7 @@ export default function BrowseStartups() {
                     setStartups(data);
                 })
             )
-            .catch();
+            .catch(() => setIsLoading(false));
     }, []);
 
     return (

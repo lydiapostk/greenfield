@@ -28,15 +28,17 @@ export default function StartupTable({
                                 onClick={() => setSelectedStartup(startup)}
                                 className="cursor-pointer hover:bg-white/20 transition"
                             >
-                                <td className="p-4">{startup.company_name}</td>
-                                <td className="p-4">
+                                <td className="p-4 max-w-md truncate">
+                                    {startup.company_name}
+                                </td>
+                                <td className="p-4 max-w-xs truncate">
                                     {startup.founders
                                         ? Object.keys(startup.founders).join(
                                               ", "
                                           )
                                         : "Unknown"}
                                 </td>
-                                <td className="p-4">
+                                <td className="p-4 max-w-md truncate">
                                     {startup.company_website}
                                 </td>
                             </tr>
