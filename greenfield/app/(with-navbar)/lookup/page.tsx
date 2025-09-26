@@ -28,9 +28,9 @@ export default function LookupStartupInfo() {
                         setLoading(false);
                         console.log(data);
                         data.error && setError(data.error);
-                        data.normalized && setStartupURL(data.normalized);
+                        data.hostname && setStartupURL(data.hostname);
                         if (data.exists) {
-                            console.log(`Search for start-up ${startupURL}`);
+                            console.log(`Search for start-up ${data.hostname}`);
                         }
                     })
                 )
