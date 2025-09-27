@@ -21,6 +21,12 @@ def list_startups(session: Session = Depends(get_session)):
     return session.exec(select(Startup).order_by(Startup.company_name)).all()
 
 
+@router.get("/fetch/by_id", response_model=Startup | None)
+def get_startup_by_id(id: str = Query(...), session: Session = Depends(get_session)):
+    startup = session.get(Startup, id)
+    return startup
+
+
 @router.get("/fetch/by_website", response_model=Startup | None)
 def get_startup_by_website(
     lookup_url: str = Query(...), session: Session = Depends(get_session)

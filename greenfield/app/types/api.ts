@@ -21,6 +21,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/startups/fetch/by_id": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Startup By Id */
+        get: operations["get_startup_by_id_startups_fetch_by_id_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/startups/fetch/by_website": {
         parameters: {
             query?: never;
@@ -92,9 +109,8 @@ export interface components {
             /** Hostname */
             hostname?: string | null;
         };
-        /** Founders */
         Founders: {
-            [key: string]: string | null;
+            [key: string]: string;
         };
         /** HTTPValidationError */
         HTTPValidationError: {
@@ -185,6 +201,37 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Startup"][];
+                };
+            };
+        };
+    };
+    get_startup_by_id_startups_fetch_by_id_get: {
+        parameters: {
+            query: {
+                id: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Startup"] | null;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };
