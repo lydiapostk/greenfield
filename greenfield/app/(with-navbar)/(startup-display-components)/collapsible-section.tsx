@@ -2,20 +2,34 @@
 import { ReactElement, useState } from "react";
 
 export default function ExpandableSection(
-    children: ReactElement | ReactElement[] | string
+    children: ReactElement | ReactElement[] | string,
+    expandableSectionRef?: React.RefObject<(() => void) | null>
 ) {
     const [isCollapsing, setIsCollapsing] = useState(false);
     const [isExpanded, setIsExpanded] = useState(false);
 
     // Trigger fade-out animation before collapsing
+    const _collapseSection = () => {
+        setIsCollapsing(true);
+        if (expandableSectionRef) expandableSectionRef.current = null;
+        setTimeout(() => {
+            setIsCollapsing(false);
+            setIsExpanded(false);
+        }, 200); // match CSS animation duration
+    };
+
+    const _expandSection = () => {
+        if (expandableSectionRef)
+            expandableSectionRef.current = _collapseSection;
+        setIsExpanded(true);
+    };
+
     const controlFn = () => {
-        if (isExpanded) {
-            setIsCollapsing(true);
-            setTimeout(() => {
-                setIsCollapsing(false);
-                setIsExpanded(false);
-            }, 200); // match CSS animation duration
-        } else setIsExpanded(true);
+        if (expandableSectionRef?.current) {
+            expandableSectionRef.current();
+        }
+        if (isExpanded) _collapseSection();
+        else _expandSection();
     };
 
     return {

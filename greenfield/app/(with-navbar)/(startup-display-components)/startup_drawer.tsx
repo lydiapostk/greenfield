@@ -2,7 +2,7 @@
 
 import Icon from "@/components/icon/icon";
 import { StartupType } from "./startup-data-type";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ExpandableSection from "./collapsible-section";
 import { refInfo, textOrUnknown } from "./refs";
 
@@ -19,11 +19,18 @@ export default function StartupDrawer({ startup, onClose }: UserDrawerProp) {
             <p className="font-mono">{startup.trl_explanation}</p>
         </div>
     );
+    const fundAndTRLSectionRef = useRef<(() => void) | null>(null);
 
-    const fundInfoExpansion = ExpandableSection(refInfo(startup, "fund"));
+    const fundInfoExpansion = ExpandableSection(
+        refInfo(startup, "fund"),
+        fundAndTRLSectionRef
+    );
     const techInfoExpansion = ExpandableSection(refInfo(startup, "tech"));
     const uvpInfoExpansion = ExpandableSection(refInfo(startup, "uvp"));
-    const trlExpansion = ExpandableSection(trlExplanation);
+    const trlExpansion = ExpandableSection(
+        trlExplanation,
+        fundAndTRLSectionRef
+    );
 
     // Trigger slide-out animation before closing
     const triggerClose = () => {
