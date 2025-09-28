@@ -2,22 +2,28 @@
 
 import { useState, useRef, useEffect } from "react";
 import { InputFieldType } from "./input-types";
-import { useClickOutside } from "./use-click-outside";
 import Icon from "../icon/icon";
+import { StartupType } from "@/app/(with-navbar)/(startup-display-components)/startup-data-type";
 
 interface EditableFieldProps extends InputFieldType<string> {
-    onSave: (field: string, value: string) => void;
+    onSave: (field: keyof StartupType, value: string) => void;
     label: string;
+    field_key: keyof StartupType;
     value: string;
     multiline?: boolean;
+    fontStyle?: string;
+    showLabel?: boolean;
 }
 
 export default function EditableTextField({
     onSave,
     label,
+    field_key,
     value,
+    fontStyle = "",
     disabled = false,
     multiline = false,
+    showLabel = true,
 }: EditableFieldProps) {
     const [isEditing, setIsEditing] = useState(false);
     const [draft, setDraft] = useState<string>(value);
@@ -36,7 +42,7 @@ export default function EditableTextField({
         inputRef.current?.blur();
         setIsEditing(false);
         if (draft !== value) {
-            onSave(label, draft);
+            onSave(field_key, draft);
         }
     };
 
@@ -46,12 +52,9 @@ export default function EditableTextField({
         setIsEditing(false);
     };
 
-    // cancel if clicking outside of the input
-    useClickOutside(inputRef, cancelChange);
-
     return (
         <div className="flex flex-col space-y-1 w-full">
-            <label className="font-bold">{label}</label>
+            {showLabel && <label className="font-bold">{label}</label>}
 
             {/* Read Mode */}
             {!isEditing && (
@@ -60,7 +63,7 @@ export default function EditableTextField({
                         disabled
                             ? "cursor-not-allowed text-gray-500"
                             : " hover:bg-stone-300 cursor-pointer"
-                    }`}
+                    } ${fontStyle} `}
                     onClick={() => !disabled && setIsEditing(true)}
                 >
                     {value}
@@ -77,20 +80,20 @@ export default function EditableTextField({
                             }
                             value={draft}
                             onChange={(e) => setDraft(e.target.value)}
-                            onBlur={commitChange}
-                            className="p-2 rounded border min-w-full min-h-[100px]"
+                            onBlur={cancelChange}
+                            className={`p-2 rounded border min-w-full min-h-[100px] ${fontStyle}`}
                         />
                     ) : (
                         <input
                             ref={inputRef as React.RefObject<HTMLInputElement>}
                             value={draft}
                             onChange={(e) => setDraft(e.target.value)}
-                            onBlur={commitChange}
+                            onBlur={cancelChange}
                             onKeyDown={(e) => {
                                 if (e.key === "Enter") commitChange();
                                 if (e.key === "Escape") cancelChange();
                             }}
-                            className="p-2 rounded border w-full"
+                            className={`p-2 rounded border w-full ${fontStyle}`}
                         />
                     )}
                     <div className="flex flex-row justify-end items-center gap-1">
