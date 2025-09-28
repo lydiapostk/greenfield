@@ -22,7 +22,6 @@ export default function DoubleClick({
         )
             .then((res) =>
                 res.json().then((data: StartupType) => {
-                    console.log(data);
                     setStartup(data);
                 })
             )
@@ -35,15 +34,13 @@ export default function DoubleClick({
 
     return (
         <div className="w-full h-full bg-stone-200">
-            <div className="max-w-4xl sm:min-w-2xl place-self-center my-10 flex flex-col justify-start">
+            <div className="w-4xl sm:w-xl overflow-hidden place-self-center my-10 flex flex-col justify-start">
                 {startup && (
-                    <div>
-                        <h1 className="text-3xl font-bold pb-10">
-                            {startup.company_name}
-                        </h1>
-                    </div>
+                    <StartupEditForm
+                        startup={startup}
+                        setStartup={setStartup}
+                    />
                 )}
-                {startup && <StartupEditForm startup={startup} />}
             </div>
         </div>
     );
