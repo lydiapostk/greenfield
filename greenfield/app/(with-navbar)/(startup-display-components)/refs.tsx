@@ -1,6 +1,9 @@
 import Icon from "@/components/icon/icon";
 import { StartupType } from "./startup-data-type";
 
+const textOrUnknown = (text: string | undefined | null) =>
+    text ? text : <p className="text-gray-700">Unknown</p>;
+
 const parseRefText: (refText: string) => {
     text: string;
     href: string | undefined;

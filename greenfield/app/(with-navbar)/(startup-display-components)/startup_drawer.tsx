@@ -11,9 +11,6 @@ export interface UserDrawerProp {
     onClose: () => void;
 }
 
-const textOrUnknown = (text: string | undefined | null) =>
-    text ? text : <p className="text-gray-700">Unknown</p>;
-
 export default function StartupDrawer({ startup, onClose }: UserDrawerProp) {
     const [isClosing, setIsClosing] = useState(false);
     const trlExplanation = (
@@ -48,6 +45,12 @@ export default function StartupDrawer({ startup, onClose }: UserDrawerProp) {
             window.removeEventListener("keydown", handleKeyDown);
         };
     }, [triggerClose]);
+
+    function textOrUnknown(
+        trl: string | null | undefined
+    ): import("react").ReactNode {
+        throw new Error("Function not implemented.");
+    }
 
     return (
         <div className="fixed inset-0 flex justify-end bg-black/40">
