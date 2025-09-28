@@ -39,10 +39,12 @@ export default function EditableTextField<T>({
 
     const commitChange = () => {
         inputRef.current?.blur();
-        setIsEditing(false);
         if (draft !== value) {
             onSave(field_key, draft);
         }
+        setTimeout(() => {
+            setIsEditing(false);
+        }, 100);
     };
 
     const cancelChange = () => {
