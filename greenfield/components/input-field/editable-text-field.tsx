@@ -3,19 +3,18 @@
 import { useState, useRef, useEffect } from "react";
 import { InputFieldType } from "./input-types";
 import Icon from "../icon/icon";
-import { StartupType } from "@/app/(with-navbar)/(startup-display-components)/startup-data-type";
 
-interface EditableFieldProps extends InputFieldType<string> {
-    onSave: (field: keyof StartupType, value: string) => void;
+interface EditableFieldProps<T> extends InputFieldType<string> {
+    onSave: (field: T, value: string) => void;
     label: string;
-    field_key: keyof StartupType;
+    field_key: T;
     value: string;
     multiline?: boolean;
     fontStyle?: string;
     showLabel?: boolean;
 }
 
-export default function EditableTextField({
+export default function EditableTextField<T>({
     onSave,
     label,
     field_key,
@@ -24,7 +23,7 @@ export default function EditableTextField({
     disabled = false,
     multiline = false,
     showLabel = true,
-}: EditableFieldProps) {
+}: EditableFieldProps<T>) {
     const [isEditing, setIsEditing] = useState(false);
     const [draft, setDraft] = useState<string>(value);
     const inputRef = useRef<HTMLInputElement | HTMLTextAreaElement | null>(
