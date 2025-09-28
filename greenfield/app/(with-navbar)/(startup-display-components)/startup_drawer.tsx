@@ -4,7 +4,7 @@ import Icon from "@/components/icon/icon";
 import { StartupType } from "./startup-data-type";
 import { useEffect, useState } from "react";
 import ExpandableSection from "./collapsible-section";
-import { refInfo } from "./refs";
+import { refInfo, textOrUnknown } from "./refs";
 
 export interface UserDrawerProp {
     startup: StartupType;
@@ -45,12 +45,6 @@ export default function StartupDrawer({ startup, onClose }: UserDrawerProp) {
             window.removeEventListener("keydown", handleKeyDown);
         };
     }, [triggerClose]);
-
-    function textOrUnknown(
-        trl: string | null | undefined
-    ): import("react").ReactNode {
-        throw new Error("Function not implemented.");
-    }
 
     return (
         <div className="fixed inset-0 flex justify-end bg-black/40">
