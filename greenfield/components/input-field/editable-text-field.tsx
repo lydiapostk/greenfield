@@ -80,7 +80,6 @@ export default function EditableTextField({
                             }
                             value={draft}
                             onChange={(e) => setDraft(e.target.value)}
-                            onBlur={cancelChange}
                             className={`p-2 rounded border min-w-full min-h-[100px] ${fontStyle}`}
                         />
                     ) : (
@@ -88,7 +87,6 @@ export default function EditableTextField({
                             ref={inputRef as React.RefObject<HTMLInputElement>}
                             value={draft}
                             onChange={(e) => setDraft(e.target.value)}
-                            onBlur={cancelChange}
                             onKeyDown={(e) => {
                                 if (e.key === "Enter") commitChange();
                                 if (e.key === "Escape") cancelChange();
