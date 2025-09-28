@@ -136,6 +136,8 @@ export interface components {
         };
         /** Startup */
         Startup: {
+            /** Id */
+            id?: number | null;
             /** Company Name */
             company_name: string;
             /** Company Website */
@@ -171,11 +173,11 @@ export interface components {
             trl?: string | null;
             /** Trl Explanation */
             trl_explanation?: string | null;
-            /** Id */
-            id?: number | null;
         };
         /** StartupUpdate */
         StartupUpdate: {
+            /** Id */
+            id: number;
             /** Company Name */
             company_name?: string | null;
             /** Company Website */
@@ -211,8 +213,6 @@ export interface components {
             trl?: string | null;
             /** Trl Explanation */
             trl_explanation?: string | null;
-            /** Id */
-            id?: number;
         };
         /** ValidationError */
         ValidationError: {

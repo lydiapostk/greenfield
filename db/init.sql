@@ -21,16 +21,7 @@ CREATE TYPE funds_raised AS ENUM(
     '>$10M'
 );
 
-CREATE TYPE num_employees AS ENUM(
-    '1-5',
-    '5-10',
-    '10-20',
-    '20-100',
-    '100-200',
-    '200-500',
-    '500-1000',
-    '>1000'
-);
+CREATE TYPE num_employees AS ENUM('1-10', '11-50', '51-100', '101-1000', '>1000');
 
 -- Create startups table
 CREATE TABLE
@@ -55,7 +46,7 @@ CREATE TABLE
         -- Value proposition
         uvp TEXT,
         ref_uvp JSONB, -- reference/notes about uvp e.g. [ "Quote A (website.com)", "Quote B (website.org)" ]
-        uvp_embedding VECTOR (1536) -- embedding for uvp
+        uvp_embedding VECTOR (1536), -- embedding for uvp
         trl TEXT,
-        trl_explanation TEXT,
+        trl_explanation TEXT
     );

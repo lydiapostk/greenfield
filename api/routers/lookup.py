@@ -9,7 +9,7 @@ from fastapi import Depends
 import httpx
 from openai import OpenAI
 import os
-from pydantic import BaseModel
+from pydantic import BaseModel, ValidationError
 from sqlmodel import Session
 from api.database import get_session
 from api.models import Startup
@@ -147,11 +147,21 @@ def lookup_startup(
         stream=False,
     )
     startup_info = json.loads(response.output_text)
-    startup = Startup.model_validate(startup_info)
+    startup = None
+    while not startup:
+        try:
+            startup = Startup.model_validate(startup_info)
+        except ValidationError as e:
+            e_locs = [err["loc"] for err in e.errors()]
+            for keys_to_delete in e_locs:
+                if (len(keys_to_delete)) == 1:
+                    startup_info.pop(keys_to_delete[0])
+                else:
+                    target_dict = startup_info
+                    for key_to_delete in keys_to_delete[:-1]:
+                        target_dict = target_dict[key_to_delete]
+                    target_dict.pop(keys_to_delete[-1])
     startup.company_website = startup_url
     session.add(startup)
     session.commit()
-    session.refresh(startup)
-    if not startup:
-        return {"error": "Startup not found"}
     return startup

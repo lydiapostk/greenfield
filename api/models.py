@@ -19,6 +19,7 @@ class Founders(RootModel[dict[str, Optional[HttpUrl]]]):
 
 
 class StartupBase(SQLModel):
+    id: int = Field(primary_key=True)
     company_name: str
     company_website: Optional[str] = Field(default=None, unique=True)
     year_founded: Optional[str] = None
@@ -27,13 +28,10 @@ class StartupBase(SQLModel):
         default=None,
         sa_column=Column(
             ENUM(
-                "1-5",
-                "5-10",
-                "10-20",
-                "20-100",
-                "100-200",
-                "200-500",
-                "500-1000",
+                "1-10",
+                "11-50",
+                "51-100",
+                "101-1000",
                 ">1000",
                 name="num_employees",
                 create_type=False,
@@ -121,5 +119,4 @@ class Startup(StartupBase, table=True):
 
 
 class StartupUpdate(StartupBase):
-    id: int = Field(default=None, primary_key=True)
     company_name: Optional[str] = None
