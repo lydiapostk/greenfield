@@ -18,14 +18,11 @@ class Founders(RootModel[dict[str, Optional[HttpUrl]]]):
         return {"type": "object", "additionalProperties": {"type": "string"}}
 
 
-class Startup(SQLModel, table=True):
-    __tablename__ = "startups"
-
-    id: Optional[int] = Field(default=None, primary_key=True)
+class StartupBase(SQLModel):
     company_name: str
     company_website: Optional[str] = Field(default=None, unique=True)
-    year_founded: Optional[str] = (None,)
-    country: Optional[str] = (None,)
+    year_founded: Optional[str] = None
+    country: Optional[str] = None
     num_employees: Optional[str] = Field(
         default=None,
         sa_column=Column(
@@ -116,3 +113,13 @@ class Startup(SQLModel, table=True):
         if (v is None) or isinstance(v, dict):
             return v
         return v.root  # unwrap when returning in responses
+
+
+class Startup(StartupBase, table=True):
+    __tablename__ = "startups"
+    id: Optional[int] = Field(default=None, primary_key=True)
+
+
+class StartupUpdate(StartupBase):
+    id: int = Field(default=None, primary_key=True)
+    company_name: Optional[str] = None

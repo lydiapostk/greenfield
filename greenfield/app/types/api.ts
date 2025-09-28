@@ -55,6 +55,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/startups/update/by_id": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Update Startup By Id */
+        post: operations["update_startup_by_id_startups_update_by_id_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/lookup/check_url": {
         parameters: {
             query?: never;
@@ -119,26 +136,14 @@ export interface components {
         };
         /** Startup */
         Startup: {
-            /** Id */
-            id?: number | null;
             /** Company Name */
             company_name: string;
             /** Company Website */
             company_website?: string | null;
-            /**
-             * Year Founded
-             * @default [
-             *       null
-             *     ]
-             */
-            year_founded: string | null;
-            /**
-             * Country
-             * @default [
-             *       null
-             *     ]
-             */
-            country: string | null;
+            /** Year Founded */
+            year_founded?: string | null;
+            /** Country */
+            country?: string | null;
             /** Num Employees */
             num_employees?: string | null;
             founders?: components["schemas"]["Founders"] | null;
@@ -166,6 +171,48 @@ export interface components {
             trl?: string | null;
             /** Trl Explanation */
             trl_explanation?: string | null;
+            /** Id */
+            id?: number | null;
+        };
+        /** StartupUpdate */
+        StartupUpdate: {
+            /** Company Name */
+            company_name?: string | null;
+            /** Company Website */
+            company_website?: string | null;
+            /** Year Founded */
+            year_founded?: string | null;
+            /** Country */
+            country?: string | null;
+            /** Num Employees */
+            num_employees?: string | null;
+            founders?: components["schemas"]["Founders"] | null;
+            /** Investors */
+            investors?: string[] | null;
+            /** Funding Stage */
+            funding_stage?: string | null;
+            /** Funds Raised */
+            funds_raised?: string | null;
+            /** Ref Funding */
+            ref_funding?: string[] | null;
+            /** Tech Offering */
+            tech_offering?: string | null;
+            /** Ref Tech */
+            ref_tech?: string[] | null;
+            /** Tech Embedding */
+            tech_embedding?: number[] | null;
+            /** Uvp */
+            uvp?: string | null;
+            /** Ref Uvp */
+            ref_uvp?: string[] | null;
+            /** Uvp Embedding */
+            uvp_embedding?: number[] | null;
+            /** Trl */
+            trl?: string | null;
+            /** Trl Explanation */
+            trl_explanation?: string | null;
+            /** Id */
+            id?: number;
         };
         /** ValidationError */
         ValidationError: {
@@ -246,6 +293,39 @@ export interface operations {
             cookie?: never;
         };
         requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Startup"] | null;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_startup_by_id_startups_update_by_id_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StartupUpdate"];
+            };
+        };
         responses: {
             /** @description Successful Response */
             200: {

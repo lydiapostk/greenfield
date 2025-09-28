@@ -5,7 +5,7 @@ from openai import OpenAI
 import os
 from sqlmodel import Session, select
 from api.database import get_session
-from api.models import Startup
+from api.models import Startup, StartupUpdate
 
 load_dotenv()
 
@@ -34,4 +34,18 @@ def get_startup_by_website(
     startup = session.exec(
         select(Startup).where(Startup.company_website == lookup_url)
     ).one_or_none()
+    return startup
+
+
+@router.post("/update/by_id", response_model=Startup | None)
+def update_startup_by_id(
+    startup_update: StartupUpdate, session: Session = Depends(get_session)
+):
+    startup = session.get(Startup, startup_update.id)
+    if not startup:
+        return None
+    update_data = startup_update.model_dump(exclude_unset=True)
+    startup.sqlmodel_update(update_data)
+    session.add(startup)
+    session.commit()
     return startup
