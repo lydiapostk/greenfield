@@ -21,7 +21,9 @@ export default function ExpandableSection(
     const _expandSection = () => {
         if (expandableSectionRef)
             expandableSectionRef.current = _collapseSection;
-        setIsExpanded(true);
+        setTimeout(() => {
+            setIsExpanded(true);
+        }, 200);
     };
 
     const controlFn = () => {
