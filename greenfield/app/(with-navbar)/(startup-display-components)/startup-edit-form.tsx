@@ -25,7 +25,8 @@ export default function StartupEditForm({
     setStartup,
 }: StartupEditFormProps) {
     const [error, setError] = useState<string>("");
-    const years_option = ListOfYearsAsString(1950, 2025);
+    const currentYear = new Date().getFullYear();
+    const years_option = ListOfYearsAsString(currentYear - 50, currentYear);
 
     const updateField = (
         field: keyof StartupType,
