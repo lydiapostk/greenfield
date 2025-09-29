@@ -14,7 +14,7 @@ export default function WithNavbarLayout({
     const currPath = usePathname();
 
     return (
-        <div className="h-full w-full flex flex-col justify-center items-center">
+        <div className="flex-1 w-full flex flex-col justify-start items-center">
             <Navbar
                 leftIcon={
                     <a href={"/"}>
@@ -22,11 +22,9 @@ export default function WithNavbarLayout({
                     </a>
                 }
                 navItems={inactiveNavItems(currPath as ValidInternalPaths)}
-                className="flex-[1]"
+                className=""
             />
-            <div className="flex-[9] w-full h-full flex items-center">
-                {children}
-            </div>
+            <div className="w-full flex-1 flex">{children}</div>
         </div>
     );
 }

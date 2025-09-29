@@ -1,7 +1,6 @@
 import EditableTextField from "@/components/input-field/editable-text-field";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import {
-    StartupStringParams,
     StartupType,
     ListOfYearsAsString,
     numEmployeesLabels,
@@ -63,11 +62,8 @@ export default function StartupEditForm({
             );
     };
 
-    const techInfoExpansion = ExpandableSection(citation(startup, "tech"));
-    const uvpInfoExpansion = ExpandableSection(citation(startup, "uvp"));
-
     return (
-        <div className="flex flex-col justify-start items-start w-full space-y-8">
+        <div className="flex flex-col justify-start items-start w-full space-y-8 min-h-fit">
             <EditableTextField
                 label="Company Name"
                 field_key="company_name"
@@ -172,6 +168,52 @@ export default function StartupEditForm({
                     multiline={true}
                 />
             </div>
+            <EditableTextField
+                label={"Technology Offering:"}
+                field_key={"tech_offering"}
+                value={startup.tech_offering ? startup.tech_offering : ""}
+                onSave={updateField}
+                multiline={true}
+                textAreaSize={250}
+            />
+            <EditableDictionaryField
+                field_key={"ref_tech"}
+                label={"References:"}
+                value={
+                    startup.ref_tech
+                        ? parseCitationListToDict(startup.ref_tech)
+                        : []
+                }
+                onSave={function (
+                    field: "ref_tech",
+                    value: DictionaryEntry[]
+                ): void {
+                    updateField(field, parseCitationDictToList(value));
+                }}
+            />
+            <EditableTextField
+                label={"UVP:"}
+                field_key={"uvp"}
+                value={startup.uvp ? startup.uvp : ""}
+                onSave={updateField}
+                multiline={true}
+                textAreaSize={250}
+            />
+            <EditableDictionaryField
+                field_key={"ref_uvp"}
+                label={"References:"}
+                value={
+                    startup.ref_uvp
+                        ? parseCitationListToDict(startup.ref_uvp)
+                        : []
+                }
+                onSave={function (
+                    field: "ref_uvp",
+                    value: DictionaryEntry[]
+                ): void {
+                    updateField(field, parseCitationDictToList(value));
+                }}
+            />
         </div>
     );
 }

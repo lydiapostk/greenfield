@@ -12,6 +12,7 @@ interface EditableFieldProps<T> extends InputFieldType<string> {
     multiline?: boolean;
     fontStyle?: string;
     showLabel?: boolean;
+    textAreaSize?: "sm" | "md" | "lg" | number;
 }
 
 export default function EditableTextField<T>({
@@ -23,6 +24,7 @@ export default function EditableTextField<T>({
     disabled = false,
     multiline = false,
     showLabel = true,
+    textAreaSize = "md",
 }: EditableFieldProps<T>) {
     const [isEditing, setIsEditing] = useState(false);
     const [draft, setDraft] = useState<string>(value);
@@ -52,6 +54,19 @@ export default function EditableTextField<T>({
         inputRef.current?.blur();
         setIsEditing(false);
     };
+
+    const textAreaSizeStyle = (() => {
+        switch (textAreaSize) {
+            case "sm":
+                return "min-h-[80px]";
+            case "md":
+                return "min-h-[100px]";
+            case "lg":
+                return "min-h-[200px]";
+            default:
+                return `min-h-[${textAreaSize}px]`;
+        }
+    })();
 
     return (
         <div
@@ -89,7 +104,7 @@ export default function EditableTextField<T>({
                                 if (e.key === "Enter") commitChange();
                                 if (e.key === "Escape") cancelChange();
                             }}
-                            className={`rounded border min-w-full min-h-[100px] bg-stone-100 px-1 ${fontStyle}`}
+                            className={`rounded border min-w-full ${textAreaSizeStyle} bg-stone-100 px-1 ${fontStyle}`}
                         />
                     ) : (
                         <input

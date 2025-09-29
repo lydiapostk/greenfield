@@ -16,7 +16,7 @@ export function Navbar({ leftIcon, navItems, className }: NavbarProps) {
 
     return (
         <nav
-            className={`flex flex-row w-full items-center px-10 justify-between bg-stone-200/25 text-stone-200 ${className}`}
+            className={`flex flex-row w-full items-center px-10 py-2 justify-between bg-stone-200/25 text-stone-200 ${className}`}
         >
             {/* Left icon/logo */}
             <div className="flex items-center">{leftIcon}</div>

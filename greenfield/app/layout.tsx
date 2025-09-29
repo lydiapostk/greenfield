@@ -20,15 +20,15 @@ export default function RootLayout({
     return (
         <html lang="en">
             <body
-                className={`${inter.variable} antialiased items-center justify-items-center bg-gradient-to-r from-purple-500 to-blue-500`}
+                className={`${inter.variable} antialiased items-center min-h-fit justify-items-center bg-gradient-to-r from-purple-500 to-blue-500`}
             >
-                <div className="flex flex-col h-screen items-center justify-center font-sans min-h-screen w-full">
-                    <main className="flex-[9] flex flex-col justify-center items-center sm:items-start w-full">
+                <div className="flex flex-col justify-center font-sans min-h-screen w-full">
+                    <main className="flex-1 flex flex-col sm:items-start w-full">
                         {children}
                     </main>
-                    <footer className="flex-[1] row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-                        A prototype.
-                    </footer>
+                    <div className="py-[3px] self-center">
+                        <footer>A prototype.</footer>
+                    </div>
                 </div>
             </body>
         </html>
