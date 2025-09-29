@@ -17,6 +17,7 @@ import CollapsibleSection from "./collapsible-section";
 import EditableDictionaryField, {
     DictionaryEntry,
 } from "@/components/input-field/editable-dictionary-field";
+import EditableListField from "@/components/input-field/editable-list-field";
 
 interface StartupEditFormProps {
     startup: StartupType;
@@ -282,6 +283,12 @@ export default function StartupEditForm({
                     });
                     updateField(field, foundersDict);
                 }}
+            />
+            <EditableListField
+                field_key={"investors"}
+                label={"investors"}
+                value={startup.investors ? startup.investors : []}
+                onSave={updateField}
             />
         </div>
     );
