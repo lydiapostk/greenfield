@@ -16,13 +16,14 @@ export default function StartupTable({
                 <table className="w-full text-left">
                     <thead className="bg-white/20">
                         <tr>
+                            <th className="p-4">S/N</th>
                             <th className="p-4">Company Name</th>
                             <th className="p-4">Founders</th>
                             <th className="p-4">Company Website</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {startups.map((startup) => (
+                        {startups.map((startup, i) => (
                             <tr
                                 key={startup.id}
                                 onClick={() => {
@@ -31,6 +32,9 @@ export default function StartupTable({
                                 }}
                                 className="cursor-pointer hover:bg-white/20 transition"
                             >
+                                <td className="p-4 max-w-md truncate">
+                                    {i + 1}
+                                </td>
                                 <td className="p-4 max-w-md truncate">
                                     {startup.company_name}
                                 </td>
