@@ -23,6 +23,8 @@ CREATE TYPE funds_raised AS ENUM(
 
 CREATE TYPE num_employees AS ENUM('1-10', '11-50', '51-100', '101-1000', '>1000');
 
+CREATE TYPE trl AS ENUM('TRL 1-4', 'TRL 5-7', 'TRL 8-9');
+
 -- Create startups table
 CREATE TABLE
     startups (
@@ -47,6 +49,6 @@ CREATE TABLE
         uvp TEXT,
         ref_uvp JSONB, -- reference/notes about uvp e.g. [ "Quote A (website.com)", "Quote B (website.org)" ]
         uvp_embedding VECTOR (1536), -- embedding for uvp
-        trl TEXT,
+        trl trl,
         trl_explanation TEXT
     );

@@ -91,7 +91,18 @@ class StartupBase(SQLModel):
         default=None, sa_column=Column(Vector(1536))
     )
 
-    trl: Optional[str] = None
+    trl: Optional[str] = Field(
+        default=None,
+        sa_column=Column(
+            ENUM(
+                "TRL 1-4",
+                "TRL 5-7",
+                "TRL 8-9",
+                name="trl",
+                create_type=False,
+            )
+        ),
+    )
     trl_explanation: Optional[str] = None
 
     @field_validator("founders", mode="before")
