@@ -24,6 +24,43 @@ client = OpenAI(
 
 CA_CERT_PATH = os.getenv("CA_CERT_PATH", None)
 
+TEMP_PLACEHOLDER_JSON_OUTPUT: Startup = {
+    "company_name": "Seadronix",
+    "company_website": "www.seadronix.com",
+    "founders": {
+        "Byeolteo Park": "https://www.linkedin.com/in/byeolteo-park-758150120/",
+        "Jae-uk Shin": None,
+    },
+    "funding_stage": "Series B",
+    "funds_raised": ">$10M",
+    "ref_funding": [
+        "Seadronix Secures USD 11.3 million in Series B Funding… Accelerates Global Expansion of Autonomous Navigation AI Solutions (prnewswire.com) https://www.prnewswire.com/news-releases/seadronix-secures-usd-11-3-million-in-series-b-funding-accelerates-global-expansion-of-autonomous-navigation-ai-solutions-302401752.html",
+        "Seadronix raises $11m to support further development of autonomous vessel tech (smartmaritimenetwork.com) https://smartmaritimenetwork.com/2025/03/18/seadronix-raises-11m-to-support-further-development-of-autonomous-vessel-tech/",
+    ],
+    "investors": [
+        "LB Investment",
+        "KB Investment",
+        "Korea Development Bank",
+        "Wonik Investment Partners",
+        "Lighthouse Combined Investment",
+    ],
+    "tech_offering": "Seadronix develops AI-powered solutions for autonomous navigation and port operation, aimed at enhancing safety and efficiency in the maritime industry. Its flagship system, NAVISS, is an AI navigation support platform that combines multiple sensors—including radar, LiDAR, and optical cameras—to generate a comprehensive 360° awareness map around vessels. This allows ships to detect and classify nearby objects, assess collision risks, and provide decision support to navigators. Another product, Rec-SEA, augments existing onboard cameras with AI capabilities, upgrading legacy systems into intelligent perception tools. For port operations, Seadronix offers AVISS, a platform that integrates vessel tracking, berth management, and safety features such as worker and fire detection, giving port authorities greater operational oversight. The company emphasizes sensor fusion and AI-driven perception models, trained on real-world maritime data, to handle challenging environments such as crowded harbors and low-visibility conditions. Seadronix has achieved type approval from classification societies, a first in its field, and has deployed its systems in real-world environments in Korea, with expanding international pilots in Singapore and Europe. Its technology not only aims to enable autonomous ships but also provides immediate safety and efficiency benefits for semi-autonomous and manned vessels.",
+    "ref_tech": [
+        "Safetytech Accelerator – Seadronix profile (safetytechaccelerator.org) https://safetytechaccelerator.org/wp-content/uploads/2023/05/Seadronix-profile-2.pdf",
+        "Seadronix Secures USD 11.3 million in Series B Funding (prnewswire.com) https://www.prnewswire.com/news-releases/seadronix-secures-usd-11-3-million-in-series-b-funding-accelerates-global-expansion-of-autonomous-navigation-ai-solutions-302401752.html",
+        "Seadronix raises $11m to support further development of autonomous vessel tech (smartmaritimenetwork.com) https://smartmaritimenetwork.com/2025/03/18/seadronix-raises-11m-to-support-further-development-of-autonomous-vessel-tech/",
+    ],
+    "uvp": "Seadronix’s unique value proposition lies in delivering maritime AI solutions that combine cutting-edge sensor fusion, real-world operational data, and regulatory compliance to solve one of the industry’s most pressing challenges: safe and reliable navigation in complex sea environments. Unlike single-sensor systems, Seadronix integrates data from radar, LiDAR, and optical cameras, producing robust situational awareness across diverse conditions. This enables ships to avoid collisions with both large vessels and smaller, harder-to-detect obstacles like buoys or fishing boats. The company offers modular solutions—NAVISS for vessels, Rec-SEA to upgrade existing camera systems, and AVISS for port authorities—allowing customers to adopt technology incrementally based on their needs. Its early acquisition of classification society type approval provides a trust advantage, reducing risk for operators considering adoption. Furthermore, Seadronix is not limited to future autonomous shipping—it delivers immediate value for today’s manned and semi-autonomous vessels, improving safety, reducing operational inefficiencies, and aligning with evolving international regulations. The combination of proven deployments, regulatory endorsements, and a modular product approach positions Seadronix as a bridge between the current maritime landscape and the autonomous future.",
+    "ref_uvp": [
+        "Seadronix Secures USD 11.3 million in Series B Funding (prnewswire.com) https://www.prnewswire.com/news-releases/seadronix-secures-usd-11-3-million-in-series-b-funding-accelerates-global-expansion-of-autonomous-navigation-ai-solutions-302401752.html",
+        "Safetytech Accelerator – Seadronix profile (safetytechaccelerator.org) https://safetytechaccelerator.org/wp-content/uploads/2023/05/Seadronix-profile-2.pdf",
+        "Seadronix raises $11m to support further development of autonomous vessel tech (smartmaritimenetwork.com) https://smartmaritimenetwork.com/2025/03/18/seadronix-raises-11m-to-support-further-development-of-autonomous-vessel-tech/",
+    ],
+    "year_founded": "2015",
+    "country": "South Korea",
+    "num_employees": "51-100",
+}
+
 
 class CheckDomainResponse(BaseModel):
     exists: bool
@@ -132,35 +169,36 @@ async def check_url(url: str = Query(...)):
 def lookup_startup(
     startup_url: str = Query(...), session: Session = Depends(get_session)
 ):
-    with open("api/instruction.txt", "r", encoding="utf-8") as f:
-        instruction = f.read()
-    with open("api/input_template.txt", "r", encoding="utf-8") as f:
-        input_template = f.read()
-    input = f"{', '.join(startup_url)}: {input_template}"
-    response = client.responses.create(
-        model="gpt-5-mini",
-        reasoning={"effort": "low"},
-        instructions=instruction,
-        input=input,
-        store=True,
-        tools=[{"type": "web_search"}],
-        stream=False,
-    )
-    startup_info = json.loads(response.output_text)
-    startup = None
-    while not startup:
-        try:
-            startup = Startup.model_validate(startup_info)
-        except ValidationError as e:
-            e_locs = [err["loc"] for err in e.errors()]
-            for keys_to_delete in e_locs:
-                if (len(keys_to_delete)) == 1:
-                    startup_info.pop(keys_to_delete[0])
-                else:
-                    target_dict = startup_info
-                    for key_to_delete in keys_to_delete[:-1]:
-                        target_dict = target_dict[key_to_delete]
-                    target_dict.pop(keys_to_delete[-1])
+    # with open("api/instruction.txt", "r", encoding="utf-8") as f:
+    #     instruction = f.read()
+    # with open("api/input_template.txt", "r", encoding="utf-8") as f:
+    #     input_template = f.read()
+    # input = f"{', '.join(startup_url)}: {input_template}"
+    # response = client.responses.create(
+    #     model="gpt-5-mini",
+    #     reasoning={"effort": "low"},
+    #     instructions=instruction,
+    #     input=input,
+    #     store=True,
+    #     tools=[{"type": "web_search"}],
+    #     stream=False,
+    # )
+    # startup_info = json.loads(response.output_text)
+    # startup = None
+    # while not startup:
+    #     try:
+    #         startup = Startup.model_validate(startup_info)
+    #     except ValidationError as e:
+    #         e_locs = [err["loc"] for err in e.errors()]
+    #         for keys_to_delete in e_locs:
+    #             if (len(keys_to_delete)) == 1:
+    #                 startup_info.pop(keys_to_delete[0])
+    #             else:
+    #                 target_dict = startup_info
+    #                 for key_to_delete in keys_to_delete[:-1]:
+    #                     target_dict = target_dict[key_to_delete]
+    #                 target_dict.pop(keys_to_delete[-1])
+    startup = Startup.model_validate(TEMP_PLACEHOLDER_JSON_OUTPUT)
     startup.company_website = startup_url
     session.add(startup)
     session.commit()

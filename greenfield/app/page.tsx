@@ -1,3 +1,5 @@
+"use client";
+
 import { ScoutIcon } from "./components/logo";
 import { navItems } from "./components/tabs";
 

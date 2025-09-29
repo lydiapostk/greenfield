@@ -1,7 +1,8 @@
 "use client";
+
 import { typingEffect } from "@/components/animate-text";
 import { Sora } from "next/font/google";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const sora = Sora({
     variable: "--sans-serif",
@@ -17,10 +18,11 @@ export function ScoutIcon({
 }) {
     const [text, setText] = useState("");
     const fullText = "scout.";
+    const typingInterval = useRef<ReturnType<typeof setInterval> | null>(null);
 
     useEffect(() => {
         if (showAnimation) {
-            typingEffect(setText, fullText);
+            typingEffect(setText, fullText, typingInterval);
         } else {
             setText(fullText);
         }

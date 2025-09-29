@@ -34,7 +34,7 @@ export default function DoubleClick({
 
     return (
         <div className="w-full h-full bg-stone-200">
-            <div className="w-4xl sm:w-xl overflow-hidden place-self-center my-10 flex flex-col justify-start">
+            <div className="w-4xl overflow-hidden place-self-center my-10 flex flex-col justify-start">
                 {startup && (
                     <StartupEditForm
                         startup={startup}

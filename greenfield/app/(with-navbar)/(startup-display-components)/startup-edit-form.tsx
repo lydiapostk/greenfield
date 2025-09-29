@@ -75,64 +75,74 @@ export default function StartupEditForm({
                 fontStyle="text-3xl font-bold pb-10"
                 showLabel={false}
             />
-            {startup.company_website && (
-                <a
-                    href={startup.company_website}
-                    target="_blank"
-                    className="relative flex flex-row justify-start items-center gap-3 cursor-pointer"
-                >
-                    <Icon name={"website"} size="md" />
-                    <span className="hover:text-indigo-900 hover:underline">
-                        {startup.company_website}
-                    </span>
-                </a>
-            )}
 
-            <div className="grid grid-cols-2 justify-between gap-2 w-full">
+            <div className="grid grid-cols-2 justify-between gap-1 w-full">
                 <div className="flex flex-col justify-start w-full gap-2">
-                    <div>
-                        <span className="font-bold">Country:</span>{" "}
-                        {textOrUnknown(startup.country)}
-                    </div>
-                    <div>
-                        <span className="font-bold">Year founded:</span>{" "}
-                        {textOrUnknown(startup.year_founded)}
-                    </div>
-                    <div>
-                        <span className="font-bold">No. employees:</span>{" "}
-                        {textOrUnknown(startup.num_employees)}
-                    </div>
+                    {startup.company_website && (
+                        <a
+                            href={startup.company_website}
+                            target="_blank"
+                            className="relative flex flex-row justify-start cursor-pointer gap-2"
+                        >
+                            <span className="font-bold min-w-fit">
+                                Company website:
+                            </span>
+                            <p className="rounded w-full hover:text-indigo-900 hover:underline">
+                                {startup.company_website}
+                            </p>
+                        </a>
+                    )}
+                    <EditableTextField
+                        label="Country:"
+                        field_key="country"
+                        value={startup.country ? startup.country : ""}
+                        onSave={updateField}
+                    />
                 </div>
                 <div className="flex flex-col justify-start w-full gap-2">
-                    <div className="flex flex-row whitespace-nowrap justify-start items-center w-full gap-1">
-                        <span className="font-bold">TRL:</span>{" "}
-                        {textOrUnknown(startup.trl)}
-                        {
-                            <Icon
-                                name={"info"}
-                                key={"funds_raised"}
-                                className="stroke-indigo-600 hover:stroke-[2]"
-                                onClick={trlExpansion.controlFn}
-                            />
+                    <EditableTextField
+                        label="Year founded:"
+                        field_key="year_founded"
+                        value={startup.year_founded ? startup.year_founded : ""}
+                        onSave={updateField}
+                    />
+                    <EditableTextField
+                        label="No. employees:"
+                        field_key="num_employees"
+                        value={
+                            startup.num_employees ? startup.num_employees : ""
                         }
-                    </div>
-                    <div className="flex flex-row whitespace-nowrap justify-start items-center w-full gap-1">
-                        <span className="font-bold">Funds raised:</span>{" "}
-                        {textOrUnknown(startup.funds_raised)}
-                        {
-                            <Icon
-                                name={"info"}
-                                key={"funds_raised"}
-                                className="stroke-indigo-600 hover:stroke-[2]"
-                                onClick={fundInfoExpansion.controlFn}
-                            />
-                        }
-                    </div>
-                    <div className="flex flex-row whitespace-nowrap justify-start items-center w-full gap-1">
-                        <span className="font-bold">Funding stage:</span>{" "}
-                        {textOrUnknown(startup.funding_stage)}
-                    </div>
+                        onSave={updateField}
+                    />
                 </div>
+            </div>
+            <div className="flex flex-row whitespace-nowrap justify-start items-center w-full gap-1">
+                <span className="font-bold">TRL:</span>{" "}
+                {textOrUnknown(startup.trl)}
+                {
+                    <Icon
+                        name={"info"}
+                        key={"funds_raised"}
+                        className="stroke-indigo-600 hover:stroke-[2]"
+                        onClick={trlExpansion.controlFn}
+                    />
+                }
+            </div>
+            <div className="flex flex-row whitespace-nowrap justify-start items-center w-full gap-1">
+                <span className="font-bold">Funds raised:</span>{" "}
+                {textOrUnknown(startup.funds_raised)}
+                {
+                    <Icon
+                        name={"info"}
+                        key={"funds_raised"}
+                        className="stroke-indigo-600 hover:stroke-[2]"
+                        onClick={fundInfoExpansion.controlFn}
+                    />
+                }
+            </div>
+            <div className="flex flex-row whitespace-nowrap justify-start items-center w-full gap-1">
+                <span className="font-bold">Funding stage:</span>{" "}
+                {textOrUnknown(startup.funding_stage)}
             </div>
             {fundInfoExpansion.component}
             {trlExpansion.component}

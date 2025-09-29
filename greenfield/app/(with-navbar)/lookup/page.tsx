@@ -148,8 +148,8 @@ export default function LookupStartupInfo() {
         typingEffect(
             setExplanation,
             lookupExplanations[step],
-            10,
-            typingInterval
+            typingInterval,
+            10
         );
     }, [step]);
 

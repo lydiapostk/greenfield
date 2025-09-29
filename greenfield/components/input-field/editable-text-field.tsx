@@ -43,7 +43,7 @@ export default function EditableTextField<T>({
             onSave(field_key, draft);
         }
         setTimeout(() => {
-            setIsEditing(false);
+            setIsEditing(false); // delay exit edit mode, to give db time to update and display new value
         }, 100);
     };
 
@@ -54,13 +54,17 @@ export default function EditableTextField<T>({
     };
 
     return (
-        <div className="flex flex-col space-y-1 w-full">
-            {showLabel && <label className="font-bold">{label}</label>}
+        <div
+            className={`${
+                multiline ? "flex flex-col" : "flex flex-row"
+            } justify-start w-full gap-2`}
+        >
+            {showLabel && <span className="font-bold min-w-fit">{label}</span>}
 
             {/* Read Mode */}
             {!isEditing && (
                 <p
-                    className={`p-2 rounded w-full ${
+                    className={`rounded w-fit ${
                         disabled
                             ? "cursor-not-allowed text-gray-500"
                             : " hover:bg-stone-300 cursor-pointer"
@@ -81,7 +85,7 @@ export default function EditableTextField<T>({
                             }
                             value={draft}
                             onChange={(e) => setDraft(e.target.value)}
-                            className={`p-2 rounded border min-w-full min-h-[100px] ${fontStyle}`}
+                            className={`rounded border min-w-full min-h-[100px] ${fontStyle}`}
                         />
                     ) : (
                         <input
@@ -92,7 +96,7 @@ export default function EditableTextField<T>({
                                 if (e.key === "Enter") commitChange();
                                 if (e.key === "Escape") cancelChange();
                             }}
-                            className={`p-2 rounded border w-full ${fontStyle}`}
+                            className={`rounded border w-fit ${fontStyle}`}
                         />
                     )}
                     <div className="flex flex-row justify-end items-center gap-1">
