@@ -36,6 +36,32 @@ export const ListOfYearsAsString = (start: number, end: number) => {
     return years;
 };
 
+export const fundingRaisedLabels: string[] = [
+    "<$500K",
+    "$500K-$1M",
+    "$1M-$5M",
+    "$5M-$10M",
+    ">$10M",
+];
+
+export const fundingStageLabels: string[] = [
+    "Conceptual",
+    "Pre-seed",
+    "Seed",
+    "Series A",
+    "Series B",
+    "Series C",
+    "Series D",
+];
+
+export const numEmployeesLabels: string[] = [
+    "1-10",
+    "11-50",
+    "51-100",
+    "101-1000",
+    ">1000",
+];
+
 // founders?: components["schemas"]["Founders"] | null;
 //     /** Investors */
 //     investors?: string[] | null;

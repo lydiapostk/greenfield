@@ -5,11 +5,13 @@ import {
     StartupStringParams,
     StartupType,
     ListOfYearsAsString,
+    numEmployeesLabels,
 } from "./startup-data-type";
 import Icon from "@/components/icon/icon";
 import ExpandableSection from "./collapsible-section";
 import { citation, textOrUnknown } from "./citation";
 import EditableDropdownField from "@/components/input-field/editable-dropdown-field";
+import { COUNTRIES } from "./countries";
 
 interface StartupEditFormProps {
     startup: StartupType;
@@ -98,11 +100,12 @@ export default function StartupEditForm({
                             </p>
                         </a>
                     )}
-                    <EditableTextField
+                    <EditableDropdownField
                         label="Country:"
                         field_key="country"
                         value={startup.country ? startup.country : ""}
                         onSave={updateField}
+                        values={COUNTRIES}
                     />
                 </div>
                 <div className="flex flex-col justify-start w-full gap-2">
@@ -113,13 +116,14 @@ export default function StartupEditForm({
                         onSave={updateField}
                         values={years_option}
                     />
-                    <EditableTextField
+                    <EditableDropdownField
                         label="No. employees:"
                         field_key="num_employees"
                         value={
                             startup.num_employees ? startup.num_employees : ""
                         }
                         onSave={updateField}
+                        values={numEmployeesLabels}
                     />
                 </div>
             </div>
