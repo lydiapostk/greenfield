@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { InputFieldType } from "./input-types";
 import Icon from "../icon/icon";
 
@@ -12,6 +12,7 @@ interface EditableFieldProps<T> extends InputFieldType<string> {
     values: string[];
     fontStyle?: string;
     showLabel?: boolean;
+    searchable?: boolean;
 }
 
 export default function EditableDropdownField<T>({
@@ -23,13 +24,23 @@ export default function EditableDropdownField<T>({
     fontStyle = "",
     disabled = false,
     showLabel = true,
+    searchable = false,
 }: EditableFieldProps<T>) {
     if (!value) value = values[0];
     const [isEditing, setIsEditing] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
     const [draft, setDraft] = useState<string>(value);
+    const [search, setSearch] = useState<string>("");
     const inputRef = useRef<HTMLDivElement | null>(null);
     const selectedRef = useRef<HTMLLIElement | null>(null);
+
+    // Filter list if searching
+    const filteredValues = useMemo(() => {
+        if (!search) return values;
+        return values.filter((val) =>
+            val.toLowerCase().includes(search.toLowerCase())
+        );
+    }, [values, search]);
 
     useEffect(() => {
         if (isEditing && inputRef.current) {
@@ -132,24 +143,44 @@ export default function EditableDropdownField<T>({
                     {/* Dropdown list */}
                     {isOpen && (
                         <div className="relative w-full">
-                            <ul className="absolute z-10 max-h-48 w-full overflow-y-auto bg-white border rounded shadow-lg custom-scroll">
-                                {values.map((val) => (
-                                    <li
-                                        key={val}
-                                        ref={val === draft ? selectedRef : null}
-                                        onClick={() => {
-                                            setDraft(val);
-                                            setIsOpen(false);
-                                        }}
-                                        className={`px-4 py-2 cursor-pointer w-full hover:bg-indigo-100/50 ${
-                                            val === draft
-                                                ? "bg-indigo-100 font-bold"
-                                                : ""
-                                        }`}
-                                    >
-                                        {val}
+                            {searchable && (
+                                <input
+                                    type="text"
+                                    placeholder="Search..."
+                                    value={search}
+                                    onChange={(e) => setSearch(e.target.value)}
+                                    className="w-full z-20 px-4 py-1 rounded bg-stone-100 border-indigo-600"
+                                    autoFocus
+                                />
+                            )}
+                            <ul className="absolute z-10 max-h-48 w-full overflow-y-auto bg-stone-100 rounded shadow-lg custom-scroll">
+                                {filteredValues.length === 0 ? (
+                                    <li className="px-4 py-2 text-gray-400 w-full italic">
+                                        No results
                                     </li>
-                                ))}
+                                ) : (
+                                    filteredValues.map((val) => (
+                                        <li
+                                            key={val}
+                                            ref={
+                                                val === draft
+                                                    ? selectedRef
+                                                    : null
+                                            }
+                                            onClick={() => {
+                                                setDraft(val);
+                                                setIsOpen(false);
+                                            }}
+                                            className={`px-4 py-2 cursor-pointer w-full hover:bg-indigo-100/50 ${
+                                                val === draft
+                                                    ? "bg-indigo-100 font-bold"
+                                                    : ""
+                                            }`}
+                                        >
+                                            {val}
+                                        </li>
+                                    ))
+                                )}
                             </ul>
                         </div>
                     )}

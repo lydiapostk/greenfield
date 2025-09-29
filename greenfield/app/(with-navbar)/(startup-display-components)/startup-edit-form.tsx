@@ -106,6 +106,7 @@ export default function StartupEditForm({
                         value={startup.country ? startup.country : ""}
                         onSave={updateField}
                         values={COUNTRIES}
+                        searchable={true}
                     />
                 </div>
                 <div className="flex flex-col justify-start w-full gap-2">
