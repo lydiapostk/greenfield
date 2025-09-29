@@ -109,8 +109,8 @@ export const getCitationAsEditableElement = (
             field_key={citationType}
             label={"References:"}
             value={
-                startup.ref_tech
-                    ? parseCitationListToDict(startup["ref_tech"])
+                startup[citationType]
+                    ? parseCitationListToDict(startup[citationType])
                     : []
             }
             onSave={function (

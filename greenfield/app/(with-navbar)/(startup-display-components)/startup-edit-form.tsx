@@ -7,12 +7,16 @@ import {
     fundingRaisedLabels,
     fundingStageLabels,
     trlLabels,
+    StartupFoundersType,
 } from "./startup-data-type";
 import { getCitationAsEditableElement } from "./citation";
 import EditableDropdownField from "@/components/input-field/editable-dropdown-field";
 import { COUNTRIES } from "./countries";
 import Icon from "@/components/icon/icon";
 import CollapsibleSection from "./collapsible-section";
+import EditableDictionaryField, {
+    DictionaryEntry,
+} from "@/components/input-field/editable-dictionary-field";
 
 interface StartupEditFormProps {
     startup: StartupType;
@@ -86,10 +90,13 @@ export default function StartupEditForm({
 
     const updateField = (
         field: keyof StartupType,
-        value: string | string[]
+        value: string | string[] | StartupFoundersType
     ) => {
         if (!startup.id) return;
-        const startup_update: Record<string, number | string | string[]> = {
+        const startup_update: Record<
+            string,
+            number | string | string[] | StartupFoundersType
+        > = {
             id: startup.id,
         };
         if (typeof value == "string") startup_update[field] = value.trim();
@@ -249,6 +256,33 @@ export default function StartupEditForm({
                     updateField={updateField}
                 />
             </div>
+            <EditableDictionaryField
+                field_key={"founders"}
+                label={"Founders:"}
+                value={
+                    startup.founders
+                        ? Object.entries(startup.founders).map(
+                              ([founder, maybeURL]) => {
+                                  return {
+                                      key: founder,
+                                      value: maybeURL as string,
+                                  };
+                              }
+                          )
+                        : []
+                }
+                onSave={function (
+                    field: "founders",
+                    founders: DictionaryEntry[]
+                ): void {
+                    const foundersDict: StartupFoundersType = {};
+                    founders.forEach((founder) => {
+                        foundersDict[founder.key] =
+                            founder.value != "" ? founder.value : null;
+                    });
+                    updateField(field, foundersDict);
+                }}
+            />
         </div>
     );
 }

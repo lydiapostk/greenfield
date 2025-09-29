@@ -2,6 +2,7 @@ import { components } from "@/app/types/api";
 
 export type StartupType = components["schemas"]["Startup"];
 export type StartupUpdateType = components["schemas"]["StartupUpdate"];
+export type StartupFoundersType = components["schemas"]["Startup"]["founders"];
 
 export const StartupStringParams: (keyof StartupUpdateType)[] = [
     /** Company Name */
