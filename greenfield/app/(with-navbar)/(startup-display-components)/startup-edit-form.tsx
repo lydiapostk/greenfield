@@ -4,7 +4,8 @@ import { useRef, useState } from "react";
 import { StartupStringParams, StartupType } from "./startup-data-type";
 import Icon from "@/components/icon/icon";
 import ExpandableSection from "./collapsible-section";
-import { refInfo, textOrUnknown } from "./refs";
+import { ListOfYearsAsString, refInfo, textOrUnknown } from "./refs";
+import EditableDropdownField from "@/components/input-field/editable-dropdown-field";
 
 interface StartupEditFormProps {
     startup: StartupType;
@@ -16,6 +17,7 @@ export default function StartupEditForm({
     setStartup,
 }: StartupEditFormProps) {
     const [error, setError] = useState<string>("");
+    const years_option = ListOfYearsAsString(1950, 2025);
 
     const updateField = (field: keyof StartupType, value: string) => {
         if (!startup.id) return;
@@ -100,11 +102,12 @@ export default function StartupEditForm({
                     />
                 </div>
                 <div className="flex flex-col justify-start w-full gap-2">
-                    <EditableTextField
+                    <EditableDropdownField
                         label="Year founded:"
                         field_key="year_founded"
                         value={startup.year_founded ? startup.year_founded : ""}
                         onSave={updateField}
+                        values={years_option}
                     />
                     <EditableTextField
                         label="No. employees:"

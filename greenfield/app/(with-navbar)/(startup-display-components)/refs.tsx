@@ -80,3 +80,11 @@ export const refInfo = (startup: StartupType, refInfoType: refInfoTypeType) => {
         </div>
     );
 };
+
+export const ListOfYearsAsString = (start: number, end: number) => {
+    const years: string[] = [];
+    for (let y = end; y >= start; y--) {
+        years.push(y.toString());
+    }
+    return years;
+};

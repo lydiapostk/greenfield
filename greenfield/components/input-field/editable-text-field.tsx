@@ -64,7 +64,7 @@ export default function EditableTextField<T>({
             {/* Read Mode */}
             {!isEditing && (
                 <p
-                    className={`rounded w-fit ${
+                    className={`rounded w-fit px-1 ${
                         disabled
                             ? "cursor-not-allowed text-gray-500"
                             : " hover:bg-stone-300 cursor-pointer"
@@ -85,7 +85,7 @@ export default function EditableTextField<T>({
                             }
                             value={draft}
                             onChange={(e) => setDraft(e.target.value)}
-                            className={`rounded border min-w-full min-h-[100px] ${fontStyle}`}
+                            className={`rounded border min-w-full min-h-[100px] bg-stone-100 px-1 ${fontStyle}`}
                         />
                     ) : (
                         <input
@@ -96,7 +96,7 @@ export default function EditableTextField<T>({
                                 if (e.key === "Enter") commitChange();
                                 if (e.key === "Escape") cancelChange();
                             }}
-                            className={`rounded border w-fit ${fontStyle}`}
+                            className={`rounded border w-fit bg-stone-100/75 px-1 ${fontStyle}`}
                         />
                     )}
                     <div className="flex flex-row justify-end items-center gap-1">
