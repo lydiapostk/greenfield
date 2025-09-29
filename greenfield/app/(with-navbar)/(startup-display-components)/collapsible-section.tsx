@@ -36,10 +36,10 @@ export default function CollapsibleSection(
 
     return {
         component: (
-            <div className="border-t pt-4">
+            <div className="">
                 {isExpanded && (
                     <div
-                        className={`text-gray-700 ${
+                        className={`border-t text-gray-700 ${
                             isCollapsing ? "animate-fadeOut" : "animate-fadeIn"
                         }`}
                     >

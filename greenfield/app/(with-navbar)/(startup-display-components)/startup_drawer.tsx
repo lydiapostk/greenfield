@@ -4,7 +4,7 @@ import Icon from "@/components/icon/icon";
 import { StartupType } from "./startup-data-type";
 import { useEffect, useRef, useState } from "react";
 import CollapsibleSection from "./collapsible-section";
-import { citation, textOrUnknown } from "./citation";
+import { getCitationAsElement, textOrUnknown } from "./citation";
 
 export interface UserDrawerProp {
     startup: StartupType;
@@ -22,11 +22,15 @@ export default function StartupDrawer({ startup, onClose }: UserDrawerProp) {
     const fundAndTRLSectionRef = useRef<(() => void) | null>(null);
 
     const fundInfoExpansion = CollapsibleSection(
-        citation(startup, "fund"),
+        getCitationAsElement(startup, "ref_funding"),
         fundAndTRLSectionRef
     );
-    const techInfoExpansion = CollapsibleSection(citation(startup, "tech"));
-    const uvpInfoExpansion = CollapsibleSection(citation(startup, "uvp"));
+    const techInfoExpansion = CollapsibleSection(
+        getCitationAsElement(startup, "ref_tech")
+    );
+    const uvpInfoExpansion = CollapsibleSection(
+        getCitationAsElement(startup, "ref_uvp")
+    );
     const trlExpansion = CollapsibleSection(
         trlExplanation,
         fundAndTRLSectionRef

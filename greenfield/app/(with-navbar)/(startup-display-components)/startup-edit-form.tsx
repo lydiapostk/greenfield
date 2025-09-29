@@ -6,18 +6,74 @@ import {
     numEmployeesLabels,
     fundingRaisedLabels,
     fundingStageLabels,
+    trlLabels,
 } from "./startup-data-type";
-import { parseCitationDictToList, parseCitationListToDict } from "./citation";
+import { getCitationAsEditableElement } from "./citation";
 import EditableDropdownField from "@/components/input-field/editable-dropdown-field";
 import { COUNTRIES } from "./countries";
-import EditableDictionaryField, {
-    DictionaryEntry,
-} from "@/components/input-field/editable-dictionary-field";
 import Icon from "@/components/icon/icon";
+import CollapsibleSection from "./collapsible-section";
 
 interface StartupEditFormProps {
     startup: StartupType;
     setStartup: (startup: StartupType) => void;
+}
+
+interface StartupEditFormExplanationProps {
+    explanation_type:
+        | "ref_funding"
+        | "ref_tech"
+        | "ref_uvp"
+        | "trl_explanation";
+    startup: StartupType;
+    updateField: (field: keyof StartupType, value: string | string[]) => void;
+}
+
+function StartupEditFormExplanation({
+    explanation_type,
+    startup,
+    updateField,
+}: StartupEditFormExplanationProps) {
+    const explanationSection = (() => {
+        if (explanation_type == "trl_explanation") {
+            return CollapsibleSection(
+                <EditableTextField
+                    label={"Explanation:"}
+                    field_key={"trl_explanation"}
+                    value={
+                        startup.trl_explanation ? startup.trl_explanation : ""
+                    }
+                    onSave={updateField}
+                    multiline={true}
+                />
+            );
+        } else {
+            return CollapsibleSection(
+                getCitationAsEditableElement(
+                    startup,
+                    explanation_type,
+                    updateField
+                )
+            );
+        }
+    })();
+
+    const [isCollapsed, setIsCollapsed] = useState<boolean>(true);
+
+    return (
+        <div className="w-full flex flex-col">
+            <p
+                onClick={() => {
+                    explanationSection.controlFn();
+                    setIsCollapsed(!isCollapsed);
+                }}
+                className="p-0 m-0 cursor-pointer italic font-semibold text-indigo-600 text-sm hover:underline"
+            >
+                {isCollapsed ? "See more" : "Show less"}
+            </p>
+            {explanationSection.component}
+        </div>
+    );
 }
 
 export default function StartupEditForm({
@@ -141,20 +197,10 @@ export default function StartupEditForm({
                 />
             </div>
 
-            <EditableDictionaryField
-                field_key={"ref_funding"}
-                label={"References:"}
-                value={
-                    startup.ref_funding
-                        ? parseCitationListToDict(startup.ref_funding)
-                        : []
-                }
-                onSave={function (
-                    field: "ref_funding",
-                    value: DictionaryEntry[]
-                ): void {
-                    updateField(field, parseCitationDictToList(value));
-                }}
+            <StartupEditFormExplanation
+                explanation_type={"ref_funding"}
+                startup={startup}
+                updateField={updateField}
             />
 
             <div className="flex flex-col whitespace-nowrap justify-start w-full gap-1">
@@ -163,64 +209,46 @@ export default function StartupEditForm({
                     field_key="trl"
                     value={startup.trl ? startup.trl : ""}
                     onSave={updateField}
-                    values={numEmployeesLabels}
+                    values={trlLabels}
                 />
-                <EditableTextField
-                    label={"Explanation:"}
-                    field_key={"trl_explanation"}
-                    value={
-                        startup.trl_explanation ? startup.trl_explanation : ""
-                    }
-                    onSave={updateField}
-                    multiline={true}
+                <StartupEditFormExplanation
+                    explanation_type={"trl_explanation"}
+                    startup={startup}
+                    updateField={updateField}
                 />
             </div>
-            <EditableTextField
-                label={"Technology Offering:"}
-                field_key={"tech_offering"}
-                value={startup.tech_offering ? startup.tech_offering : ""}
-                onSave={updateField}
-                multiline={true}
-                textAreaSize={250}
-            />
-            <EditableDictionaryField
-                field_key={"ref_tech"}
-                label={"References:"}
-                value={
-                    startup.ref_tech
-                        ? parseCitationListToDict(startup.ref_tech)
-                        : []
-                }
-                onSave={function (
-                    field: "ref_tech",
-                    value: DictionaryEntry[]
-                ): void {
-                    updateField(field, parseCitationDictToList(value));
-                }}
-            />
-            <EditableTextField
-                label={"UVP:"}
-                field_key={"uvp"}
-                value={startup.uvp ? startup.uvp : ""}
-                onSave={updateField}
-                multiline={true}
-                textAreaSize={250}
-            />
-            <EditableDictionaryField
-                field_key={"ref_uvp"}
-                label={"References:"}
-                value={
-                    startup.ref_uvp
-                        ? parseCitationListToDict(startup.ref_uvp)
-                        : []
-                }
-                onSave={function (
-                    field: "ref_uvp",
-                    value: DictionaryEntry[]
-                ): void {
-                    updateField(field, parseCitationDictToList(value));
-                }}
-            />
+
+            <div className="flex flex-col whitespace-nowrap justify-start w-full gap-1">
+                <EditableTextField
+                    label={"Technology Offering:"}
+                    field_key={"tech_offering"}
+                    value={startup.tech_offering ? startup.tech_offering : ""}
+                    onSave={updateField}
+                    multiline={true}
+                    textAreaSize={250}
+                />
+                <StartupEditFormExplanation
+                    explanation_type={"ref_tech"}
+                    startup={startup}
+                    updateField={updateField}
+                />
+            </div>
+
+            <div className="flex flex-col whitespace-nowrap justify-start w-full gap-1">
+                <EditableTextField
+                    label={"UVP:"}
+                    field_key={"uvp"}
+                    value={startup.uvp ? startup.uvp : ""}
+                    onSave={updateField}
+                    multiline={true}
+                    textAreaSize={250}
+                />
+                <StartupEditFormExplanation
+                    explanation_type={"ref_uvp"}
+                    startup={startup}
+                    updateField={updateField}
+                />
+            </div>
         </div>
     );
 }

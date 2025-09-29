@@ -72,7 +72,7 @@ export default function EditableTextField<T>({
         <div
             className={`${
                 multiline ? "flex flex-col" : "flex flex-row"
-            } justify-start w-full gap-2`}
+            } justify-start w-full gap-2 mb-0`}
         >
             {showLabel && <span className="font-bold min-w-fit">{label}</span>}
 

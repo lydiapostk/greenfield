@@ -82,21 +82,27 @@ export default function EditableDropdownField<T>({
         return () => document.removeEventListener("mousedown", handleClick);
     }, []);
 
-    // cancel change on escape and commit change on enter
+    // cancel change on escape
     useEffect(() => {
         const handleEscapeKey = (e: KeyboardEvent) => {
             if (e.key === "Escape") cancelChange();
         };
+        document.addEventListener("keydown", handleEscapeKey);
+        return () => {
+            document.removeEventListener("keydown", handleEscapeKey);
+        };
+    }, [value]);
+
+    // commit change on enter
+    useEffect(() => {
         const handleEnterKey = (e: KeyboardEvent) => {
             if (e.key === "Enter") commitChange();
         };
-        document.addEventListener("keydown", handleEscapeKey);
         document.addEventListener("keydown", handleEnterKey);
         return () => {
-            document.removeEventListener("keydown", handleEscapeKey);
             document.removeEventListener("keydown", handleEnterKey);
         };
-    }, []);
+    }, [commitChange]);
 
     // scroll to selected year when opening
     useEffect(() => {

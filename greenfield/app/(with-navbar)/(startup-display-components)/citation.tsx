@@ -1,6 +1,8 @@
 import Icon from "@/components/icon/icon";
 import { StartupType } from "./startup-data-type";
-import { DictionaryEntry } from "@/components/input-field/editable-dictionary-field";
+import EditableDictionaryField, {
+    DictionaryEntry,
+} from "@/components/input-field/editable-dictionary-field";
 
 export const textOrUnknown = (text: string | undefined | null) =>
     text ? text : <p className="text-gray-700">Unknown</p>;
@@ -40,22 +42,13 @@ export function parseCitationDictToList(
     );
 }
 
-export type citationTypeType = "fund" | "tech" | "uvp";
+export type citationTypeType = "ref_funding" | "ref_tech" | "ref_uvp";
 
-export const citation = (
+export const getCitationAsElement = (
     startup: StartupType,
     citationType: citationTypeType
 ) => {
-    const refInfo = (() => {
-        switch (citationType) {
-            case "fund":
-                return startup.ref_funding;
-            case "tech":
-                return startup.ref_tech;
-            case "uvp":
-                return startup.ref_uvp;
-        }
-    })();
+    let refInfo = startup[citationType as keyof StartupType];
 
     if (!refInfo) {
         return (
@@ -66,6 +59,7 @@ export const citation = (
         );
     }
 
+    refInfo = refInfo as string[];
     return (
         <div className="pb-6">
             <h4 className="italic">References</h4>
@@ -102,5 +96,29 @@ export const citation = (
                 })}
             </ul>
         </div>
+    );
+};
+
+export const getCitationAsEditableElement = (
+    startup: StartupType,
+    citationType: citationTypeType,
+    updateField: (field: keyof StartupType, value: string | string[]) => void
+) => {
+    return (
+        <EditableDictionaryField
+            field_key={citationType}
+            label={"References:"}
+            value={
+                startup.ref_tech
+                    ? parseCitationListToDict(startup["ref_tech"])
+                    : []
+            }
+            onSave={function (
+                field: citationTypeType,
+                value: DictionaryEntry[]
+            ): void {
+                updateField(field, parseCitationDictToList(value));
+            }}
+        />
     );
 };
