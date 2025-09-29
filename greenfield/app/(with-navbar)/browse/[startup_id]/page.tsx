@@ -3,6 +3,7 @@
 import { use, useEffect, useState } from "react";
 import StartupEditForm from "../../(startup-display-components)/startup-edit-form";
 import { StartupType } from "../../(startup-display-components)/startup-data-type";
+import Icon from "@/components/icon/icon";
 
 export default function DoubleClick({
     params,
@@ -35,6 +36,26 @@ export default function DoubleClick({
     return (
         <div className="w-full h-full bg-stone-200">
             <div className="w-4xl overflow-hidden place-self-center my-10 flex flex-col justify-start">
+                {error && error !== "" && (
+                    <div className="flex flex-row items-center justify-start gap-2 font-mono italic text-red-700">
+                        <Icon
+                            name={"error"}
+                            className=""
+                            strokeWidth={2}
+                            size="sm"
+                        />
+                        {error}
+                    </div>
+                )}
+                {!startup && (
+                    <Icon
+                        name={"spinner"}
+                        size={"md"}
+                        color="blue"
+                        style={{ pointerEvents: "none" }}
+                        className={`text-stone-200 fill-indigo-600 self-center`}
+                    />
+                )}
                 {startup && (
                     <StartupEditForm
                         startup={startup}

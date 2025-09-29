@@ -54,9 +54,7 @@ export default function EditableDictionaryField<T>({
         // validate before saving
         const isValid = entries.every((entry) => entry.key.trim().length > 0);
         if (!isValid) {
-            setError(
-                "Invalid entries: key is required and value must be a valid HTTPS URL (if provided)."
-            );
+            setError("Invalid entries: key is required.");
             return;
         } else {
             setError("");

@@ -13,6 +13,7 @@ import { COUNTRIES } from "./countries";
 import EditableDictionaryField, {
     DictionaryEntry,
 } from "@/components/input-field/editable-dictionary-field";
+import Icon from "@/components/icon/icon";
 
 interface StartupEditFormProps {
     startup: StartupType;
@@ -36,8 +37,6 @@ export default function StartupEditForm({
         };
         if (typeof value == "string") startup_update[field] = value.trim();
         else startup_update[field] = value;
-        // TODO: implement support for other kinds of fields
-        console.log(startup_update);
         fetch(`${process.env.NEXT_PUBLIC_API_URL}/startups/update/by_id`, {
             method: "POST",
             headers: {
@@ -59,6 +58,17 @@ export default function StartupEditForm({
 
     return (
         <div className="flex flex-col justify-start items-start w-full space-y-8 min-h-fit">
+            {error && error !== "" && (
+                <div className="flex flex-row items-center justify-start gap-2 font-mono italic text-red-700">
+                    <Icon
+                        name={"error"}
+                        className=""
+                        strokeWidth={2}
+                        size="sm"
+                    />
+                    {error}
+                </div>
+            )}
             <EditableTextField
                 label="Company Name"
                 field_key="company_name"
