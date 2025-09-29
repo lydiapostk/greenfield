@@ -148,7 +148,10 @@ export interface components {
             country?: string | null;
             /** Num Employees */
             num_employees?: string | null;
-            founders?: components["schemas"]["Founders"] | null;
+            /** Founders */
+            founders?: {
+                [key: string]: unknown;
+            } | null;
             /** Investors */
             investors?: string[] | null;
             /** Funding Stage */
@@ -173,6 +176,7 @@ export interface components {
             trl?: string | null;
             /** Trl Explanation */
             trl_explanation?: string | null;
+            readonly founders_obj: components["schemas"]["Founders"] | null;
         };
         /** StartupUpdate */
         StartupUpdate: {
@@ -188,7 +192,10 @@ export interface components {
             country?: string | null;
             /** Num Employees */
             num_employees?: string | null;
-            founders?: components["schemas"]["Founders"] | null;
+            /** Founders */
+            founders?: {
+                [key: string]: unknown;
+            } | null;
             /** Investors */
             investors?: string[] | null;
             /** Funding Stage */

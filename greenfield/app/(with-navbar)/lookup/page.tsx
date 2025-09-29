@@ -8,6 +8,7 @@ import { useEffect, useRef, useState } from "react";
 import { StartupType } from "../(startup-display-components)/startup-data-type";
 import StartupTable from "../(startup-display-components)/startup_table";
 import StartupDrawer from "../(startup-display-components)/startup_drawer";
+import { useRouter } from "next/navigation";
 
 type DomainCheckResponse = components["schemas"]["CheckDomainResponse"];
 
@@ -113,11 +114,10 @@ export default function LookupStartupInfo() {
         const startupRecord = await _queryLLM(url);
         startupRecord && confirmStartup(startupRecord);
     };
-
+    const router = useRouter();
     const confirmStartup = (startup: StartupType) => {
         resetLookupStatus();
-        // TODO: SOMETHING
-        console.log(startup);
+        router.push(`/browse/${startup.id}`);
     };
 
     const onSearch = async () => {

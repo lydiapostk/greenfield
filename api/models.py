@@ -1,5 +1,11 @@
 from typing import Optional, List
-from pydantic import HttpUrl, RootModel, field_serializer, field_validator
+from pydantic import (
+    HttpUrl,
+    RootModel,
+    field_serializer,
+    field_validator,
+    computed_field,
+)
 from sqlmodel import SQLModel, Field, Column, JSON
 from sqlalchemy.dialects.postgresql import ENUM
 from pgvector.sqlalchemy import Vector
@@ -39,10 +45,8 @@ class StartupBase(SQLModel):
         ),
     )
 
-    founders: Optional[Founders] = Field(
-        default=None,
-        sa_column=Column(JSON),
-    )
+    # Store plain dict in DB
+    founders: Optional[dict] = Field(default=None, sa_column=Column(JSON))
     investors: Optional[List[str]] = Field(default=None, sa_column=Column(JSON))
 
     funding_stage: Optional[str] = Field(
@@ -105,23 +109,25 @@ class StartupBase(SQLModel):
     )
     trl_explanation: Optional[str] = None
 
+    # ---------- Pydantic-facing wrapper ----------
+    @computed_field  # shows up in FastAPI schema
+    @property
+    def founders_obj(self) -> Optional[Founders]:
+        if self.founders is None:
+            return None
+        return Founders(self.founders)
+
     @field_validator("founders", mode="before")
-    def coerce_founders(cls, v):
-        if isinstance(v, dict):
-            return Founders(v)  # wrap dict in RootModel
+    def coerce_founders_before(cls, v):
+        if isinstance(v, Founders):
+            return v.root
         return v
 
-    @field_validator("founders", mode="after")
-    def coerce_after(cls, v):
-        if isinstance(v, dict):
-            return Founders(v)
-        return v
-
-    @field_serializer("founders")
-    def serialize_founders(self, v: Optional[Founders], _info):
-        if (v is None) or isinstance(v, dict):
-            return v
-        return v.root  # unwrap when returning in responses
+    @field_serializer("founders_obj")
+    def serialize_founders_obj(self, v: Optional[Founders], _info):
+        if v is None:
+            return None
+        return v.root
 
 
 class Startup(StartupBase, table=True):

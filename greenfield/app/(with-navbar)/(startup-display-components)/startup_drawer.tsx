@@ -5,6 +5,7 @@ import { StartupType } from "./startup-data-type";
 import { useEffect, useRef, useState } from "react";
 import CollapsibleSection from "./collapsible-section";
 import { getCitationAsElement, textOrUnknown } from "./citation";
+import router from "next/router";
 
 export interface UserDrawerProp {
     startup: StartupType;
@@ -71,9 +72,22 @@ export default function StartupDrawer({ startup, onClose }: UserDrawerProp) {
                         size="lg"
                         className="stroke-indigo-600 hover:stroke-[2]"
                     />
-                    <h2 className="text-3xl font-bold pb-10">
-                        {startup.company_name}
-                    </h2>
+                    <div className="flex flex-row w-full justify-start items-center gap-5 pb-10">
+                        <h2 className="text-3xl font-bold">
+                            {startup.company_name}
+                        </h2>
+                        <a
+                            href={
+                                startup.id ? `/browse/${startup.id}` : undefined
+                            }
+                        >
+                            <Icon
+                                name={"edit"}
+                                size="md"
+                                className="stroke-indigo-600 hover:stroke-[2]"
+                            />
+                        </a>
+                    </div>
                     {startup.company_website && (
                         <a
                             href={startup.company_website}
@@ -190,9 +204,9 @@ export default function StartupDrawer({ startup, onClose }: UserDrawerProp) {
                                             <span className="font-medium whitespace-nowrap">
                                                 {founder}
                                             </span>
-                                            {maybeLIURL && (
+                                            {maybeLIURL != undefined && (
                                                 <a
-                                                    href={maybeLIURL}
+                                                    href={maybeLIURL as string}
                                                     target="_blank"
                                                     className="hover:text-indigo-900 hover:underline truncate"
                                                 >
