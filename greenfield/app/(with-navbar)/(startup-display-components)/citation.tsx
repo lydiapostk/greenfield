@@ -1,5 +1,6 @@
 import Icon from "@/components/icon/icon";
 import { StartupType } from "./startup-data-type";
+import { DictionaryEntry } from "@/components/input-field/editable-dictionary-field";
 
 export const textOrUnknown = (text: string | undefined | null) =>
     text ? text : <p className="text-gray-700">Unknown</p>;
@@ -18,6 +19,26 @@ const parseCitationText: (refText: string) => {
 
     return { text: text, href: href };
 };
+
+export function parseCitationListToDict(
+    citation_list: string[]
+): DictionaryEntry[] {
+    return citation_list.map((cit) => {
+        // Match "something (inside)"
+        const parsedText = parseCitationText(cit);
+        const text = parsedText.text.trim();
+        const href = parsedText.href ? parsedText.href.trim() : undefined;
+        return { key: text, value: href };
+    });
+}
+
+export function parseCitationDictToList(
+    citation_dict: DictionaryEntry[]
+): string[] {
+    return citation_dict.map((cit) =>
+        cit.value ? `${cit.key} (${cit.value})` : `${cit.key}`
+    );
+}
 
 export type citationTypeType = "fund" | "tech" | "uvp";
 

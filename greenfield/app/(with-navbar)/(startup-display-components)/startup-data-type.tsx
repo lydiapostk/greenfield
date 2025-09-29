@@ -62,6 +62,8 @@ export const numEmployeesLabels: string[] = [
     ">1000",
 ];
 
+export const trlLabels: string[] = ["TRL 1-4", "TRL 5-7", "TRL 8-9"];
+
 // founders?: components["schemas"]["Founders"] | null;
 //     /** Investors */
 //     investors?: string[] | null;

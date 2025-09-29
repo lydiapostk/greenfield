@@ -1,17 +1,24 @@
 import EditableTextField from "@/components/input-field/editable-text-field";
-// import EditableListField, { ListItem } from "./EditableListField";
 import { useRef, useState } from "react";
 import {
     StartupStringParams,
     StartupType,
     ListOfYearsAsString,
     numEmployeesLabels,
+    fundingRaisedLabels,
+    fundingStageLabels,
 } from "./startup-data-type";
-import Icon from "@/components/icon/icon";
 import ExpandableSection from "./collapsible-section";
-import { citation, textOrUnknown } from "./citation";
+import {
+    citation,
+    parseCitationDictToList,
+    parseCitationListToDict,
+} from "./citation";
 import EditableDropdownField from "@/components/input-field/editable-dropdown-field";
 import { COUNTRIES } from "./countries";
+import EditableDictionaryField, {
+    DictionaryEntry,
+} from "@/components/input-field/editable-dictionary-field";
 
 interface StartupEditFormProps {
     startup: StartupType;
@@ -25,13 +32,16 @@ export default function StartupEditForm({
     const [error, setError] = useState<string>("");
     const years_option = ListOfYearsAsString(1950, 2025);
 
-    const updateField = (field: keyof StartupType, value: string) => {
+    const updateField = (
+        field: keyof StartupType,
+        value: string | string[]
+    ) => {
         if (!startup.id) return;
-        const startup_update: Record<string, number | string> = {
+        const startup_update: Record<string, number | string | string[]> = {
             id: startup.id,
         };
-        if (StartupStringParams.includes(field))
-            startup_update[field] = value.trim();
+        if (typeof value == "string") startup_update[field] = value.trim();
+        else startup_update[field] = value;
         // TODO: implement support for other kinds of fields
         console.log(startup_update);
         fetch(`${process.env.NEXT_PUBLIC_API_URL}/startups/update/by_id`, {
@@ -53,23 +63,6 @@ export default function StartupEditForm({
             );
     };
 
-    const fundAndTRLSectionRef = useRef<(() => void) | null>(null);
-
-    const trlExplanation = (
-        <div className="pb-6">
-            <h4 className="italic">How was TRL estimated?</h4>{" "}
-            <p className="font-mono">{startup.trl_explanation}</p>
-        </div>
-    );
-
-    const fundInfoExpansion = ExpandableSection(
-        citation(startup, "fund"),
-        fundAndTRLSectionRef
-    );
-    const trlExpansion = ExpandableSection(
-        trlExplanation,
-        fundAndTRLSectionRef
-    );
     const techInfoExpansion = ExpandableSection(citation(startup, "tech"));
     const uvpInfoExpansion = ExpandableSection(citation(startup, "uvp"));
 
@@ -128,36 +121,57 @@ export default function StartupEditForm({
                     />
                 </div>
             </div>
-            <div className="flex flex-row whitespace-nowrap justify-start items-center w-full gap-1">
-                <span className="font-bold">TRL:</span>{" "}
-                {textOrUnknown(startup.trl)}
-                {
-                    <Icon
-                        name={"info"}
-                        key={"funds_raised"}
-                        className="stroke-indigo-600 hover:stroke-[2]"
-                        onClick={trlExpansion.controlFn}
-                    />
+
+            <div className="grid grid-cols-2 justify-between gap-1 w-full mb-1">
+                <EditableDropdownField
+                    label="Funds raised:"
+                    field_key="funds_raised"
+                    value={startup.funds_raised ? startup.funds_raised : ""}
+                    onSave={updateField}
+                    values={fundingRaisedLabels}
+                />
+                <EditableDropdownField
+                    label="Funding stage:"
+                    field_key="funding_stage"
+                    value={startup.funding_stage ? startup.funding_stage : ""}
+                    onSave={updateField}
+                    values={fundingStageLabels}
+                />
+            </div>
+            <EditableDictionaryField
+                field_key={"ref_funding"}
+                label={"References:"}
+                value={
+                    startup.ref_funding
+                        ? parseCitationListToDict(startup.ref_funding)
+                        : []
                 }
+                onSave={function (
+                    field: "ref_funding",
+                    value: DictionaryEntry[]
+                ): void {
+                    updateField(field, parseCitationDictToList(value));
+                }}
+            />
+
+            <div className="flex flex-col whitespace-nowrap justify-start w-full gap-1">
+                <EditableDropdownField
+                    label="TRL:"
+                    field_key="trl"
+                    value={startup.trl ? startup.trl : ""}
+                    onSave={updateField}
+                    values={numEmployeesLabels}
+                />
+                <EditableTextField
+                    label={"Explanation:"}
+                    field_key={"trl_explanation"}
+                    value={
+                        startup.trl_explanation ? startup.trl_explanation : ""
+                    }
+                    onSave={updateField}
+                    multiline={true}
+                />
             </div>
-            <div className="flex flex-row whitespace-nowrap justify-start items-center w-full gap-1">
-                <span className="font-bold">Funds raised:</span>{" "}
-                {textOrUnknown(startup.funds_raised)}
-                {
-                    <Icon
-                        name={"info"}
-                        key={"funds_raised"}
-                        className="stroke-indigo-600 hover:stroke-[2]"
-                        onClick={fundInfoExpansion.controlFn}
-                    />
-                }
-            </div>
-            <div className="flex flex-row whitespace-nowrap justify-start items-center w-full gap-1">
-                <span className="font-bold">Funding stage:</span>{" "}
-                {textOrUnknown(startup.funding_stage)}
-            </div>
-            {fundInfoExpansion.component}
-            {trlExpansion.component}
         </div>
     );
 }

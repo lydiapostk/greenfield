@@ -64,7 +64,7 @@ export default function EditableTextField<T>({
             {/* Read Mode */}
             {!isEditing && (
                 <p
-                    className={`rounded w-fit px-1 ${
+                    className={`rounded w-fit max-w-full px-1 text-wrap ${
                         disabled
                             ? "cursor-not-allowed text-gray-500"
                             : " hover:bg-stone-300 cursor-pointer"
@@ -85,6 +85,10 @@ export default function EditableTextField<T>({
                             }
                             value={draft}
                             onChange={(e) => setDraft(e.target.value)}
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter") commitChange();
+                                if (e.key === "Escape") cancelChange();
+                            }}
                             className={`rounded border min-w-full min-h-[100px] bg-stone-100 px-1 ${fontStyle}`}
                         />
                     ) : (
