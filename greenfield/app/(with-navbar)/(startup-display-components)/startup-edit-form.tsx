@@ -1,10 +1,14 @@
 import EditableTextField from "@/components/input-field/editable-text-field";
 // import EditableListField, { ListItem } from "./EditableListField";
 import { useRef, useState } from "react";
-import { StartupStringParams, StartupType } from "./startup-data-type";
+import {
+    StartupStringParams,
+    StartupType,
+    ListOfYearsAsString,
+} from "./startup-data-type";
 import Icon from "@/components/icon/icon";
 import ExpandableSection from "./collapsible-section";
-import { ListOfYearsAsString, refInfo, textOrUnknown } from "./refs";
+import { citation, textOrUnknown } from "./citation";
 import EditableDropdownField from "@/components/input-field/editable-dropdown-field";
 
 interface StartupEditFormProps {
@@ -57,15 +61,15 @@ export default function StartupEditForm({
     );
 
     const fundInfoExpansion = ExpandableSection(
-        refInfo(startup, "fund"),
+        citation(startup, "fund"),
         fundAndTRLSectionRef
     );
     const trlExpansion = ExpandableSection(
         trlExplanation,
         fundAndTRLSectionRef
     );
-    const techInfoExpansion = ExpandableSection(refInfo(startup, "tech"));
-    const uvpInfoExpansion = ExpandableSection(refInfo(startup, "uvp"));
+    const techInfoExpansion = ExpandableSection(citation(startup, "tech"));
+    const uvpInfoExpansion = ExpandableSection(citation(startup, "uvp"));
 
     return (
         <div className="flex flex-col justify-start items-start w-full space-y-8">

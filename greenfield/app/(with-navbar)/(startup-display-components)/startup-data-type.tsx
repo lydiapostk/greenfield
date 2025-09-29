@@ -28,6 +28,14 @@ export const StartupStringParams: (keyof StartupUpdateType)[] = [
     "trl_explanation",
 ];
 
+export const ListOfYearsAsString = (start: number, end: number) => {
+    const years: string[] = [];
+    for (let y = end; y >= start; y--) {
+        years.push(y.toString());
+    }
+    return years;
+};
+
 // founders?: components["schemas"]["Founders"] | null;
 //     /** Investors */
 //     investors?: string[] | null;

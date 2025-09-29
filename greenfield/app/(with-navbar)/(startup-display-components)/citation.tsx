@@ -4,7 +4,7 @@ import { StartupType } from "./startup-data-type";
 export const textOrUnknown = (text: string | undefined | null) =>
     text ? text : <p className="text-gray-700">Unknown</p>;
 
-const parseRefText: (refText: string) => {
+const parseCitationText: (refText: string) => {
     text: string;
     href: string | undefined;
 } = (refText: string) => {
@@ -19,11 +19,14 @@ const parseRefText: (refText: string) => {
     return { text: text, href: href };
 };
 
-export type refInfoTypeType = "fund" | "tech" | "uvp";
+export type citationTypeType = "fund" | "tech" | "uvp";
 
-export const refInfo = (startup: StartupType, refInfoType: refInfoTypeType) => {
+export const citation = (
+    startup: StartupType,
+    citationType: citationTypeType
+) => {
     const refInfo = (() => {
-        switch (refInfoType) {
+        switch (citationType) {
             case "fund":
                 return startup.ref_funding;
             case "tech":
@@ -47,7 +50,7 @@ export const refInfo = (startup: StartupType, refInfoType: refInfoTypeType) => {
             <h4 className="italic">References</h4>
             <ul className="list-disc pl-5">
                 {refInfo.map((refText, idx) => {
-                    const parsedText = parseRefText(refText);
+                    const parsedText = parseCitationText(refText);
                     const text = parsedText.text;
                     const href = parsedText.href;
                     return (
@@ -79,12 +82,4 @@ export const refInfo = (startup: StartupType, refInfoType: refInfoTypeType) => {
             </ul>
         </div>
     );
-};
-
-export const ListOfYearsAsString = (start: number, end: number) => {
-    const years: string[] = [];
-    for (let y = end; y >= start; y--) {
-        years.push(y.toString());
-    }
-    return years;
 };

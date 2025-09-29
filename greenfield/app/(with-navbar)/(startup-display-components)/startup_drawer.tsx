@@ -4,7 +4,7 @@ import Icon from "@/components/icon/icon";
 import { StartupType } from "./startup-data-type";
 import { useEffect, useRef, useState } from "react";
 import ExpandableSection from "./collapsible-section";
-import { refInfo, textOrUnknown } from "./refs";
+import { citation, textOrUnknown } from "./citation";
 
 export interface UserDrawerProp {
     startup: StartupType;
@@ -22,11 +22,11 @@ export default function StartupDrawer({ startup, onClose }: UserDrawerProp) {
     const fundAndTRLSectionRef = useRef<(() => void) | null>(null);
 
     const fundInfoExpansion = ExpandableSection(
-        refInfo(startup, "fund"),
+        citation(startup, "fund"),
         fundAndTRLSectionRef
     );
-    const techInfoExpansion = ExpandableSection(refInfo(startup, "tech"));
-    const uvpInfoExpansion = ExpandableSection(refInfo(startup, "uvp"));
+    const techInfoExpansion = ExpandableSection(citation(startup, "tech"));
+    const uvpInfoExpansion = ExpandableSection(citation(startup, "uvp"));
     const trlExpansion = ExpandableSection(
         trlExplanation,
         fundAndTRLSectionRef
