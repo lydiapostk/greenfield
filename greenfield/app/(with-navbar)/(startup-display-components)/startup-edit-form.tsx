@@ -7,12 +7,7 @@ import {
     fundingRaisedLabels,
     fundingStageLabels,
 } from "./startup-data-type";
-import ExpandableSection from "./collapsible-section";
-import {
-    citation,
-    parseCitationDictToList,
-    parseCitationListToDict,
-} from "./citation";
+import { parseCitationDictToList, parseCitationListToDict } from "./citation";
 import EditableDropdownField from "@/components/input-field/editable-dropdown-field";
 import { COUNTRIES } from "./countries";
 import EditableDictionaryField, {
@@ -134,6 +129,7 @@ export default function StartupEditForm({
                     values={fundingStageLabels}
                 />
             </div>
+
             <EditableDictionaryField
                 field_key={"ref_funding"}
                 label={"References:"}

@@ -1,7 +1,7 @@
 "use client";
 import { ReactElement, useState } from "react";
 
-export default function ExpandableSection(
+export default function CollapsibleSection(
     children: ReactElement | ReactElement[] | string,
     expandableSectionRef?: React.RefObject<(() => void) | null>
 ) {
