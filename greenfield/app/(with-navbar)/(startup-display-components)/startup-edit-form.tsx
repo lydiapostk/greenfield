@@ -8,6 +8,7 @@ import {
     fundingStageLabels,
     trlLabels,
     StartupFoundersType,
+    verifyInputIsURL,
 } from "./startup-data-type";
 import { getCitationAsEditableElement } from "./citation";
 import EditableDropdownField from "@/components/input-field/editable-dropdown-field";
@@ -282,6 +283,14 @@ export default function StartupEditForm({
                             founder.value != "" ? founder.value : null;
                     });
                     updateField(field, foundersDict);
+                }}
+                checkData={async (
+                    founder: DictionaryEntry,
+                    setError: (error: string) => void
+                ) => {
+                    if (founder.value || founder.value == "")
+                        return await verifyInputIsURL(founder.value, setError);
+                    else return true;
                 }}
             />
             <EditableListField

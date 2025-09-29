@@ -1,8 +1,9 @@
 import Icon from "@/components/icon/icon";
-import { StartupType } from "./startup-data-type";
+import { StartupType, verifyInputIsURL } from "./startup-data-type";
 import EditableDictionaryField, {
     DictionaryEntry,
 } from "@/components/input-field/editable-dictionary-field";
+import { use } from "react";
 
 export const textOrUnknown = (text: string | undefined | null) =>
     text ? text : <p className="text-gray-700">Unknown</p>;
@@ -38,7 +39,9 @@ export function parseCitationDictToList(
     citation_dict: DictionaryEntry[]
 ): string[] {
     return citation_dict.map((cit) =>
-        cit.value ? `${cit.key} (${cit.value})` : `${cit.key}`
+        cit.value && cit.value != ""
+            ? `${cit.key} (${cit.value})`
+            : `${cit.key}`
     );
 }
 
@@ -99,6 +102,14 @@ export const getCitationAsElement = (
     );
 };
 
+async function verifyCitationRefIsValid(
+    citation: DictionaryEntry,
+    setError: (error: string) => void
+): Promise<boolean> {
+    if (!citation.value || citation.value == "") return true;
+    return await verifyInputIsURL(citation.value, setError);
+}
+
 export const getCitationAsEditableElement = (
     startup: StartupType,
     citationType: citationTypeType,
@@ -119,6 +130,7 @@ export const getCitationAsEditableElement = (
             ): void {
                 updateField(field, parseCitationDictToList(value));
             }}
+            checkData={verifyCitationRefIsValid}
         />
     );
 };

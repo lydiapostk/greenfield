@@ -12,11 +12,13 @@ interface EditableDictionaryFieldProps<T> {
     field_key: T;
     label: string;
     value: DictionaryEntry[];
-    onSave: (field: T, value: DictionaryEntry[]) => void;
+    onSave: (field: T, values: DictionaryEntry[]) => void;
     disabled?: boolean;
     showLabel?: boolean;
-    error?: string;
-    setError?: (e: string) => void;
+    checkData?: (
+        entry: DictionaryEntry,
+        setError: (error: string) => void
+    ) => Promise<boolean> | boolean;
 }
 
 export default function EditableDictionaryField<T>({
@@ -26,10 +28,12 @@ export default function EditableDictionaryField<T>({
     onSave,
     disabled = false,
     showLabel = true,
+    checkData,
 }: EditableDictionaryFieldProps<T>) {
     const [error, setError] = useState<string | null>(null);
     const [entries, setEntries] = useState<DictionaryEntry[]>(value);
     const [isEditing, setIsEditing] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleAdd = () => {
         setEntries([...entries, { key: "", value: "" }]);
@@ -50,17 +54,28 @@ export default function EditableDictionaryField<T>({
         setEntries(updated);
     };
 
-    const commitChange = () => {
+    const commitChange = async () => {
+        setIsLoading(true);
+        setError("");
+
         // validate before saving
-        const isValid = entries.every((entry) => entry.key.trim().length > 0);
-        if (!isValid) {
-            setError("Invalid entries: key is required.");
-            return;
-        } else {
-            setError("");
-            onSave(field_key, entries);
-            setIsEditing(false);
+        for (const entry of entries) {
+            if (entry.key.trim().length === 0) {
+                setError("Invalid entries: key is required.");
+                setIsLoading(false);
+                return;
+            }
+            if (checkData) {
+                const ok = await checkData(entry, setError);
+                if (!ok) {
+                    setIsLoading(false);
+                    return; // error already set
+                }
+            }
         }
+        onSave(field_key, entries);
+        setIsEditing(false);
+        setIsLoading(false);
     };
 
     const cancelChange = () => {
@@ -93,9 +108,20 @@ export default function EditableDictionaryField<T>({
 
     return (
         <div className="flex flex-col w-full gap-2">
+            {isLoading && (
+                <div className="self-center my-6">
+                    <Icon
+                        name="spinner"
+                        size="lg"
+                        color="blue"
+                        style={{ pointerEvents: "none" }}
+                        className={`text-stone-200 fill-indigo-600 `}
+                    />
+                </div>
+            )}
             {showLabel && <span className="font-bold">{label}</span>}
             {error && error !== "" && (
-                <div className="flex flex-row items-center justify-start gap-2 font-mono italic text-stone-600">
+                <div className="flex flex-row items-center justify-start gap-2 font-mono italic text-red-700">
                     <Icon
                         name={"error"}
                         className=""
@@ -106,7 +132,7 @@ export default function EditableDictionaryField<T>({
                 </div>
             )}
             {/* Read Mode */}
-            {!isEditing && (
+            {!isEditing && !isLoading && (
                 <ul
                     className={`rounded ${
                         disabled ? "cursor-not-allowed text-gray-500" : ""
@@ -142,7 +168,7 @@ export default function EditableDictionaryField<T>({
             )}
 
             {/* Edit Mode */}
-            {isEditing && (
+            {isEditing && !isLoading && (
                 <div className="flex flex-col gap-2">
                     {entries.map((entry, i) => (
                         <div

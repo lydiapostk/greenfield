@@ -3,7 +3,7 @@ import { components } from "@/app/types/api";
 export type StartupType = components["schemas"]["Startup"];
 export type StartupUpdateType = components["schemas"]["StartupUpdate"];
 export type StartupFoundersType = components["schemas"]["Startup"]["founders"];
-
+export type DomainCheckResponse = components["schemas"]["CheckDomainResponse"];
 export const StartupStringParams: (keyof StartupUpdateType)[] = [
     /** Company Name */
     "company_name",
@@ -65,16 +65,25 @@ export const numEmployeesLabels: string[] = [
 
 export const trlLabels: string[] = ["TRL 1-4", "TRL 5-7", "TRL 8-9"];
 
-// founders?: components["schemas"]["Founders"] | null;
-//     /** Investors */
-//     investors?: string[] | null;
-/** Ref Funding */
-// ref_funding?: string[] | null;
-// /** Ref Tech */
-// ref_tech?: string[] | null;
-// /** Tech Embedding */
-// tech_embedding?: number[] | null;
-// /** Ref Uvp */
-// ref_uvp?: string[] | null;
-// /** Uvp Embedding */
-// uvp_embedding?: number[] | null;
+export async function verifyInputIsURL(
+    maybeURL: string,
+    setError: (error: string) => void
+): Promise<boolean> {
+    try {
+        const res = await fetch(
+            `${
+                process.env.NEXT_PUBLIC_API_URL
+            }/lookup/check_url?url=${encodeURIComponent(maybeURL)}`
+        );
+
+        const data: DomainCheckResponse = await res.json();
+        if (data.error) {
+            setError(data.error);
+        }
+
+        return data.exists;
+    } catch (error) {
+        setError(error as string);
+        return false;
+    }
+}

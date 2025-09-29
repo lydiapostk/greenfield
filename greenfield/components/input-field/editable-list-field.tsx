@@ -10,8 +10,7 @@ interface EditableListFieldProps<T> {
     onSave: (field: T, value: string[]) => void;
     disabled?: boolean;
     showLabel?: boolean;
-    error?: string;
-    setError?: (e: string) => void;
+    checkData?: (entry: string, setError: (error: string) => void) => boolean;
 }
 
 export default function EditableListField<T>({
@@ -21,6 +20,7 @@ export default function EditableListField<T>({
     onSave,
     disabled = false,
     showLabel = true,
+    checkData,
 }: EditableListFieldProps<T>) {
     const [error, setError] = useState<string | null>(null);
     const [entries, setEntries] = useState<string[]>(value);
@@ -41,17 +41,27 @@ export default function EditableListField<T>({
         setEntries(updated);
     };
 
-    const commitChange = () => {
+    const commitChange = async () => {
+        setError("");
+
         // validate before saving
-        const isValid = entries.every((entry) => entry.trim().length > 0);
-        if (!isValid) {
-            setError("Invalid entries: key is required.");
-            return;
-        } else {
-            setError("");
-            onSave(field_key, entries);
-            setIsEditing(false);
+        for (const entry of entries) {
+            if (entry.trim().length === 0) {
+                setError("Invalid entries: key is required.");
+                return;
+            }
+            if (checkData) {
+                const ok = await checkData(entry, setError);
+                if (!ok) return; // error already set
+            }
         }
+        const isValid = entries.every(
+            (entry) =>
+                entry.trim().length > 0 &&
+                (!checkData || checkData(entry, setError))
+        );
+        onSave(field_key, entries);
+        setIsEditing(false);
     };
 
     const cancelChange = () => {

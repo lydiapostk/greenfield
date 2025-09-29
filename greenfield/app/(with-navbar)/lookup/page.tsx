@@ -5,12 +5,13 @@ import { typingEffect } from "@/components/animate-text";
 import Icon from "@/components/icon/icon";
 import TextInputField from "@/components/input-field/input-text-field";
 import { useEffect, useRef, useState } from "react";
-import { StartupType } from "../(startup-display-components)/startup-data-type";
+import {
+    StartupType,
+    DomainCheckResponse,
+} from "../(startup-display-components)/startup-data-type";
 import StartupTable from "../(startup-display-components)/startup_table";
 import StartupDrawer from "../(startup-display-components)/startup_drawer";
 import { useRouter } from "next/navigation";
-
-type DomainCheckResponse = components["schemas"]["CheckDomainResponse"];
 
 const lookupSteps = [
     "userInput",
