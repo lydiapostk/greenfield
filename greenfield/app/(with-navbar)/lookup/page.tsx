@@ -11,6 +11,7 @@ import {
 import StartupTable from "../(startup-display-components)/startup_table";
 import StartupDrawer from "../../../components/side_drawer";
 import { useRouter } from "next/navigation";
+import StartupView from "../(startup-display-components)/startup_view";
 
 const lookupSteps = [
     "userInput",
@@ -230,9 +231,10 @@ export default function LookupStartupInfo() {
                         )}
                         {suggestedRecord && showSideBar && (
                             <StartupDrawer
-                                startup={suggestedRecord}
                                 onClose={() => setShowSideBar(!showSideBar)}
-                            />
+                            >
+                                <StartupView startup={suggestedRecord} />
+                            </StartupDrawer>
                         )}
                     </div>
                 )}
