@@ -4,6 +4,8 @@ import { use, useEffect, useState } from "react";
 import StartupEditForm from "../../(startup-display-components)/startup-edit-form";
 import { StartupType } from "../../(startup-display-components)/startup-data-type";
 import Icon from "@/components/icon/icon";
+import ConfirmModal from "@/components/confirm-modal";
+import { useRouter } from "next/navigation";
 
 export default function DoubleClick({
     params,
@@ -12,6 +14,7 @@ export default function DoubleClick({
 }) {
     const { startup_id } = use(params); // unwrap the Promise
     const decodedStartupId = decodeURIComponent(startup_id);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<string>("");
     const [startup, setStartup] = useState<StartupType | null>(null);
 
@@ -32,10 +35,30 @@ export default function DoubleClick({
                 )
             );
     }, []);
+    const router = useRouter();
+
+    const [isDelModalOpen, setIsDelModalOpen] = useState<boolean>(false);
+    const onDelStartups = () => {
+        console.log("Deleting...");
+        setIsLoading(true);
+        setTimeout(() => {
+            // simulate api call
+            router.push(`/browse`); // redirect to main page
+        }, 3000);
+    };
 
     return (
         <div className="w-full h-full bg-stone-200">
             <div className="w-4xl overflow-hidden place-self-center my-10 flex flex-col justify-start">
+                {(!startup || isLoading) && (
+                    <Icon
+                        name={"spinner"}
+                        size={"md"}
+                        color="blue"
+                        style={{ pointerEvents: "none" }}
+                        className={`text-stone-200 fill-indigo-600 self-center`}
+                    />
+                )}
                 {error && error !== "" && (
                     <div className="flex flex-row items-center justify-start gap-2 font-mono italic text-red-700">
                         <Icon
@@ -47,16 +70,33 @@ export default function DoubleClick({
                         {error}
                     </div>
                 )}
-                {!startup && (
-                    <Icon
-                        name={"spinner"}
-                        size={"md"}
-                        color="blue"
-                        style={{ pointerEvents: "none" }}
-                        className={`text-stone-200 fill-indigo-600 self-center`}
+                {isDelModalOpen && startup && !isLoading && (
+                    <ConfirmModal
+                        isOpen={true}
+                        confirmText={`Delete`}
+                        onClose={() => setIsDelModalOpen(false)}
+                        onConfirm={onDelStartups}
                     />
                 )}
-                {startup && (
+                {!isLoading && startup && (
+                    <div
+                        className={`inline-flex bg-rose-600 rounded-2xl px-3 py-1.5 mb-6 self-end 
+                                hover:bg-rose-700 stroke-2 gap-1 transition ease-in cursor-pointer 
+                                w-fit text-stone-200 font-medium`}
+                        onClick={() => {
+                            setIsDelModalOpen(true);
+                        }}
+                    >
+                        <Icon
+                            name={"delete"}
+                            color="white"
+                            size={"sm"}
+                            className="self-center"
+                        />
+                        Delete
+                    </div>
+                )}
+                {!isLoading && startup && (
                     <StartupEditForm
                         startup={startup}
                         setStartup={setStartup}
