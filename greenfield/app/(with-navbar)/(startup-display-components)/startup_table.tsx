@@ -27,13 +27,13 @@ export default function StartupTable({
     }, [startups, search]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [isDelModalOpen, setIsDelModalOpen] = useState<boolean>(false);
-    const onDelStartups = (startupsToDel: number[]) => {
+    const onDelStartups = (startupIDsToDel: number[]) => {
         setIsLoading(true);
         setIsDelModalOpen(false);
         setTimeout(() => {
             console.log(
                 startups.filter(
-                    (startup) => !((startup.id as number) in startupsToDel) // simulate api call
+                    (startup) => !startupIDsToDel.includes(startup.id as number) // simulate api call
                 )
             );
             // Reset
