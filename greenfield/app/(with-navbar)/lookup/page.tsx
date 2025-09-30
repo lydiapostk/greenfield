@@ -19,6 +19,7 @@ const lookupSteps = [
     "dbCheck",
     "foundDBRecords",
     "queryLLM",
+    "redirectingToPage",
 ];
 const lookupExplanations: { [step: LookupStep]: string } = {
     userInput: "",
@@ -26,6 +27,7 @@ const lookupExplanations: { [step: LookupStep]: string } = {
     dbCheck: "Checking if database has a record for this startup...",
     foundDBRecords: "Is this what you are looking for...",
     queryLLM: "Looking up the internet to gather information...",
+    redirectingToPage: "Found startup information, redirecting to page...",
 };
 type LookupStep = (typeof lookupSteps)[number];
 
@@ -61,9 +63,12 @@ export default function LookupStartupInfo() {
 
             const data: DomainCheckResponse = await res.json();
 
-            if (data.exists && data.normalized) {
-                setStartupURL(data.normalized);
-                return data.normalized;
+            if (data.exists && (data.normalized || data.hostname)) {
+                const validatedURL = data.normalized
+                    ? data.normalized
+                    : (data.hostname as string);
+                setStartupURL(validatedURL);
+                return validatedURL;
             }
 
             resetLookupStatus(data.error);
@@ -102,7 +107,11 @@ export default function LookupStartupInfo() {
                 }/lookup/query_llm?startup_url=${encodeURIComponent(url)}`
             );
 
-            const data: StartupType = await res.json();
+            const data: StartupType | null = await res.json();
+            if (!res.ok || !data) {
+                resetLookupStatus("Internal server error happened!");
+                return null;
+            }
             return data;
         } catch (error) {
             resetLookupStatus(error); // TODO: handle what happens if this fails (e.g. if a gaming page is sent instead.)
@@ -111,13 +120,12 @@ export default function LookupStartupInfo() {
     };
 
     const lookupStartupOnline = async (url: string) => {
-        // TODO: SOMETHING
         const startupRecord = await _queryLLM(url);
         startupRecord && confirmStartup(startupRecord);
     };
     const router = useRouter();
     const confirmStartup = (startup: StartupType) => {
-        resetLookupStatus();
+        setStep(lookupSteps[5]);
         router.push(`/browse/${startup.id}`);
     };
 

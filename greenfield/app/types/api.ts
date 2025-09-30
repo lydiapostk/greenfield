@@ -146,11 +146,26 @@ export interface components {
         Founders: {
             [key: string]: string;
         };
+        /**
+         * FundingStageEnum
+         * @enum {string}
+         */
+        FundingStageEnum: "Conceptual" | "Pre-seed" | "Seed" | "Series A" | "Series B" | "Series C" | "Series D";
+        /**
+         * FundsRaisedEnum
+         * @enum {string}
+         */
+        FundsRaisedEnum: "<$500K" | "$500K-$1M" | "$1M-$5M" | "$5M-$10M" | ">$10M";
         /** HTTPValidationError */
         HTTPValidationError: {
             /** Detail */
             detail?: components["schemas"]["ValidationError"][];
         };
+        /**
+         * NumEmployeesEnum
+         * @enum {string}
+         */
+        NumEmployeesEnum: "1-10" | "11-50" | "51-100" | "101-1000" | ">1000";
         /** Startup */
         Startup: {
             /** Id */
@@ -163,18 +178,15 @@ export interface components {
             year_founded?: string | null;
             /** Country */
             country?: string | null;
-            /** Num Employees */
-            num_employees?: string | null;
+            num_employees?: components["schemas"]["NumEmployeesEnum"] | null;
             /** Founders */
             founders?: {
                 [key: string]: unknown;
             } | null;
             /** Investors */
             investors?: string[] | null;
-            /** Funding Stage */
-            funding_stage?: string | null;
-            /** Funds Raised */
-            funds_raised?: string | null;
+            funding_stage?: components["schemas"]["FundingStageEnum"] | null;
+            funds_raised?: components["schemas"]["FundsRaisedEnum"] | null;
             /** Ref Funding */
             ref_funding?: string[] | null;
             /** Tech Offering */
@@ -189,8 +201,7 @@ export interface components {
             ref_uvp?: string[] | null;
             /** Uvp Embedding */
             uvp_embedding?: number[] | null;
-            /** Trl */
-            trl?: string | null;
+            trl?: components["schemas"]["TrlEnum"] | null;
             /** Trl Explanation */
             trl_explanation?: string | null;
             readonly founders_obj: components["schemas"]["Founders"] | null;
@@ -207,18 +218,15 @@ export interface components {
             year_founded?: string | null;
             /** Country */
             country?: string | null;
-            /** Num Employees */
-            num_employees?: string | null;
+            num_employees?: components["schemas"]["NumEmployeesEnum"] | null;
             /** Founders */
             founders?: {
                 [key: string]: unknown;
             } | null;
             /** Investors */
             investors?: string[] | null;
-            /** Funding Stage */
-            funding_stage?: string | null;
-            /** Funds Raised */
-            funds_raised?: string | null;
+            funding_stage?: components["schemas"]["FundingStageEnum"] | null;
+            funds_raised?: components["schemas"]["FundsRaisedEnum"] | null;
             /** Ref Funding */
             ref_funding?: string[] | null;
             /** Tech Offering */
@@ -233,8 +241,7 @@ export interface components {
             ref_uvp?: string[] | null;
             /** Uvp Embedding */
             uvp_embedding?: number[] | null;
-            /** Trl */
-            trl?: string | null;
+            trl?: components["schemas"]["TrlEnum"] | null;
             /** Trl Explanation */
             trl_explanation?: string | null;
         };
@@ -245,6 +252,11 @@ export interface components {
             /** Error */
             error: string | null;
         };
+        /**
+         * TrlEnum
+         * @enum {string}
+         */
+        TrlEnum: "TRL 1-4" | "TRL 5-7" | "TRL 8-9";
         /** ValidationError */
         ValidationError: {
             /** Location */

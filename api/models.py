@@ -9,9 +9,43 @@ from pydantic import (
 from sqlmodel import SQLModel, Field, Column, JSON
 from sqlalchemy.dialects.postgresql import ENUM
 from pgvector.sqlalchemy import Vector
+import enum
 
 
-# Define a Pydantic model for the JSON field
+# -------------------- Enums --------------------
+class NumEmployeesEnum(str, enum.Enum):
+    one_to_ten = "1-10"
+    eleven_to_fifty = "11-50"
+    fifty_one_to_hundred = "51-100"
+    hundred_one_to_thousand = "101-1000"
+    over_thousand = ">1000"
+
+
+class FundingStageEnum(str, enum.Enum):
+    conceptual = "Conceptual"
+    pre_seed = "Pre-seed"
+    seed = "Seed"
+    series_a = "Series A"
+    series_b = "Series B"
+    series_c = "Series C"
+    series_d = "Series D"
+
+
+class FundsRaisedEnum(str, enum.Enum):
+    under_500k = "<$500K"
+    between_500k_1m = "$500K-$1M"
+    between_1m_5m = "$1M-$5M"
+    between_5m_10m = "$5M-$10M"
+    over_10m = ">$10M"
+
+
+class TrlEnum(str, enum.Enum):
+    trl_1_4 = "TRL 1-4"
+    trl_5_7 = "TRL 5-7"
+    trl_8_9 = "TRL 8-9"
+
+
+# -------------------- JSON Wrapper --------------------
 class Founders(RootModel[dict[str, Optional[HttpUrl]]]):
     def model_dump(self, *args, **kwargs):
         # return the inner dict instead of {"root": {...}}
@@ -24,59 +58,50 @@ class Founders(RootModel[dict[str, Optional[HttpUrl]]]):
         return {"type": "object", "additionalProperties": {"type": "string"}}
 
 
+# -------------------- Base Model --------------------
 class StartupBase(SQLModel):
     id: int = Field(primary_key=True)
     company_name: str
     company_website: Optional[str] = Field(default=None, unique=True)
     year_founded: Optional[str] = None
     country: Optional[str] = None
-    num_employees: Optional[str] = Field(
+
+    num_employees: Optional[NumEmployeesEnum] = Field(
         default=None,
         sa_column=Column(
             ENUM(
-                "1-10",
-                "11-50",
-                "51-100",
-                "101-1000",
-                ">1000",
+                NumEmployeesEnum,
                 name="num_employees",
                 create_type=False,
+                values_callable=lambda obj: [
+                    e.value for e in obj
+                ],  # use values not names
             )
         ),
     )
-
-    # Store plain dict in DB
     founders: Optional[dict] = Field(default=None, sa_column=Column(JSON))
     investors: Optional[List[str]] = Field(default=None, sa_column=Column(JSON))
 
-    funding_stage: Optional[str] = Field(
+    funding_stage: Optional[FundingStageEnum] = Field(
         default=None,
         sa_column=Column(
             ENUM(
-                "Conceptual",
-                "Pre-seed",
-                "Seed",
-                "Series A",
-                "Series B",
-                "Series C",
-                "Series D",
+                FundingStageEnum,
                 name="funding_stage",
                 create_type=False,
+                values_callable=lambda obj: [e.value for e in obj],
             )
         ),
     )
 
-    funds_raised: Optional[str] = Field(
+    funds_raised: Optional[FundsRaisedEnum] = Field(
         default=None,
         sa_column=Column(
             ENUM(
-                "<$500K",
-                "$500K-$1M",
-                "$1M-$5M",
-                "$5M-$10M",
-                ">$10M",
+                FundsRaisedEnum,
                 name="funds_raised",
                 create_type=False,
+                values_callable=lambda obj: [e.value for e in obj],
             )
         ),
     )
@@ -95,22 +120,21 @@ class StartupBase(SQLModel):
         default=None, sa_column=Column(Vector(1536))
     )
 
-    trl: Optional[str] = Field(
+    trl: Optional[TrlEnum] = Field(
         default=None,
         sa_column=Column(
             ENUM(
-                "TRL 1-4",
-                "TRL 5-7",
-                "TRL 8-9",
+                TrlEnum,
                 name="trl",
                 create_type=False,
+                values_callable=lambda obj: [e.value for e in obj],
             )
         ),
     )
     trl_explanation: Optional[str] = None
 
     # ---------- Pydantic-facing wrapper ----------
-    @computed_field  # shows up in FastAPI schema
+    @computed_field
     @property
     def founders_obj(self) -> Optional[Founders]:
         if self.founders is None:
@@ -128,6 +152,9 @@ class StartupBase(SQLModel):
         if v is None:
             return None
         return v.root
+
+    # Ensure enums serialize as values in API responses
+    model_config = {"use_enum_values": True}
 
 
 class Startup(StartupBase, table=True):

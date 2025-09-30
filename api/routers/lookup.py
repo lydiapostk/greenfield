@@ -10,7 +10,7 @@ import httpx
 from openai import OpenAI
 import os
 from pydantic import BaseModel, ValidationError
-from sqlmodel import Session
+from sqlmodel import Session, select
 from api.database import get_session
 from api.models import Startup
 
@@ -88,31 +88,35 @@ def is_public_ip(hostname: str) -> bool:
 
 async def try_protocols(hostname: str) -> Optional[str]:
     """Try HTTPS first, then HTTP, return working URL or None."""
-    # Try HTTPS
-    try:
-        https_url = f"https://{hostname}"
+
+    async def check_url(url: str) -> Optional[str]:
         async with httpx.AsyncClient(
             timeout=3,
             follow_redirects=True,
-            verify=CA_CERT_PATH or True,  # fallback to default cert store
+            verify=False,  # TODO: DANGEROUS! Temporarily disable SSL check
+            # verify=CA_CERT_PATH or True,
         ) as client:
-            resp = await client.head(https_url)
-            if resp.status_code < 400:
-                return https_url
-    except Exception:
-        pass
+            try:
+                resp = await client.head(url)
+                if resp.status_code < 400:
+                    return url
+                if resp.status_code in (403, 405):  # Forbidden or Method Not Allowed
+                    resp = await client.get(url)
+                    if resp.status_code < 400:
+                        return url
+            except Exception:
+                return None
+        return None
+
+    # Try HTTPS
+    https_url = f"https://{hostname}"
+    result = await check_url(https_url)
+    if result:
+        return result
 
     # Try HTTP
-    try:
-        http_url = f"http://{hostname}"
-        async with httpx.AsyncClient(timeout=3, follow_redirects=True) as client:
-            resp = await client.head(http_url)
-            if resp.status_code < 400:
-                return http_url
-    except Exception:
-        pass
-
-    return None
+    http_url = f"http://{hostname}"
+    return await check_url(http_url)
 
 
 @router.get("/check_url", response_model=CheckDomainResponse)
@@ -169,37 +173,40 @@ async def check_url(url: str = Query(...)):
 def lookup_startup(
     startup_url: str = Query(...), session: Session = Depends(get_session)
 ):
-    # with open("api/instruction.txt", "r", encoding="utf-8") as f:
-    #     instruction = f.read()
-    # with open("api/input_template.txt", "r", encoding="utf-8") as f:
-    #     input_template = f.read()
-    # input = f"{', '.join(startup_url)}: {input_template}"
-    # response = client.responses.create(
-    #     model="gpt-5-mini",
-    #     reasoning={"effort": "low"},
-    #     instructions=instruction,
-    #     input=input,
-    #     store=True,
-    #     tools=[{"type": "web_search"}],
-    #     stream=False,
-    # )
-    # startup_info = json.loads(response.output_text)
-    # startup = None
-    # while not startup:
-    #     try:
-    #         startup = Startup.model_validate(startup_info)
-    #     except ValidationError as e:
-    #         e_locs = [err["loc"] for err in e.errors()]
-    #         for keys_to_delete in e_locs:
-    #             if (len(keys_to_delete)) == 1:
-    #                 startup_info.pop(keys_to_delete[0])
-    #             else:
-    #                 target_dict = startup_info
-    #                 for key_to_delete in keys_to_delete[:-1]:
-    #                     target_dict = target_dict[key_to_delete]
-    #                 target_dict.pop(keys_to_delete[-1])
-    startup = Startup.model_validate(TEMP_PLACEHOLDER_JSON_OUTPUT)
+    with open("api/instruction.txt", "r", encoding="utf-8") as f:
+        instruction = f.read()
+    with open("api/input_template.txt", "r", encoding="utf-8") as f:
+        input_template = f.read()
+    input = f"{', '.join(startup_url)}: {input_template}"
+    response = client.responses.create(
+        model="gpt-5-mini",
+        reasoning={"effort": "low"},
+        instructions=instruction,
+        input=input,
+        store=True,
+        tools=[{"type": "web_search"}],
+        stream=False,
+    )
+    startup_info = json.loads(response.output_text)
+    startup = None
+    while not startup:
+        try:
+            startup = Startup.model_validate(startup_info)
+        except ValidationError as e:
+            e_locs = [err["loc"] for err in e.errors()]
+            for keys_to_delete in e_locs:
+                if (len(keys_to_delete)) == 1:
+                    startup_info.pop(keys_to_delete[0])
+                else:
+                    target_dict = startup_info
+                    for key_to_delete in keys_to_delete[:-1]:
+                        target_dict = target_dict[key_to_delete]
+                    target_dict.pop(keys_to_delete[-1])
+    # startup = Startup.model_validate(TEMP_PLACEHOLDER_JSON_OUTPUT)
     startup.company_website = startup_url
     session.add(startup)
     session.commit()
+    startup = session.exec(
+        select(Startup).where(Startup.company_website == startup_url)
+    ).one_or_none()  # Fetch updated startup
     return startup
