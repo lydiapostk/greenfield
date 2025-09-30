@@ -153,6 +153,7 @@ export default function BrowseStartups() {
                     onClose={() => {
                         setSelectedStartup(null);
                         setInFullScreen(false);
+                        setInEditMode(false);
                     }}
                     inFullScreen={inFullScreen}
                 >
