@@ -136,6 +136,66 @@ export default function StartupView({ startup }: StartupViewProp) {
                 </div>
             </div>
 
+            <div>
+                <h3 className="font-bold mb-2">Use Cases</h3>
+                {startup.use_cases ? (
+                    <ul className="list-disc pl-5">
+                        {startup.use_cases.map((use_case) => (
+                            <li
+                                key={use_case}
+                                className=" w-full text-gray-700 font-medium text-wrap"
+                            >
+                                {use_case}
+                            </li>
+                        ))}
+                    </ul>
+                ) : (
+                    <p className="text-gray-700">"Unknown"</p>
+                )}
+            </div>
+            <div>
+                <h3 className="font-bold mb-2">Competitors</h3>
+                {startup.competitors ? (
+                    <ul className="list-disc pl-5">
+                        {startup.competitors.map((competitor) => {
+                            const competitorName = Object.keys(competitor)[0];
+                            const refUrl = competitor[competitorName].url;
+                            return (
+                                <li
+                                    key={competitorName}
+                                    className=" w-full text-gray-700 font-medium text-wrap mt-2"
+                                >
+                                    <a
+                                        key={competitorName}
+                                        href={refUrl ? refUrl : ""}
+                                        target={refUrl ? "_blank" : ""}
+                                        className={
+                                            refUrl
+                                                ? "hover:text-indigo-900 hover:underline"
+                                                : ""
+                                        }
+                                    >
+                                        <h3 className="font-bold mb-2">
+                                            {competitorName}
+                                            {competitor[competitorName].url && (
+                                                <Icon
+                                                    name={"arrowTopRight"}
+                                                    size={"sm"}
+                                                    className="inline-block align-text-bottom pl-1"
+                                                />
+                                            )}
+                                        </h3>
+                                    </a>
+                                    {competitor[competitorName].description}
+                                </li>
+                            );
+                        })}
+                    </ul>
+                ) : (
+                    <p className="text-gray-700">"Unknown"</p>
+                )}
+            </div>
+
             <div className="mt-6 grid grid-cols-2 justify-between w-full">
                 <div>
                     <h3 className="font-bold mb-2">Founders</h3>

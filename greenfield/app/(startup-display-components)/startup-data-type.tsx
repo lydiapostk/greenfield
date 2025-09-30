@@ -3,6 +3,7 @@ import { components, operations } from "@/app/types/api";
 export type StartupType = components["schemas"]["Startup"];
 export type StartupUpdateType = components["schemas"]["StartupUpdate"];
 export type StartupFoundersType = components["schemas"]["Startup"]["founders"];
+export type CompetitorsType = components["schemas"]["Competitors"];
 export type DomainCheckResponse = components["schemas"]["CheckDomainResponse"];
 export type BulkDeleteStartupsResponse =
     operations["delete_item_startups_bulk_by_ids_delete"]["responses"];

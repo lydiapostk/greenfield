@@ -141,7 +141,7 @@ export default function EditableListField<T>({
                             className="flex flex-row gap-2 items-center w-full min-h-fit text-wrap"
                         >
                             <p className="w-[20px]">{i + 1}.</p>
-                            <input
+                            <textarea
                                 value={entry}
                                 onChange={(e) =>
                                     handleChange(i, e.target.value)
@@ -150,7 +150,7 @@ export default function EditableListField<T>({
                                     if (e.key === "Enter") commitChange();
                                     if (e.key === "Escape") cancelChange();
                                 }}
-                                className={`rounded border w-fit bg-stone-100/75 px-1`}
+                                className="rounded border px-1 flex-1 text-wrap h-fit w-2/3 bg-stone-100 custom-scroll"
                             />
                             <Icon
                                 name="delete"

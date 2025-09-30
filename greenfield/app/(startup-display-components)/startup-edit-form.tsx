@@ -9,6 +9,7 @@ import {
     trlLabels,
     StartupFoundersType,
     verifyInputIsURL,
+    CompetitorsType,
 } from "./startup-data-type";
 import { getCitationAsEditableElement } from "./citation";
 import EditableDropdownField from "@/components/input-field/editable-dropdown-field";
@@ -19,6 +20,7 @@ import EditableDictionaryField, {
     DictionaryEntry,
 } from "@/components/input-field/editable-dictionary-field";
 import EditableListField from "@/components/input-field/editable-list-field";
+import EditableCompetitorsField from "./editable-competitors";
 
 interface StartupEditFormProps {
     startup: StartupType;
@@ -92,12 +94,12 @@ export default function StartupEditForm({
 
     const updateField = (
         field: keyof StartupType,
-        value: string | string[] | StartupFoundersType
+        value: string | string[] | StartupFoundersType | CompetitorsType
     ) => {
         if (!startup.id) return;
         const startup_update: Record<
             string,
-            number | string | string[] | StartupFoundersType
+            number | string | string[] | StartupFoundersType | CompetitorsType
         > = {
             id: startup.id,
         };
@@ -249,6 +251,20 @@ export default function StartupEditForm({
                     updateField={updateField}
                 />
             </div>
+
+            <EditableListField
+                field_key={"use_cases"}
+                label={"Use Cases:"}
+                value={startup.use_cases ? startup.use_cases : []}
+                onSave={updateField}
+            />
+            <EditableCompetitorsField
+                field_key={"competitors"}
+                label={"Competitors"}
+                value={startup.competitors ? startup.competitors : []}
+                onSave={updateField}
+            />
+
             <EditableDictionaryField
                 field_key={"founders"}
                 label={"Founders:"}
@@ -271,7 +287,9 @@ export default function StartupEditForm({
                     const foundersDict: StartupFoundersType = {};
                     founders.forEach((founder) => {
                         foundersDict[founder.key] =
-                            founder.value != "" ? founder.value : null;
+                            founder.value && founder.value != ""
+                                ? founder.value
+                                : null;
                     });
                     updateField(field, foundersDict);
                 }}
@@ -286,7 +304,7 @@ export default function StartupEditForm({
             />
             <EditableListField
                 field_key={"investors"}
-                label={"investors"}
+                label={"Investors:"}
                 value={startup.investors ? startup.investors : []}
                 onSave={updateField}
             />
