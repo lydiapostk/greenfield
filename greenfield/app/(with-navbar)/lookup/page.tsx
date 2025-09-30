@@ -7,11 +7,11 @@ import { useEffect, useRef, useState } from "react";
 import {
     StartupType,
     DomainCheckResponse,
-} from "../(startup-display-components)/startup-data-type";
-import StartupTable from "../(startup-display-components)/startup_table";
+} from "../../(startup-display-components)/startup-data-type";
+import StartupTable from "../../(startup-display-components)/startup_table";
 import StartupDrawer from "../../../components/side_drawer";
 import { useRouter } from "next/navigation";
-import StartupView from "../(startup-display-components)/startup_view";
+import StartupView from "../../(startup-display-components)/startup_view";
 
 const lookupSteps = [
     "userInput",

@@ -143,8 +143,29 @@ export interface components {
             /** Hostname */
             hostname?: string | null;
         };
+        /** CompetitorInfo */
+        CompetitorInfo: {
+            /** Description */
+            description: string;
+            /**
+             * Url
+             * Format: uri
+             */
+            url: string;
+        };
+        /**
+         * Competitors
+         * @description List of {competitor name: {description, url}} objects
+         */
+        Competitors: {
+            [key: string]: components["schemas"]["CompetitorInfo"];
+        }[];
+        /**
+         * Founders
+         * @description Map of founder name -> website URL
+         */
         Founders: {
-            [key: string]: string;
+            [key: string]: string | null;
         };
         /**
          * FundingStageEnum
@@ -179,10 +200,7 @@ export interface components {
             /** Country */
             country?: string | null;
             num_employees?: components["schemas"]["NumEmployeesEnum"] | null;
-            /** Founders */
-            founders?: {
-                [key: string]: unknown;
-            } | null;
+            founders?: components["schemas"]["Founders"] | null;
             /** Investors */
             investors?: string[] | null;
             funding_stage?: components["schemas"]["FundingStageEnum"] | null;
@@ -204,7 +222,9 @@ export interface components {
             trl?: components["schemas"]["TrlEnum"] | null;
             /** Trl Explanation */
             trl_explanation?: string | null;
-            readonly founders_obj: components["schemas"]["Founders"] | null;
+            competitors?: components["schemas"]["Competitors"] | null;
+            /** Use Cases */
+            use_cases?: string[] | null;
         };
         /** StartupUpdate */
         StartupUpdate: {
@@ -219,10 +239,7 @@ export interface components {
             /** Country */
             country?: string | null;
             num_employees?: components["schemas"]["NumEmployeesEnum"] | null;
-            /** Founders */
-            founders?: {
-                [key: string]: unknown;
-            } | null;
+            founders?: components["schemas"]["Founders"] | null;
             /** Investors */
             investors?: string[] | null;
             funding_stage?: components["schemas"]["FundingStageEnum"] | null;
@@ -244,6 +261,9 @@ export interface components {
             trl?: components["schemas"]["TrlEnum"] | null;
             /** Trl Explanation */
             trl_explanation?: string | null;
+            competitors?: components["schemas"]["Competitors"] | null;
+            /** Use Cases */
+            use_cases?: string[] | null;
         };
         /** StatusResponse */
         StatusResponse: {

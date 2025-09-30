@@ -6,6 +6,12 @@ In the `db` directory, run the following command:
 To stop the container, run:
 `docker-compose down   # stops but keeps data`
 
+To initialise the data:
+
+1. Run the init.sql script in PostGres DB.
+2. In the root directory, run the following:
+   `python -m Greenfield.db.init`
+
 To wipe data:
 `docker-compose down -v   # deletes containers + volumes (wipes data)`
 
