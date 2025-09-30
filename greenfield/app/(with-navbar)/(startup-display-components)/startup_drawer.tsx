@@ -5,7 +5,6 @@ import { StartupType } from "./startup-data-type";
 import { useEffect, useRef, useState } from "react";
 import CollapsibleSection from "./collapsible-section";
 import { getCitationAsElement, textOrUnknown } from "./citation";
-import router from "next/router";
 
 export interface UserDrawerProp {
     startup: StartupType;
@@ -103,23 +102,23 @@ export default function StartupDrawer({ startup, onClose }: UserDrawerProp) {
 
                     <div className="grid grid-cols-2 justify-between gap-2 w-full">
                         <div className="flex flex-col justify-start w-full gap-2">
-                            <p>
+                            <div>
                                 <span className="font-bold">Country:</span>{" "}
                                 {textOrUnknown(startup.country)}
-                            </p>
-                            <p>
+                            </div>
+                            <div>
                                 <span className="font-bold">Year founded:</span>{" "}
                                 {textOrUnknown(startup.year_founded)}
-                            </p>
-                            <p>
+                            </div>
+                            <div>
                                 <span className="font-bold">
                                     No. employees:
                                 </span>{" "}
                                 {textOrUnknown(startup.num_employees)}
-                            </p>
+                            </div>
                         </div>
                         <div className="flex flex-col justify-start w-full gap-2">
-                            <p className="flex flex-row whitespace-nowrap justify-start items-center w-full gap-1">
+                            <div className="flex flex-row whitespace-nowrap justify-start items-center w-full gap-1">
                                 <span className="font-bold">TRL:</span>{" "}
                                 {textOrUnknown(startup.trl)}
                                 {
@@ -130,8 +129,8 @@ export default function StartupDrawer({ startup, onClose }: UserDrawerProp) {
                                         onClick={trlExpansion.controlFn}
                                     />
                                 }
-                            </p>
-                            <p className="flex flex-row whitespace-nowrap justify-start items-center w-full gap-1">
+                            </div>
+                            <div className="flex flex-row whitespace-nowrap justify-start items-center w-full gap-1">
                                 <span className="font-bold">Funds raised:</span>{" "}
                                 {textOrUnknown(startup.funds_raised)}
                                 {
@@ -142,13 +141,13 @@ export default function StartupDrawer({ startup, onClose }: UserDrawerProp) {
                                         onClick={fundInfoExpansion.controlFn}
                                     />
                                 }
-                            </p>
-                            <p className="flex flex-row whitespace-nowrap justify-start items-center w-full gap-1">
+                            </div>
+                            <div className="flex flex-row whitespace-nowrap justify-start items-center w-full gap-1">
                                 <span className="font-bold">
                                     Funding stage:
                                 </span>{" "}
                                 {textOrUnknown(startup.funding_stage)}
-                            </p>
+                            </div>
                         </div>
                     </div>
                     {fundInfoExpansion.component}
@@ -168,9 +167,9 @@ export default function StartupDrawer({ startup, onClose }: UserDrawerProp) {
                             }
                         </div>
                         {techInfoExpansion.component}
-                        <p className="text-gray-700">
+                        <div className="text-gray-700">
                             {textOrUnknown(startup.tech_offering)}
-                        </p>
+                        </div>
                     </div>
                     <div className="mt-6">
                         <div className="flex flex-row whitespace-nowrap justify-start items-center w-full gap-1">
@@ -186,9 +185,9 @@ export default function StartupDrawer({ startup, onClose }: UserDrawerProp) {
                             }
                         </div>
                         {uvpInfoExpansion.component}
-                        <p className="text-gray-700">
+                        <div className="text-gray-700">
                             {textOrUnknown(startup.uvp)}
-                        </p>
+                        </div>
                     </div>
 
                     <div className="mt-6 grid grid-cols-2 justify-between w-full">
