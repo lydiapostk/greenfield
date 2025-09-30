@@ -30,6 +30,7 @@ export default function BrowseStartups() {
             <StartupTable
                 startups={startups}
                 onClickStartup={setSelectedStartup}
+                searchable={true}
             />
             {isLoading && <Icon name={"spinner"} size={"md"} color="blue" />}
             {selectedStartup && (

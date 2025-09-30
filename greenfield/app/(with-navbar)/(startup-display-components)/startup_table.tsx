@@ -6,16 +6,18 @@ import { StartupType } from "./startup-data-type";
 interface StartupTableProp {
     startups: StartupType[];
     onClickStartup?: (startup: StartupType | null) => void;
+    searchable?: boolean;
 }
 
 export default function StartupTable({
     startups,
     onClickStartup: setSelectedStartup,
+    searchable = false,
 }: StartupTableProp) {
     const [search, setSearch] = useState<string>("");
     // Filter list if searching
     const filteredValues = useMemo(() => {
-        console.log(search);
+        if (!searchable) return startups;
         return startups.filter((startup) =>
             startup.company_name.toLowerCase().includes(search.toLowerCase())
         );
@@ -23,15 +25,17 @@ export default function StartupTable({
 
     return (
         <div className="pb-6 animate-fadeIn">
-            <input
-                id="table_search"
-                type="text"
-                placeholder="Search..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="w-full z-20 px-4 py-2 my-6 rounded-2xl bg-white/10 focus:outline-none focus:ring-0 focus:bg-white/20"
-                autoFocus
-            />
+            {searchable && (
+                <input
+                    id="table_search"
+                    type="text"
+                    placeholder="Search..."
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    className="w-full z-20 px-4 py-2 my-6 rounded-2xl bg-white/10 focus:outline-none focus:ring-0 focus:bg-white/20"
+                    autoFocus
+                />
+            )}
             {/* Table */}
             <div className="bg-white/10 backdrop-blur-md rounded-2xl shadow-lg overflow-hidden lg:min-w-3xl">
                 <table className="w-full text-left">
