@@ -72,7 +72,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/startups/by_id": {
+    "/startups/bulk/by_ids": {
         parameters: {
             query?: never;
             header?: never;
@@ -83,7 +83,7 @@ export interface paths {
         put?: never;
         post?: never;
         /** Delete Item */
-        delete: operations["delete_item_startups_by_id_delete"];
+        delete: operations["delete_item_startups_bulk_by_ids_delete"];
         options?: never;
         head?: never;
         patch?: never;
@@ -238,6 +238,13 @@ export interface components {
             /** Trl Explanation */
             trl_explanation?: string | null;
         };
+        /** StatusResponse */
+        StatusResponse: {
+            /** Ok */
+            ok: boolean;
+            /** Error */
+            error: string | null;
+        };
         /** ValidationError */
         ValidationError: {
             /** Location */
@@ -371,16 +378,18 @@ export interface operations {
             };
         };
     };
-    delete_item_startups_by_id_delete: {
+    delete_item_startups_bulk_by_ids_delete: {
         parameters: {
-            query: {
-                id: string;
-            };
+            query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        requestBody?: never;
+        requestBody: {
+            content: {
+                "application/json": number[];
+            };
+        };
         responses: {
             /** @description Successful Response */
             200: {
@@ -388,7 +397,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": boolean;
+                    "application/json": components["schemas"]["StatusResponse"];
                 };
             };
             /** @description Validation Error */

@@ -1,9 +1,11 @@
-import { components } from "@/app/types/api";
+import { components, operations } from "@/app/types/api";
 
 export type StartupType = components["schemas"]["Startup"];
 export type StartupUpdateType = components["schemas"]["StartupUpdate"];
 export type StartupFoundersType = components["schemas"]["Startup"]["founders"];
 export type DomainCheckResponse = components["schemas"]["CheckDomainResponse"];
+export type BulkDeleteStartupsResponse =
+    operations["delete_item_startups_bulk_by_ids_delete"]["responses"];
 export const StartupStringParams: (keyof StartupUpdateType)[] = [
     /** Company Name */
     "company_name",

@@ -1,8 +1,10 @@
+from typing import Optional
 from dotenv import load_dotenv
 from fastapi import APIRouter, Query
 from fastapi import Depends
 from openai import OpenAI
 import os
+from pydantic import BaseModel
 from sqlmodel import Session, select
 from api.database import get_session
 from api.models import Startup, StartupUpdate
@@ -14,6 +16,11 @@ router = APIRouter()
 client = OpenAI(
     api_key=os.getenv("OPENAI_API_KEY"),
 )
+
+
+class StatusResponse(BaseModel):
+    ok: bool
+    error: Optional[str]
 
 
 @router.get("/", response_model=list[Startup])
@@ -52,12 +59,15 @@ def update_startup_by_id(
     return startup
 
 
-@router.delete("/by_id", response_model=bool)
-def delete_item(id: str = Query(...), session: Session = Depends(get_session)):
-    startup = session.get(Startup, id)
-    if not startup:
-        return False
+@router.delete("/bulk/by_ids", response_model=StatusResponse)
+def delete_item(ids: list[int], session: Session = Depends(get_session)):
+    for id in ids:
+        startup = session.get(Startup, id)
+        if not startup:
+            return StatusResponse(
+                ok=False, error="No matching items found"
+            )  # Cancel delete if anything is missing
+        session.delete(startup)
 
-    session.delete(startup)
     session.commit()
-    return True
+    return StatusResponse(ok=True, error=None)

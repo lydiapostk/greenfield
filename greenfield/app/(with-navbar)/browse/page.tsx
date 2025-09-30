@@ -10,7 +10,7 @@ import StartupView from "../(startup-display-components)/startup_view";
 import StartupEditForm from "../(startup-display-components)/startup-edit-form";
 
 export default function BrowseStartups() {
-    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
     const [inFullScreen, setInFullScreen] = useState<boolean>(false);
     const [startups, setStartups] = useState<StartupType[]>([]);
     const [selectedStartup, setSelectedStartup] = useState<StartupType | null>(
@@ -36,25 +36,49 @@ export default function BrowseStartups() {
         );
     }, [startups, search]);
     const [isDelModalOpen, setIsDelModalOpen] = useState<boolean>(false);
+    const [delError, setDelError] = useState<string>("");
     const onDelStartups = (startupIDsToDel: number[]) => {
         setIsLoading(true);
         setIsDelModalOpen(false);
-        setTimeout(() => {
-            console.log(
-                startups.filter(
-                    (startup) => !startupIDsToDel.includes(startup.id as number) // simulate api call
-                )
-            );
-            // Reset
-            setSelectedIds([]);
-            setSelectedStartup(null);
-            setStartups(
-                startups.filter(
-                    (startup) => !startupIDsToDel.includes(startup.id as number) // simulate api call
-                )
-            );
-            setIsLoading(false);
-        }, 3000);
+        setDelError("");
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/startups/bulk/by_ids`, {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(startupIDsToDel),
+        })
+            .then((res) =>
+                res.json().then((data) => {
+                    if (!res.ok || !data.ok) {
+                        setIsDelModalOpen(true);
+                        setDelError(
+                            "Unexpected error during deletion occured!"
+                        );
+                    } else {
+                        // Reset
+                        setSelectedIds([]);
+                        setSelectedStartup(null);
+                        setStartups(
+                            startups.filter(
+                                (startup) =>
+                                    !startupIDsToDel.includes(
+                                        startup.id as number
+                                    )
+                            )
+                        );
+                    }
+                })
+            )
+            .catch((e: unknown) => {
+                setIsDelModalOpen(true);
+                if (e instanceof Error) {
+                    setDelError(e.message);
+                } else {
+                    setDelError("Unexpected error");
+                }
+            })
+            .finally(() => {
+                setIsLoading(false);
+            });
     };
     const [selectedIds, setSelectedIds] = useState<number[]>([]);
 
@@ -85,6 +109,7 @@ export default function BrowseStartups() {
                             ? onDelStartups([selectedStartup.id as number])
                             : onDelStartups(selectedIds)
                     }
+                    error={delError}
                 />
             )}
             {isLoading && (

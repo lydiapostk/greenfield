@@ -1,5 +1,6 @@
 "use client";
 import { ReactNode, useEffect } from "react";
+import Icon from "./icon/icon";
 
 interface ConfirmModalProps {
     isOpen: boolean;
@@ -7,6 +8,7 @@ interface ConfirmModalProps {
     message?: string | ReactNode;
     confirmText?: string;
     cancelText?: string;
+    error?: string;
     onClose: () => void;
     onConfirm: () => void;
 }
@@ -17,6 +19,7 @@ export default function ConfirmModal({
     message = "This action cannot be undone.",
     confirmText = "Confirm",
     cancelText = "Cancel",
+    error = "",
     onClose,
     onConfirm,
 }: ConfirmModalProps) {
@@ -47,6 +50,12 @@ export default function ConfirmModal({
         <div className="fixed inset-0 bg-black/50 bg-opacity-50 flex items-center justify-center z-50">
             <div className="bg-white rounded-2xl shadow-lg p-6 w-96">
                 <h2 className="text-lg font-semibold text-gray-800">{title}</h2>
+                {error != "" && (
+                    <div className="mt-2 text-rose-600 italic text-sm inline-flex justify-start items-center">
+                        <Icon name={"error"} />
+                        {error}
+                    </div>
+                )}
                 <div className="mt-2 text-gray-600 text-sm">{message}</div>
 
                 <div className="mt-6 flex justify-end space-x-3">
