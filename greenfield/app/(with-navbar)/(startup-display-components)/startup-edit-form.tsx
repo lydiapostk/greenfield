@@ -279,7 +279,7 @@ export default function StartupEditForm({
                     founder: DictionaryEntry,
                     setError: (error: string) => void
                 ) => {
-                    if (founder.value || founder.value == "")
+                    if (founder.value && founder.value !== "")
                         return await verifyInputIsURL(founder.value, setError);
                     else return true;
                 }}

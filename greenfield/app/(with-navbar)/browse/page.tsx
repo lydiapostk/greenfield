@@ -209,12 +209,12 @@ export default function BrowseStartups() {
                         </div>
                     </div>
                     {inEditMode ? (
-                        <StartupView startup={selectedStartup} />
-                    ) : (
                         <StartupEditForm
                             startup={selectedStartup}
                             setStartup={setSelectedStartup}
                         />
+                    ) : (
+                        <StartupView startup={selectedStartup} />
                     )}
                 </SideDrawer>
             )}
