@@ -11,13 +11,7 @@ import StartupEditForm from "../(startup-display-components)/startup-edit-form";
 
 export default function BrowseStartups() {
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [inFullScreen, setInFullScreen] = useState<boolean>(false);
     const [startups, setStartups] = useState<StartupType[]>([]);
-    const [selectedStartup, setSelectedStartup] = useState<StartupType | null>(
-        null
-    );
-    const [inEditMode, setInEditMode] = useState<boolean>(false);
-
     useEffect(() => {
         fetch(`${process.env.NEXT_PUBLIC_API_URL}/startups/`)
             .then((res) =>
@@ -28,13 +22,34 @@ export default function BrowseStartups() {
             )
             .catch(() => setIsLoading(false));
     }, []);
+
+    // Sidebar controls
+    const [inFullScreen, setInFullScreen] = useState<boolean>(false);
+    const [selectedStartup, setSelectedStartup] = useState<StartupType | null>(
+        null
+    );
+    const [inEditMode, setInEditMode] = useState<boolean>(false);
+    useEffect(() => {
+        if (!selectedStartup) return;
+        // Update startups
+        const updatedStartups = [...startups];
+        const idxToUpdate = updatedStartups.findIndex((sup) => {
+            return sup.id == selectedStartup.id;
+        });
+        updatedStartups[idxToUpdate] = selectedStartup;
+        setStartups(updatedStartups);
+    }, [selectedStartup]);
+
+    // Table controls
+    const [selectedIds, setSelectedIds] = useState<number[]>([]);
     const [search, setSearch] = useState<string>("");
-    // Filter list if searching
     const filteredValues = useMemo(() => {
         return startups.filter((startup) =>
             startup.company_name.toLowerCase().includes(search.toLowerCase())
         );
     }, [startups, search]);
+
+    // Delete Modal
     const [isDelModalOpen, setIsDelModalOpen] = useState<boolean>(false);
     const [delError, setDelError] = useState<string>("");
     const onDelStartups = (startupIDsToDel: number[]) => {
@@ -80,17 +95,6 @@ export default function BrowseStartups() {
                 setIsLoading(false);
             });
     };
-    const [selectedIds, setSelectedIds] = useState<number[]>([]);
-    useEffect(() => {
-        if (!selectedStartup) return;
-        // Update startups
-        const updatedStartups = [...startups];
-        const idxToUpdate = updatedStartups.findIndex((sup) => {
-            return sup.id == selectedStartup.id;
-        });
-        updatedStartups[idxToUpdate] = selectedStartup;
-        setStartups(updatedStartups);
-    }, [selectedStartup]);
 
     return (
         <div className="flex flex-col justify-start w-full h-full text-white">
@@ -107,6 +111,7 @@ export default function BrowseStartups() {
                 autoFocus
             />
 
+            {/* Delete Modal */}
             {isDelModalOpen && (
                 <ConfirmModal
                     isOpen={true}
@@ -122,12 +127,16 @@ export default function BrowseStartups() {
                     error={delError}
                 />
             )}
+
+            {/* Spinning Modal */}
             {isLoading && (
                 <div className="fixed inset-0 bg-black/50 bg-opacity-50 flex items-center justify-center z-50">
                     <Icon name={"spinner"} color="blue" size={"lg"} />
                 </div>
             )}
+
             <div className="self-center lg:w-3/5">
+                {/* Table tools */}
                 <div className="flex flex-row justify-start items-center py-2">
                     <div
                         className={`inline-flex bg-rose-600 rounded-2xl px-3 py-1.5 
@@ -151,6 +160,7 @@ export default function BrowseStartups() {
                         Delete ({selectedIds.length})
                     </div>
                 </div>
+                {/* Table */}
                 <StartupTable
                     startups={filteredValues}
                     onClickStartup={setSelectedStartup}
@@ -167,8 +177,10 @@ export default function BrowseStartups() {
                     }}
                     inFullScreen={inFullScreen}
                 >
+                    {/* Sidebar tools */}
                     <div className="flex flex-row w-full justify-between items-center mt-10">
                         <div className="flex flex-row w-full justify-start items-center gap-2">
+                            {/* Toggle between edit or view mode */}
                             <div
                                 className={`inline-flex w-fit rounded-2xl px-3 py-1.5 mb-6 self-end 
                                         stroke-2 gap-1 transition ease-in cursor-pointer 
@@ -188,6 +200,7 @@ export default function BrowseStartups() {
                                 )}
                                 {inEditMode ? "Exit edit mode" : "Edit"}
                             </div>
+                            {/* Delete function */}
                             <div
                                 className={`inline-flex bg-rose-600 rounded-2xl px-3 py-1.5 mb-6 self-end 
                                         hover:bg-rose-700 stroke-2 gap-1 transition ease-in cursor-pointer 
@@ -202,6 +215,7 @@ export default function BrowseStartups() {
                                 Delete
                             </div>
                         </div>
+                        {/* Enter full screen */}
                         <div
                             className={`inline-flex w-fit rounded-2xl px-3 py-1.5 mb-6 self-end 
                                         stroke-2 gap-1 transition ease-in cursor-pointer 
@@ -219,6 +233,7 @@ export default function BrowseStartups() {
                             />
                         </div>
                     </div>
+                    {/* Choice of displaying edit or view mode*/}
                     {inEditMode ? (
                         <StartupEditForm
                             startup={selectedStartup}
