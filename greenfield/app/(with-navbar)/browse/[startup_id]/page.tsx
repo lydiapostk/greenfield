@@ -12,7 +12,6 @@ export default function DoubleClick({
 }) {
     const { startup_id } = use(params); // unwrap the Promise
     const decodedStartupId = decodeURIComponent(startup_id);
-    const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<string>("");
     const [startup, setStartup] = useState<StartupType | null>(null);
 
@@ -37,7 +36,7 @@ export default function DoubleClick({
     return (
         <div className="w-full h-full bg-stone-200">
             <div className="w-4xl overflow-hidden place-self-center my-10 flex flex-col justify-start">
-                {(!startup || isLoading) && (
+                {!startup && (
                     <Icon
                         name={"spinner"}
                         size={"md"}
@@ -57,7 +56,7 @@ export default function DoubleClick({
                         {error}
                     </div>
                 )}
-                {!isLoading && startup && (
+                {startup && (
                     <StartupEditForm
                         startup={startup}
                         setStartup={setStartup}
