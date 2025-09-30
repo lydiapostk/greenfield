@@ -25,6 +25,22 @@ export default function StartupTable({
             startup.company_name.toLowerCase().includes(search.toLowerCase())
         );
     }, [startups, search]);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [isDelModalOpen, setIsDelModalOpen] = useState<boolean>(false);
+    const onDelStartups = (startupsToDel: number[]) => {
+        setIsLoading(true);
+        setIsDelModalOpen(false);
+        setTimeout(() => {
+            console.log(
+                startups.filter(
+                    (startup) => !((startup.id as number) in startupsToDel) // simulate api call
+                )
+            );
+            // Reset
+            setSelectedIds([]);
+            setIsLoading(false);
+        }, 3000);
+    };
     const [selectedIds, setSelectedIds] = useState<number[]>([]);
 
     // Toggle single row
@@ -55,6 +71,42 @@ export default function StartupTable({
                     className="w-full z-20 px-4 py-2 my-6 rounded-2xl bg-white/10 focus:outline-none focus:ring-0 focus:bg-white/20"
                     autoFocus
                 />
+            )}
+            <div className="flex flex-row justify-start items-center py-2">
+                <div
+                    className={`inline-flex bg-rose-600 rounded-2xl px-3 py-1.5 
+                    hover:bg-rose-700 stroke-2 gap-1 transition ease-in
+                    ${
+                        selectedIds.length > 0
+                            ? "cursor-pointer"
+                            : "cursor-default opacity-0"
+                    }`}
+                    onClick={() => {
+                        if (selectedIds.length === 0) return;
+                        setIsDelModalOpen(true);
+                    }}
+                >
+                    <Icon
+                        name={"delete"}
+                        color="white"
+                        size={"sm"}
+                        className="self-center"
+                    />
+                    Delete ({selectedIds.length})
+                </div>
+            </div>
+            {isDelModalOpen && (
+                <ConfirmModal
+                    isOpen={true}
+                    confirmText="Delete"
+                    onClose={() => setIsDelModalOpen(false)}
+                    onConfirm={() => onDelStartups(selectedIds)}
+                />
+            )}
+            {isLoading && (
+                <div className="fixed inset-0 bg-black/50 bg-opacity-50 flex items-center justify-center z-50">
+                    <Icon name={"spinner"} color="blue" size={"lg"} />
+                </div>
             )}
             {/* Table */}
             <div className="bg-white/10 backdrop-blur-md rounded-2xl shadow-lg overflow-hidden lg:min-w-3xl">
