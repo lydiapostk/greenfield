@@ -50,3 +50,14 @@ def update_startup_by_id(
     session.commit()
     startup = session.get(Startup, startup.id)
     return startup
+
+
+@router.delete("/by_id", response_model=bool)
+def delete_item(id: str = Query(...), session: Session = Depends(get_session)):
+    startup = session.get(Startup, id)
+    if not startup:
+        return False
+
+    session.delete(startup)
+    session.commit()
+    return True
