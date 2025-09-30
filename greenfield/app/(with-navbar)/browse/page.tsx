@@ -43,6 +43,12 @@ export default function BrowseStartups() {
             );
             // Reset
             setSelectedIds([]);
+            setSelectedStartup(null);
+            setStartups(
+                startups.filter(
+                    (startup) => !startupIDsToDel.includes(startup.id as number) // simulate api call
+                )
+            );
             setIsLoading(false);
         }, 3000);
     };
@@ -66,9 +72,15 @@ export default function BrowseStartups() {
             {isDelModalOpen && (
                 <ConfirmModal
                     isOpen={true}
-                    confirmText={`Delete (${selectedIds.length})`}
+                    confirmText={`Delete (${
+                        selectedStartup ? 1 : selectedIds.length
+                    })`}
                     onClose={() => setIsDelModalOpen(false)}
-                    onConfirm={() => onDelStartups(selectedIds)}
+                    onConfirm={() =>
+                        selectedStartup
+                            ? onDelStartups([selectedStartup.id as number])
+                            : onDelStartups(selectedIds)
+                    }
                 />
             )}
             {isLoading && (
@@ -76,13 +88,13 @@ export default function BrowseStartups() {
                     <Icon name={"spinner"} color="blue" size={"lg"} />
                 </div>
             )}
-            <div className="self-center lg:max-w-3/5">
+            <div className="self-center lg:w-3/5">
                 <div className="flex flex-row justify-start items-center py-2">
                     <div
                         className={`inline-flex bg-rose-600 rounded-2xl px-3 py-1.5 
                                 hover:bg-rose-700 stroke-2 gap-1 transition ease-in
                                 ${
-                                    selectedIds.length > 0
+                                    selectedIds.length > 0 && !selectedStartup
                                         ? "cursor-pointer"
                                         : "cursor-default opacity-0"
                                 }`}
@@ -111,6 +123,7 @@ export default function BrowseStartups() {
                 <StartupDrawer
                     startup={selectedStartup}
                     onClose={() => setSelectedStartup(null)}
+                    onDel={() => setIsDelModalOpen(true)}
                 />
             )}
         </div>
