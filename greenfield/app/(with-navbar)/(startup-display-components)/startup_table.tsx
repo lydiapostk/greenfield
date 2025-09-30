@@ -1,129 +1,57 @@
 "use ref";
 
-import { useMemo, useState } from "react";
 import { StartupType } from "./startup-data-type";
-import ConfirmModal from "@/components/confirm-modal";
-import Icon from "@/components/icon/icon";
 import Checkbox from "@/components/checkbox";
 
 interface StartupTableProp {
     startups: StartupType[];
     onClickStartup?: (startup: StartupType | null) => void;
-    searchable?: boolean;
-    deletable?: boolean;
+    selectedIds?: number[];
+    setSelectedIds?: React.Dispatch<React.SetStateAction<number[]>>;
 }
 
 export default function StartupTable({
     startups,
-    onClickStartup: setSelectedStartup,
-    searchable = false,
-    deletable = false,
+    onClickStartup,
+    selectedIds,
+    setSelectedIds,
 }: StartupTableProp) {
-    const [search, setSearch] = useState<string>("");
-    // Filter list if searching
-    const filteredValues = useMemo(() => {
-        if (!searchable) return startups;
-        return startups.filter((startup) =>
-            startup.company_name.toLowerCase().includes(search.toLowerCase())
-        );
-    }, [startups, search]);
-    const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [isDelModalOpen, setIsDelModalOpen] = useState<boolean>(false);
-    const onDelStartups = (startupIDsToDel: number[]) => {
-        setIsLoading(true);
-        setIsDelModalOpen(false);
-        setTimeout(() => {
-            console.log(
-                startups.filter(
-                    (startup) => !startupIDsToDel.includes(startup.id as number) // simulate api call
-                )
-            );
-            // Reset
-            setSelectedIds([]);
-            setIsLoading(false);
-        }, 3000);
-    };
-    const [selectedIds, setSelectedIds] = useState<number[]>([]);
-
     // Toggle single row
     const toggleRow = (id: number) => {
-        setSelectedIds((prev) =>
+        setSelectedIds?.((prev) =>
             prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
         );
     };
 
     // Toggle all rows
     const toggleAll = () => {
-        if (selectedIds.length === filteredValues.length) {
+        if (!setSelectedIds || !selectedIds) return;
+        if (selectedIds.length === startups.length) {
             setSelectedIds([]);
         } else {
-            setSelectedIds(filteredValues.map((row) => row.id as number));
+            setSelectedIds(startups.map((row) => row.id as number));
         }
     };
 
     return (
         <div className="pb-6 animate-fadeIn">
-            {searchable && (
-                <input
-                    id="table_search"
-                    type="text"
-                    placeholder="Search..."
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    className="w-full z-20 px-4 py-2 my-6 rounded-2xl bg-white/10 focus:outline-none focus:ring-0 focus:bg-white/20"
-                    autoFocus
-                />
-            )}
-            {deletable && (
-                <div className="flex flex-row justify-start items-center py-2">
-                    <div
-                        className={`inline-flex bg-rose-600 rounded-2xl px-3 py-1.5 
-                    hover:bg-rose-700 stroke-2 gap-1 transition ease-in
-                    ${
-                        selectedIds.length > 0
-                            ? "cursor-pointer"
-                            : "cursor-default opacity-0"
-                    }`}
-                        onClick={() => {
-                            if (selectedIds.length === 0) return;
-                            setIsDelModalOpen(true);
-                        }}
-                    >
-                        <Icon
-                            name={"delete"}
-                            color="white"
-                            size={"sm"}
-                            className="self-center"
-                        />
-                        Delete ({selectedIds.length})
-                    </div>
-                </div>
-            )}
-            {deletable && isDelModalOpen && (
-                <ConfirmModal
-                    isOpen={true}
-                    confirmText={`Delete (${selectedIds.length})`}
-                    onClose={() => setIsDelModalOpen(false)}
-                    onConfirm={() => onDelStartups(selectedIds)}
-                />
-            )}
-            {isLoading && (
+            {/* {isLoading && (
                 <div className="fixed inset-0 bg-black/50 bg-opacity-50 flex items-center justify-center z-50">
                     <Icon name={"spinner"} color="blue" size={"lg"} />
                 </div>
-            )}
+            )} */}
             {/* Table */}
             <div className="bg-white/10 backdrop-blur-md rounded-2xl shadow-lg overflow-hidden lg:min-w-3xl">
                 <table className="w-full text-left">
                     <thead className="bg-white/20">
                         <tr>
-                            {deletable && (
+                            {selectedIds && setSelectedIds && (
                                 <th className="w-12 p-3 text-center align-middle">
                                     <Checkbox
                                         id="check_all"
                                         checked={
                                             selectedIds.length ===
-                                            filteredValues.length
+                                            startups.length
                                         }
                                         onChange={toggleAll}
                                     />
@@ -137,22 +65,22 @@ export default function StartupTable({
                             <th className="p-4">Company Website</th>
                         </tr>
                     </thead>
-                    {filteredValues.length === 0 ? (
+                    {startups.length === 0 ? (
                         <caption className="px-4 py-2 text-stone-200 w-full italic">
                             No results
                         </caption>
                     ) : (
                         <tbody>
-                            {filteredValues.map((startup, i) => (
+                            {startups.map((startup, i) => (
                                 <tr
                                     key={startup.id}
                                     onClick={() => {
-                                        if (setSelectedStartup)
-                                            setSelectedStartup(startup);
+                                        if (onClickStartup)
+                                            onClickStartup(startup);
                                     }}
                                     className="cursor-pointer hover:bg-white/20 transition"
                                 >
-                                    {deletable && (
+                                    {selectedIds && setSelectedIds && (
                                         <td className="p-3 text-center align-middle">
                                             <Checkbox
                                                 id={startup.id?.toString()}
