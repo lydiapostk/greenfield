@@ -81,6 +81,16 @@ export default function BrowseStartups() {
             });
     };
     const [selectedIds, setSelectedIds] = useState<number[]>([]);
+    useEffect(() => {
+        if (!selectedStartup) return;
+        // Update startups
+        const updatedStartups = [...startups];
+        const idxToUpdate = updatedStartups.findIndex((sup) => {
+            return sup.id == selectedStartup.id;
+        });
+        updatedStartups[idxToUpdate] = selectedStartup;
+        setStartups(updatedStartups);
+    }, [selectedStartup]);
 
     return (
         <div className="flex flex-col justify-start w-full h-full text-white">
