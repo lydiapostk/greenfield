@@ -71,6 +71,11 @@ export default function BrowseStartups() {
                     onConfirm={() => onDelStartups(selectedIds)}
                 />
             )}
+            {isLoading && (
+                <div className="fixed inset-0 bg-black/50 bg-opacity-50 flex items-center justify-center z-50">
+                    <Icon name={"spinner"} color="blue" size={"lg"} />
+                </div>
+            )}
             <div className="self-center lg:max-w-3/5">
                 <div className="flex flex-row justify-start items-center py-2">
                     <div
@@ -101,9 +106,6 @@ export default function BrowseStartups() {
                     selectedIds={selectedIds}
                     setSelectedIds={setSelectedIds}
                 />
-                {isLoading && (
-                    <Icon name={"spinner"} size={"md"} color="blue" />
-                )}
             </div>
             {selectedStartup && (
                 <StartupDrawer

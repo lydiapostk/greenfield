@@ -35,11 +35,6 @@ export default function StartupTable({
 
     return (
         <div className="pb-6 animate-fadeIn">
-            {/* {isLoading && (
-                <div className="fixed inset-0 bg-black/50 bg-opacity-50 flex items-center justify-center z-50">
-                    <Icon name={"spinner"} color="blue" size={"lg"} />
-                </div>
-            )} */}
             {/* Table */}
             <div className="bg-white/10 backdrop-blur-md rounded-2xl shadow-lg overflow-hidden lg:min-w-3xl">
                 <table className="w-full text-left">
