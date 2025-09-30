@@ -211,15 +211,6 @@ export default function LookupStartupInfo() {
                                             confirmStartup(suggestedRecord);
                                         }}
                                     />
-                                    <Icon
-                                        name={"cross"}
-                                        size={"md"}
-                                        className="hover:stroke-[2] transition ease-in-out delay-100 duration-300"
-                                        onClick={() => {
-                                            lookupStartupOnline(startupURL);
-                                            setSuggestedRecord(null);
-                                        }}
-                                    />
                                 </div>
                                 <StartupTable
                                     startups={[suggestedRecord]}
