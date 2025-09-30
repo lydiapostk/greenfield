@@ -2,9 +2,7 @@
 
 import Icon from "@/components/icon/icon";
 import { StartupType } from "./startup-data-type";
-import { useEffect, useRef, useState } from "react";
-import CollapsibleSection from "./collapsible-section";
-import { getCitationAsElement, textOrUnknown } from "./citation";
+import { useEffect, useState } from "react";
 import StartupView from "./startup_view";
 
 export interface StartupDrawerProp {
@@ -21,28 +19,6 @@ export default function StartupDrawer({
     fullScreen = false,
 }: StartupDrawerProp) {
     const [isClosing, setIsClosing] = useState(false);
-    const trlExplanation = (
-        <div className="pb-6">
-            <h4 className="italic">How was TRL estimated?</h4>{" "}
-            <p className="font-mono">{startup.trl_explanation}</p>
-        </div>
-    );
-    const fundAndTRLSectionRef = useRef<(() => void) | null>(null);
-
-    const fundInfoExpansion = CollapsibleSection(
-        getCitationAsElement(startup, "ref_funding"),
-        fundAndTRLSectionRef
-    );
-    const techInfoExpansion = CollapsibleSection(
-        getCitationAsElement(startup, "ref_tech")
-    );
-    const uvpInfoExpansion = CollapsibleSection(
-        getCitationAsElement(startup, "ref_uvp")
-    );
-    const trlExpansion = CollapsibleSection(
-        trlExplanation,
-        fundAndTRLSectionRef
-    );
 
     // Trigger slide-out animation before closing
     const triggerClose = () => {
