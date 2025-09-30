@@ -7,13 +7,16 @@ import SideDrawer from "@/components/side_drawer";
 import Icon from "@/components/icon/icon";
 import ConfirmModal from "@/components/confirm-modal";
 import StartupView from "../(startup-display-components)/startup_view";
+import StartupEditForm from "../(startup-display-components)/startup-edit-form";
 
 export default function BrowseStartups() {
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [inFullScreen, setInFullScreen] = useState<boolean>(false);
     const [startups, setStartups] = useState<StartupType[]>([]);
     const [selectedStartup, setSelectedStartup] = useState<StartupType | null>(
         null
     );
+    const [inEditMode, setInEditMode] = useState<boolean>(false);
 
     useEffect(() => {
         fetch(`${process.env.NEXT_PUBLIC_API_URL}/startups/`)
@@ -121,29 +124,73 @@ export default function BrowseStartups() {
                 />
             </div>
             {selectedStartup && (
-                <SideDrawer onClose={() => setSelectedStartup(null)}>
-                    <div className="flex flex-row w-full justify-start items-center gap-2 mt-10">
-                        <a
-                            href={
-                                selectedStartup.id
-                                    ? `/browse/${selectedStartup.id}`
-                                    : undefined
-                            }
+                <SideDrawer
+                    onClose={() => {
+                        setSelectedStartup(null);
+                        setInFullScreen(false);
+                    }}
+                    inFullScreen={inFullScreen}
+                >
+                    <div className="flex flex-row w-full justify-between items-center mt-10">
+                        <div className="flex flex-row w-full justify-start items-center gap-2">
+                            <div
+                                className={`inline-flex w-fit rounded-2xl px-3 py-1.5 mb-6 self-end 
+                                        stroke-2 gap-1 transition ease-in cursor-pointer 
+                                        ${
+                                            inEditMode
+                                                ? "bg-violet-200  hover:bg-violet-100 text-stone-700"
+                                                : "bg-violet-600  hover:bg-violet-700 text-stone-200"
+                                        } font-medium`}
+                                onClick={() => setInEditMode(!inEditMode)}
+                            >
+                                {!inEditMode && (
+                                    <Icon
+                                        name={"edit"}
+                                        size="md"
+                                        className="stroke-stone-200 hover:stroke-[2]"
+                                    />
+                                )}
+                                {inEditMode ? "Exit edit mode" : "Edit"}
+                            </div>
+                            <div
+                                className={`inline-flex bg-rose-600 rounded-2xl px-3 py-1.5 mb-6 self-end 
+                                        hover:bg-rose-700 stroke-2 gap-1 transition ease-in cursor-pointer 
+                                        w-fit text-stone-200 font-medium`}
+                                onClick={() => setIsDelModalOpen(true)}
+                            >
+                                <Icon
+                                    name={"delete"}
+                                    size="md"
+                                    className="stroke-stone-200 hover:stroke-[2]"
+                                />
+                                Delete
+                            </div>
+                        </div>
+                        <div
+                            className={`inline-flex w-fit rounded-2xl px-3 py-1.5 mb-6 self-end 
+                                        stroke-2 gap-1 transition ease-in cursor-pointer 
+                                        hover:bg-stone-300`}
+                            onClick={() => setInFullScreen(!inFullScreen)}
                         >
                             <Icon
-                                name={"edit"}
+                                name={
+                                    inFullScreen
+                                        ? "arrowsPointingIn"
+                                        : "arrowsPointingOut"
+                                }
                                 size="md"
-                                className="stroke-indigo-600 hover:stroke-[2]"
+                                className="stroke-stone-800 hover:stroke-[2]"
                             />
-                        </a>
-                        <Icon
-                            name={"delete"}
-                            size="md"
-                            className="stroke-rose-600 hover:stroke-[2]"
-                            onClick={() => setIsDelModalOpen(true)}
-                        />
+                        </div>
                     </div>
-                    <StartupView startup={selectedStartup} />
+                    {inEditMode ? (
+                        <StartupView startup={selectedStartup} />
+                    ) : (
+                        <StartupEditForm
+                            startup={selectedStartup}
+                            setStartup={setSelectedStartup}
+                        />
+                    )}
                 </SideDrawer>
             )}
         </div>

@@ -123,7 +123,7 @@ export default function StartupEditForm({
     };
 
     return (
-        <div className="flex flex-col justify-start items-start w-full space-y-8 min-h-fit">
+        <div className="flex flex-col justify-start items-start mt-6 gap-4 w-full space-y-8 min-h-fit overflow-auto">
             {error && error !== "" && (
                 <div className="flex flex-row items-center justify-start gap-2 font-mono italic text-red-700">
                     <Icon
@@ -140,56 +140,62 @@ export default function StartupEditForm({
                 field_key="company_name"
                 value={startup.company_name}
                 onSave={updateField}
-                fontStyle="text-3xl font-bold pb-10"
+                fontStyle="text-3xl font-bold mr-3"
                 showLabel={false}
             />
-
-            <div className="grid grid-cols-2 justify-between gap-1 w-full">
-                <div className="flex flex-col justify-start w-full gap-2">
-                    {startup.company_website && (
-                        <a
-                            href={startup.company_website}
-                            target="_blank"
-                            className="relative flex flex-row justify-start cursor-pointer gap-2"
-                        >
-                            <span className="font-bold min-w-fit">
-                                Company website:
-                            </span>
-                            <p className="rounded w-full hover:text-indigo-900 hover:underline">
-                                {startup.company_website}
-                            </p>
-                        </a>
-                    )}
-                    <EditableDropdownField
-                        label="Country:"
-                        field_key="country"
-                        value={startup.country ? startup.country : ""}
-                        onSave={updateField}
-                        values={COUNTRIES}
-                        searchable={true}
-                    />
-                </div>
-                <div className="flex flex-col justify-start w-full gap-2">
-                    <EditableDropdownField
-                        label="Year founded:"
-                        field_key="year_founded"
-                        value={startup.year_founded ? startup.year_founded : ""}
-                        onSave={updateField}
-                        values={years_option}
-                    />
-                    <EditableDropdownField
-                        label="No. employees:"
-                        field_key="num_employees"
-                        value={
-                            startup.num_employees ? startup.num_employees : ""
-                        }
-                        onSave={updateField}
-                        values={numEmployeesLabels}
-                    />
-                </div>
+            {startup.company_website && (
+                <a
+                    href={startup.company_website}
+                    target="_blank"
+                    className="relative flex flex-row justify-start items-center gap-3 cursor-pointer"
+                >
+                    <Icon name={"website"} size="md" />
+                    <span className="hover:text-indigo-900 hover:underline">
+                        {startup.company_website}
+                    </span>
+                </a>
+            )}
+            <div className="flex flex-col justify-start w-full gap-2">
+                <EditableDropdownField
+                    label="Country:"
+                    field_key="country"
+                    value={startup.country ? startup.country : ""}
+                    onSave={updateField}
+                    values={COUNTRIES}
+                    searchable={true}
+                />
+                <EditableDropdownField
+                    label="Year founded:"
+                    field_key="year_founded"
+                    value={startup.year_founded ? startup.year_founded : ""}
+                    onSave={updateField}
+                    values={years_option}
+                />
+                <EditableDropdownField
+                    label="No. employees:"
+                    field_key="num_employees"
+                    value={startup.num_employees ? startup.num_employees : ""}
+                    onSave={updateField}
+                    values={numEmployeesLabels}
+                />
             </div>
 
-            <div className="grid grid-cols-2 justify-between gap-1 w-full mb-1">
+            <div className="flex flex-col whitespace-nowrap justify-start w-full gap-1">
+                <EditableDropdownField
+                    label="TRL:"
+                    field_key="trl"
+                    value={startup.trl ? startup.trl : ""}
+                    onSave={updateField}
+                    values={trlLabels}
+                />
+                <StartupEditFormExplanation
+                    explanation_type={"trl_explanation"}
+                    startup={startup}
+                    updateField={updateField}
+                />
+            </div>
+
+            <div className="grid grid-cols-2 justify-between gap-1 w-full mb-1 min-w-fit">
                 <EditableDropdownField
                     label="Funds raised:"
                     field_key="funds_raised"
@@ -211,21 +217,6 @@ export default function StartupEditForm({
                 startup={startup}
                 updateField={updateField}
             />
-
-            <div className="flex flex-col whitespace-nowrap justify-start w-full gap-1">
-                <EditableDropdownField
-                    label="TRL:"
-                    field_key="trl"
-                    value={startup.trl ? startup.trl : ""}
-                    onSave={updateField}
-                    values={trlLabels}
-                />
-                <StartupEditFormExplanation
-                    explanation_type={"trl_explanation"}
-                    startup={startup}
-                    updateField={updateField}
-                />
-            </div>
 
             <div className="flex flex-col whitespace-nowrap justify-start w-full gap-1">
                 <EditableTextField

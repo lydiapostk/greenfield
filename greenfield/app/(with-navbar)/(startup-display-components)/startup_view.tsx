@@ -35,8 +35,10 @@ export default function StartupView({ startup }: StartupViewProp) {
     );
 
     return (
-        <div className="flex flex-col justify-start items-start mt-6 gap-4">
-            <h2 className="text-3xl font-bold mr-3">{startup.company_name}</h2>
+        <div className="flex flex-col justify-start items-start mt-6 gap-4 w-full space-y-8 min-h-fit overflow-auto">
+            <div className="text-3xl font-bold mr-3 my-0">
+                {startup.company_name}
+            </div>
             {startup.company_website && (
                 <a
                     href={startup.company_website}

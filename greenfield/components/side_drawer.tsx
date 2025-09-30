@@ -6,13 +6,13 @@ import { ReactElement, useEffect, useState } from "react";
 export interface SideDrawerProp {
     onClose: () => void;
     onDel?: () => void;
-    fullScreen?: boolean;
+    inFullScreen?: boolean;
     children: ReactElement | ReactElement[];
 }
 
 export default function SideDrawer({
     onClose,
-    fullScreen = false,
+    inFullScreen = false,
     children,
 }: SideDrawerProp) {
     const [isClosing, setIsClosing] = useState(false);
@@ -42,7 +42,7 @@ export default function SideDrawer({
         <div className="fixed inset-0 flex justify-end bg-black/40">
             <div
                 className={`${
-                    fullScreen ? "w-full" : "w-2/5"
+                    inFullScreen ? "w-full" : "lg:w-5/12 md:w-3/5 sm:w-full"
                 } bg-stone-100/95 text-gray-900 shadow-2xl h-full p-6 overflow-y-auto ${
                     isClosing ? "animate-slideOut" : "animate-slideIn"
                 }`}

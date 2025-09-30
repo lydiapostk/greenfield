@@ -79,7 +79,7 @@ export default function EditableTextField<T>({
             {/* Read Mode */}
             {!isEditing && (
                 <p
-                    className={`rounded w-fit max-w-full px-1 text-wrap ${
+                    className={`rounded w-fit max-w-full text-wrap ${
                         disabled
                             ? "cursor-not-allowed text-gray-500"
                             : " hover:bg-stone-300 cursor-pointer"
