@@ -2,6 +2,9 @@
 
 import { useMemo, useState } from "react";
 import { StartupType } from "./startup-data-type";
+import ConfirmModal from "@/components/confirm-modal";
+import Icon from "@/components/icon/icon";
+import Checkbox from "@/components/checkbox";
 
 interface StartupTableProp {
     startups: StartupType[];
@@ -22,6 +25,23 @@ export default function StartupTable({
             startup.company_name.toLowerCase().includes(search.toLowerCase())
         );
     }, [startups, search]);
+    const [selectedIds, setSelectedIds] = useState<number[]>([]);
+
+    // Toggle single row
+    const toggleRow = (id: number) => {
+        setSelectedIds((prev) =>
+            prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+        );
+    };
+
+    // Toggle all rows
+    const toggleAll = () => {
+        if (selectedIds.length === filteredValues.length) {
+            setSelectedIds([]);
+        } else {
+            setSelectedIds(filteredValues.map((row) => row.id as number));
+        }
+    };
 
     return (
         <div className="pb-6 animate-fadeIn">
@@ -41,6 +61,16 @@ export default function StartupTable({
                 <table className="w-full text-left">
                     <thead className="bg-white/20">
                         <tr>
+                            <th className="w-12 p-3 text-center align-middle">
+                                <Checkbox
+                                    id="check_all"
+                                    checked={
+                                        selectedIds.length ===
+                                        filteredValues.length
+                                    }
+                                    onChange={toggleAll}
+                                />
+                            </th>
                             <th className="p-4 max-w-[150px] whitespace-nowrap">
                                 S/N
                             </th>
@@ -64,6 +94,17 @@ export default function StartupTable({
                                     }}
                                     className="cursor-pointer hover:bg-white/20 transition"
                                 >
+                                    <td className="p-3 text-center align-middle">
+                                        <Checkbox
+                                            id={startup.id?.toString()}
+                                            checked={selectedIds.includes(
+                                                startup.id as number
+                                            )}
+                                            onChange={() =>
+                                                toggleRow(startup.id as number)
+                                            }
+                                        />
+                                    </td>
                                     <td className="p-4 max-w-md truncate">
                                         {i + 1}
                                     </td>
