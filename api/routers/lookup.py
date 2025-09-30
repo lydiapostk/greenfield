@@ -25,40 +25,56 @@ client = OpenAI(
 CA_CERT_PATH = os.getenv("CA_CERT_PATH", None)
 
 TEMP_PLACEHOLDER_JSON_OUTPUT: Startup = {
-    "company_name": "Seadronix",
-    "company_website": "www.seadronix.com",
-    "founders": {
-        "Byeolteo Park": "https://www.linkedin.com/in/byeolteo-park-758150120/",
-        "Jae-uk Shin": None,
-    },
-    "funding_stage": "Series B",
-    "funds_raised": ">$10M",
-    "ref_funding": [
-        "Seadronix Secures USD 11.3 million in Series B Funding… Accelerates Global Expansion of Autonomous Navigation AI Solutions (prnewswire.com) https://www.prnewswire.com/news-releases/seadronix-secures-usd-11-3-million-in-series-b-funding-accelerates-global-expansion-of-autonomous-navigation-ai-solutions-302401752.html",
-        "Seadronix raises $11m to support further development of autonomous vessel tech (smartmaritimenetwork.com) https://smartmaritimenetwork.com/2025/03/18/seadronix-raises-11m-to-support-further-development-of-autonomous-vessel-tech/",
-    ],
+    "company_name": "Weitu AI",
+    "company_website": "https://weitu.ai",
+    "year_founded": "2024",
+    "country": "Hong Kong",
+    "num_employees": "11-50",
+    "founders": {"Liwei Wang, Ph.D.": ""},
     "investors": [
-        "LB Investment",
-        "KB Investment",
-        "Korea Development Bank",
-        "Wonik Investment Partners",
-        "Lighthouse Combined Investment",
+        "ICO Group Limited",
+        "Unnamed global internet technology companies and angel investors",
     ],
-    "tech_offering": "Seadronix develops AI-powered solutions for autonomous navigation and port operation, aimed at enhancing safety and efficiency in the maritime industry. Its flagship system, NAVISS, is an AI navigation support platform that combines multiple sensors—including radar, LiDAR, and optical cameras—to generate a comprehensive 360° awareness map around vessels. This allows ships to detect and classify nearby objects, assess collision risks, and provide decision support to navigators. Another product, Rec-SEA, augments existing onboard cameras with AI capabilities, upgrading legacy systems into intelligent perception tools. For port operations, Seadronix offers AVISS, a platform that integrates vessel tracking, berth management, and safety features such as worker and fire detection, giving port authorities greater operational oversight. The company emphasizes sensor fusion and AI-driven perception models, trained on real-world maritime data, to handle challenging environments such as crowded harbors and low-visibility conditions. Seadronix has achieved type approval from classification societies, a first in its field, and has deployed its systems in real-world environments in Korea, with expanding international pilots in Singapore and Europe. Its technology not only aims to enable autonomous ships but also provides immediate safety and efficiency benefits for semi-autonomous and manned vessels.",
+    "funding_stage": "Seed",
+    "funds_raised": "$1M-$5M",
+    "ref_funding": [
+        "TipRanks: ICO Group Limited announces subscription of preferred shares in Weitu AI Inc. for US$3,000,000 (https://www.tipranks.com/news/company-announcements/ico-group-limited-announces-subscription-of-preferred-shares-in-weitu-ai-inc)",
+        "AIBase / \u7ad9\u957f\u4e4b\u5bb6 reporting Weitu AI completed an angel round with a post-money valuation of US$100M (https://www.aibase.com/news/5602)",
+        "1AI.net coverage of Weitu AI's angel round and valuation (https://www.1ai.net/en/4418.html)",
+    ],
+    "tech_offering": "Weitu AI develops full\u2011stack multimodal large models and products that understand and generate across text, image, audio and video modalities. Their platform focuses on multimodal understanding, retrieval and generation, and exposes productized applications such as InstMind (YouTube-video understanding and insight extraction). The company positions its technology to accelerate multimodal workflows for both individual productivity and enterprise applications, and to integrate into device manufacturers and service systems for richer interactive experiences.",
     "ref_tech": [
-        "Safetytech Accelerator – Seadronix profile (safetytechaccelerator.org) https://safetytechaccelerator.org/wp-content/uploads/2023/05/Seadronix-profile-2.pdf",
-        "Seadronix Secures USD 11.3 million in Series B Funding (prnewswire.com) https://www.prnewswire.com/news-releases/seadronix-secures-usd-11-3-million-in-series-b-funding-accelerates-global-expansion-of-autonomous-navigation-ai-solutions-302401752.html",
-        "Seadronix raises $11m to support further development of autonomous vessel tech (smartmaritimenetwork.com) https://smartmaritimenetwork.com/2025/03/18/seadronix-raises-11m-to-support-further-development-of-autonomous-vessel-tech/",
+        "Weitu AI official site \u2013 technology and products overview (https://weitu.ai/)",
+        "Weitu AI English site \u2013 product mention (InstMind) and multimodal model focus (https://weitu.ai/en)",
+        "Weitu AI hiring page describing multimodal algorithm roles and stack (https://weitu.ai/en/join-us/)",
     ],
-    "uvp": "Seadronix’s unique value proposition lies in delivering maritime AI solutions that combine cutting-edge sensor fusion, real-world operational data, and regulatory compliance to solve one of the industry’s most pressing challenges: safe and reliable navigation in complex sea environments. Unlike single-sensor systems, Seadronix integrates data from radar, LiDAR, and optical cameras, producing robust situational awareness across diverse conditions. This enables ships to avoid collisions with both large vessels and smaller, harder-to-detect obstacles like buoys or fishing boats. The company offers modular solutions—NAVISS for vessels, Rec-SEA to upgrade existing camera systems, and AVISS for port authorities—allowing customers to adopt technology incrementally based on their needs. Its early acquisition of classification society type approval provides a trust advantage, reducing risk for operators considering adoption. Furthermore, Seadronix is not limited to future autonomous shipping—it delivers immediate value for today’s manned and semi-autonomous vessels, improving safety, reducing operational inefficiencies, and aligning with evolving international regulations. The combination of proven deployments, regulatory endorsements, and a modular product approach positions Seadronix as a bridge between the current maritime landscape and the autonomous future.",
+    "uvp": "Weitu AI's unique value proposition is delivering practical, product\u2011driven multimodal AI that converts complex audio/video/text/image inputs into actionable insights and interactive experiences. By building full\u2011stack multimodal models and shipping verticalized products (e.g., video understanding tools) the company aims to raise individual productivity and enable businesses to embed multimodal intelligence into devices and services\u2014targeting scenarios from smartphone AI features to enterprise data asset unlocking.",
     "ref_uvp": [
-        "Seadronix Secures USD 11.3 million in Series B Funding (prnewswire.com) https://www.prnewswire.com/news-releases/seadronix-secures-usd-11-3-million-in-series-b-funding-accelerates-global-expansion-of-autonomous-navigation-ai-solutions-302401752.html",
-        "Safetytech Accelerator – Seadronix profile (safetytechaccelerator.org) https://safetytechaccelerator.org/wp-content/uploads/2023/05/Seadronix-profile-2.pdf",
-        "Seadronix raises $11m to support further development of autonomous vessel tech (smartmaritimenetwork.com) https://smartmaritimenetwork.com/2025/03/18/seadronix-raises-11m-to-support-further-development-of-autonomous-vessel-tech/",
+        "Weitu AI official site \u2013 product and mission statement (https://weitu.ai/)",
+        "Weitu AI English site \u2013 product positioning and InstMind showcase (https://weitu.ai/en)",
     ],
-    "year_founded": "2015",
-    "country": "South Korea",
-    "num_employees": "51-100",
+    "trl": "TRL 5-7",
+    "trl_explanation": "Weitu AI presents deployed product prototypes (InstMind) and commercial collaborations with device makers and internet companies, indicating validated prototypes and early commercial integration rather than only research proofs of concept.",
+    "competitors": [
+        {
+            "OpenAI": {
+                "description": "Provider of large multimodal models (GPT family) and APIs used for text, image and limited multimodal tasks; strong ecosystem and developer adoption.",
+                "url": "https://openai.com",
+            }
+        },
+        {
+            "Anthropic": {
+                "description": "Developer of large language models with a focus on safety and helpfulness; expanding multimodal capabilities and enterprise offerings as alternatives to other LLM providers.",
+                "url": "https://www.anthropic.com",
+            }
+        },
+    ],
+    "use_cases": [
+        "Automated understanding and summarization of long-form videos (education, training, content indexing)",
+        "Multimodal assistant and on\u2011device AI features for smartphones and consumer devices",
+        "Enterprise multimodal data search and insight extraction from mixed media repositories",
+        "Interactive multimodal interfaces for service robots and intelligent systems",
+    ],
 }
 
 
@@ -142,21 +158,21 @@ async def check_url(url: str = Query(...)):
         # Strip www. for root preference
         root_hostname = hostname[4:] if hostname.startswith("www.") else hostname
 
-        # Try root first
-        root_result = await try_protocols(root_hostname)
-        if root_result:
-            response.exists = True
-            response.normalized = root_result
-            response.hostname = root_hostname
-            return response
-
-        # If root fails, try www
+        # Try with www first
         www_hostname = "www." + root_hostname
         www_result = await try_protocols(www_hostname)
         if www_result:
             response.exists = True
             response.normalized = www_result
             response.hostname = www_hostname
+            return response
+
+        # If www fails, try root
+        root_result = await try_protocols(root_hostname)
+        if root_result:
+            response.exists = True
+            response.normalized = root_result
+            response.hostname = root_hostname
             return response
 
         # Domain resolves but no web service
@@ -175,9 +191,7 @@ def lookup_startup(
 ):
     with open("api/instruction.txt", "r", encoding="utf-8") as f:
         instruction = f.read()
-    with open("api/input_template.txt", "r", encoding="utf-8") as f:
-        input_template = f.read()
-    input = f"{', '.join(startup_url)}: {input_template}"
+    input = f"{'; '.join(startup_url)}"
     response = client.responses.create(
         model="gpt-5-mini",
         reasoning={"effort": "low"},
@@ -188,6 +202,12 @@ def lookup_startup(
         stream=False,
     )
     startup_info = json.loads(response.output_text)
+    try:
+        with open("tmp_output.json", "w") as json_file:
+            json.dump(startup_info, json_file, indent=4)
+        print("JSON data successfully dumped.")
+    except IOError as e:
+        print(f"Error writing to file: {e}")
     startup = None
     while not startup:
         try:

@@ -1,12 +1,6 @@
-from typing import Optional, List
-from pydantic import (
-    HttpUrl,
-    RootModel,
-    field_serializer,
-    field_validator,
-    computed_field,
-)
-from sqlmodel import SQLModel, Field, Column, JSON
+from typing import Any, Optional, List, Dict
+from pydantic import HttpUrl, RootModel, BaseModel, field_validator
+from sqlmodel import SQLModel, Field, Column, JSON, TypeDecorator
 from sqlalchemy.dialects.postgresql import ENUM
 from pgvector.sqlalchemy import Vector
 import enum
@@ -45,20 +39,98 @@ class TrlEnum(str, enum.Enum):
     trl_8_9 = "TRL 8-9"
 
 
-# -------------------- JSON Wrapper --------------------
+# -------------------- JSON Models --------------------
 class Founders(RootModel[dict[str, Optional[HttpUrl]]]):
-    def model_dump(self, *args, **kwargs):
-        # return the inner dict instead of {"root": {...}}
-        return self.root
+    """Map of founder name -> website URL"""
 
+    @field_validator("root", mode="before")
     @classmethod
-    def __get_pydantic_json_schema__(cls, core_schema, handler):
-        # Fixes OpenAPI schema so it shows as an object, not {"root": {...}}
-        schema = handler(core_schema)  # noqa: F841
-        return {"type": "object", "additionalProperties": {"type": "string"}}
+    def coerce_empty_url(cls, v):
+        if isinstance(v, dict):
+            return {k: (None if v_ == "" else v_) for k, v_ in v.items()}
+        return v
+
+    # No override: FastAPI generates correct schema automatically
+    pass
 
 
-# -------------------- Base Model --------------------
+class FoundersType(TypeDecorator):
+    impl = JSON
+
+    def process_bind_param(self, value: Any, dialect):
+        """Prepare Python → DB"""
+        if value is None:
+            return None
+
+        if isinstance(value, dict):
+            # Convert HttpUrl → str
+            return {
+                k: (str(v) if isinstance(v, HttpUrl) else v) for k, v in value.items()
+            }
+
+        if hasattr(value, "model_dump"):
+            # Pydantic Founders model
+            return value.model_dump(mode="json")
+
+        return value  # already JSON-safe
+
+    def process_result_value(self, value: Any, dialect):
+        """Prepare DB → Python"""
+        if value is None:
+            return None
+        from .models import Founders  # lazy import to avoid circular refs
+
+        return Founders.model_validate(value)
+
+
+class CompetitorInfo(BaseModel):
+    description: str
+    url: HttpUrl
+
+    @field_validator("url", mode="before")
+    @classmethod
+    def coerce_empty_url(cls, v):
+        if v == "":
+            return None
+        return v
+
+
+class Competitors(RootModel[List[Dict[str, CompetitorInfo]]]):
+    """List of {competitor name: {description, url}} objects"""
+
+    pass
+
+
+class CompetitorsType(TypeDecorator):
+    impl = JSON
+
+    def process_bind_param(self, value: Any, dialect):
+        """Prepare Python → DB"""
+        if value is None:
+            return None
+
+        def _to_json_safe(obj):
+            if isinstance(obj, HttpUrl):
+                return str(obj)
+            elif hasattr(obj, "model_dump"):
+                return obj.model_dump(mode="json")
+            elif isinstance(obj, dict):
+                return {k: _to_json_safe(v) for k, v in obj.items()}
+            elif isinstance(obj, list):
+                return [_to_json_safe(v) for v in obj]
+            return obj
+
+        return _to_json_safe(value)
+
+    def process_result_value(self, value: Any, dialect):
+        """Prepare DB → Python"""
+        if value is None:
+            return None
+
+        return Competitors.model_validate(value)
+
+
+# -------------------- Base SQLModel --------------------
 class StartupBase(SQLModel):
     id: int = Field(primary_key=True)
     company_name: str
@@ -73,13 +145,12 @@ class StartupBase(SQLModel):
                 NumEmployeesEnum,
                 name="num_employees",
                 create_type=False,
-                values_callable=lambda obj: [
-                    e.value for e in obj
-                ],  # use values not names
+                values_callable=lambda obj: [e.value for e in obj],
             )
         ),
     )
-    founders: Optional[dict] = Field(default=None, sa_column=Column(JSON))
+
+    founders: Optional[Founders] = Field(default=None, sa_column=Column(FoundersType))
     investors: Optional[List[str]] = Field(default=None, sa_column=Column(JSON))
 
     funding_stage: Optional[FundingStageEnum] = Field(
@@ -133,30 +204,16 @@ class StartupBase(SQLModel):
     )
     trl_explanation: Optional[str] = None
 
-    # ---------- Pydantic-facing wrapper ----------
-    @computed_field
-    @property
-    def founders_obj(self) -> Optional[Founders]:
-        if self.founders is None:
-            return None
-        return Founders(self.founders)
+    competitors: Optional[Competitors] = Field(
+        default=None, sa_column=Column(CompetitorsType)
+    )
+    use_cases: Optional[List[str]] = Field(default=None, sa_column=Column(JSON))
 
-    @field_validator("founders", mode="before")
-    def coerce_founders_before(cls, v):
-        if isinstance(v, Founders):
-            return v.root
-        return v
-
-    @field_serializer("founders_obj")
-    def serialize_founders_obj(self, v: Optional[Founders], _info):
-        if v is None:
-            return None
-        return v.root
-
-    # Ensure enums serialize as values in API responses
+    # ✅ Ensure enums serialize as values (not enum names) in API responses
     model_config = {"use_enum_values": True}
 
 
+# -------------------- Table + Update --------------------
 class Startup(StartupBase, table=True):
     __tablename__ = "startups"
     id: Optional[int] = Field(default=None, primary_key=True)

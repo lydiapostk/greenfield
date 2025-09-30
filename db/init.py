@@ -3,6 +3,9 @@ import psycopg2
 from dotenv import load_dotenv
 import os
 
+# import your models
+from api import models  # adjust import path
+
 # load .env
 load_dotenv()
 
@@ -15,38 +18,55 @@ conn = psycopg2.connect(
 )
 cur = conn.cursor()
 
-with open("startups.json", "r", encoding="utf-8") as f:
+with open("db\startups.json", "r", encoding="utf-8") as f:
     startups = json.load(f)
 
 for s in startups:
+    # ✅ Validate founders + competitors before inserting
+    founders = None
+    if s.get("founders"):
+        founders = models.Founders.model_validate(s["founders"]).model_dump()
+
+    competitors = None
+    if s.get("competitors"):
+        print(s["competitors"])
+        competitors = models.Competitors.model_validate(s["competitors"]).model_dump()
+
     cur.execute(
         """
         INSERT INTO startups (
-            company_name, company_website, year_founded, country, num_employees, founders, funding_stage, funds_raised,
-            ref_funding, investors, tech_offering, ref_tech, uvp, ref_uvp, trl, trl_explanation
-        ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-    """,
+            company_name, company_website, year_founded, country, num_employees,
+            founders, competitors, funding_stage, funds_raised,
+            ref_funding, investors, tech_offering, ref_tech,
+            uvp, ref_uvp, trl, trl_explanation, use_cases
+        ) VALUES (%s, %s, %s, %s, %s,
+                  %s, %s, %s, %s,
+                  %s, %s, %s, %s,
+                  %s, %s, %s, %s, %s)
+        """,
         (
-            s["company_name"],
-            s["company_website"],
-            s["year_founded"],
-            s["country"],
-            s["num_employees"],
-            json.dumps(s["founders"]),
-            s["funding_stage"],
-            s["funds_raised"],
-            json.dumps(s["ref_funding"]),
-            json.dumps(s["investors"]),
-            s["tech_offering"],
-            json.dumps(s["ref_tech"]),
-            s["uvp"],
-            json.dumps(s["ref_uvp"]),
-            s["trl"],
-            json.dumps(s["trl_explanation"]),
+            s.get("company_name"),
+            s.get("company_website"),
+            s.get("year_founded"),
+            s.get("country"),
+            s.get("num_employees"),
+            founders,
+            competitors,
+            s.get("funding_stage"),
+            s.get("funds_raised"),
+            s.get("ref_funding"),
+            s.get("investors"),
+            s.get("tech_offering"),
+            s.get("ref_tech"),
+            s.get("uvp"),
+            s.get("ref_uvp"),
+            s.get("trl"),
+            s.get("trl_explanation"),
+            s.get("use_cases"),
         ),
     )
 
 conn.commit()
 cur.close()
 conn.close()
-print("✅ Insert complete")
+print("✅ Insert complete with founders + competitors")
