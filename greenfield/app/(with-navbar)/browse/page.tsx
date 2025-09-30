@@ -31,6 +31,7 @@ export default function BrowseStartups() {
                 startups={startups}
                 onClickStartup={setSelectedStartup}
                 searchable={true}
+                deletable={true}
             />
             {isLoading && <Icon name={"spinner"} size={"md"} color="blue" />}
             {selectedStartup && (

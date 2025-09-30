@@ -10,12 +10,14 @@ interface StartupTableProp {
     startups: StartupType[];
     onClickStartup?: (startup: StartupType | null) => void;
     searchable?: boolean;
+    deletable?: boolean;
 }
 
 export default function StartupTable({
     startups,
     onClickStartup: setSelectedStartup,
     searchable = false,
+    deletable = false,
 }: StartupTableProp) {
     const [search, setSearch] = useState<string>("");
     // Filter list if searching
@@ -72,33 +74,35 @@ export default function StartupTable({
                     autoFocus
                 />
             )}
-            <div className="flex flex-row justify-start items-center py-2">
-                <div
-                    className={`inline-flex bg-rose-600 rounded-2xl px-3 py-1.5 
+            {deletable && (
+                <div className="flex flex-row justify-start items-center py-2">
+                    <div
+                        className={`inline-flex bg-rose-600 rounded-2xl px-3 py-1.5 
                     hover:bg-rose-700 stroke-2 gap-1 transition ease-in
                     ${
                         selectedIds.length > 0
                             ? "cursor-pointer"
                             : "cursor-default opacity-0"
                     }`}
-                    onClick={() => {
-                        if (selectedIds.length === 0) return;
-                        setIsDelModalOpen(true);
-                    }}
-                >
-                    <Icon
-                        name={"delete"}
-                        color="white"
-                        size={"sm"}
-                        className="self-center"
-                    />
-                    Delete ({selectedIds.length})
+                        onClick={() => {
+                            if (selectedIds.length === 0) return;
+                            setIsDelModalOpen(true);
+                        }}
+                    >
+                        <Icon
+                            name={"delete"}
+                            color="white"
+                            size={"sm"}
+                            className="self-center"
+                        />
+                        Delete ({selectedIds.length})
+                    </div>
                 </div>
-            </div>
-            {isDelModalOpen && (
+            )}
+            {deletable && isDelModalOpen && (
                 <ConfirmModal
                     isOpen={true}
-                    confirmText="Delete"
+                    confirmText={`Delete (${selectedIds.length})`}
                     onClose={() => setIsDelModalOpen(false)}
                     onConfirm={() => onDelStartups(selectedIds)}
                 />
@@ -113,16 +117,18 @@ export default function StartupTable({
                 <table className="w-full text-left">
                     <thead className="bg-white/20">
                         <tr>
-                            <th className="w-12 p-3 text-center align-middle">
-                                <Checkbox
-                                    id="check_all"
-                                    checked={
-                                        selectedIds.length ===
-                                        filteredValues.length
-                                    }
-                                    onChange={toggleAll}
-                                />
-                            </th>
+                            {deletable && (
+                                <th className="w-12 p-3 text-center align-middle">
+                                    <Checkbox
+                                        id="check_all"
+                                        checked={
+                                            selectedIds.length ===
+                                            filteredValues.length
+                                        }
+                                        onChange={toggleAll}
+                                    />
+                                </th>
+                            )}
                             <th className="p-4 max-w-[150px] whitespace-nowrap">
                                 S/N
                             </th>
@@ -146,17 +152,21 @@ export default function StartupTable({
                                     }}
                                     className="cursor-pointer hover:bg-white/20 transition"
                                 >
-                                    <td className="p-3 text-center align-middle">
-                                        <Checkbox
-                                            id={startup.id?.toString()}
-                                            checked={selectedIds.includes(
-                                                startup.id as number
-                                            )}
-                                            onChange={() =>
-                                                toggleRow(startup.id as number)
-                                            }
-                                        />
-                                    </td>
+                                    {deletable && (
+                                        <td className="p-3 text-center align-middle">
+                                            <Checkbox
+                                                id={startup.id?.toString()}
+                                                checked={selectedIds.includes(
+                                                    startup.id as number
+                                                )}
+                                                onChange={() =>
+                                                    toggleRow(
+                                                        startup.id as number
+                                                    )
+                                                }
+                                            />
+                                        </td>
+                                    )}
                                     <td className="p-4 max-w-md truncate">
                                         {i + 1}
                                     </td>
