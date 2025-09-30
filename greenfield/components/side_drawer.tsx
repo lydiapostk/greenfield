@@ -1,23 +1,20 @@
 "use client";
 
 import Icon from "@/components/icon/icon";
-import { StartupType } from "./startup-data-type";
-import { useEffect, useState } from "react";
-import StartupView from "./startup_view";
+import { ReactElement, useEffect, useState } from "react";
 
-export interface StartupDrawerProp {
-    startup: StartupType;
+export interface SideDrawerProp {
     onClose: () => void;
     onDel?: () => void;
     fullScreen?: boolean;
+    children: ReactElement | ReactElement[];
 }
 
-export default function StartupDrawer({
-    startup,
+export default function SideDrawer({
     onClose,
-    onDel,
     fullScreen = false,
-}: StartupDrawerProp) {
+    children,
+}: SideDrawerProp) {
     const [isClosing, setIsClosing] = useState(false);
 
     // Trigger slide-out animation before closing
@@ -56,24 +53,7 @@ export default function StartupDrawer({
                     size="lg"
                     className="stroke-indigo-600 hover:stroke-[2]"
                 />
-                <div className="flex flex-row w-full justify-start items-center gap-2 mt-10">
-                    <a href={startup.id ? `/browse/${startup.id}` : undefined}>
-                        <Icon
-                            name={"edit"}
-                            size="md"
-                            className="stroke-indigo-600 hover:stroke-[2]"
-                        />
-                    </a>
-                    {onDel && (
-                        <Icon
-                            name={"delete"}
-                            size="md"
-                            className="stroke-rose-600 hover:stroke-[2]"
-                            onClick={onDel}
-                        />
-                    )}
-                </div>
-                <StartupView startup={startup} />
+                {children}
             </div>
         </div>
     );

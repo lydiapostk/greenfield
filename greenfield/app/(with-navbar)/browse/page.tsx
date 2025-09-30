@@ -3,9 +3,10 @@
 import { useEffect, useMemo, useState } from "react";
 import StartupTable from "@/startup_display/startup_table";
 import { StartupType } from "@/startup_display/startup-data-type";
-import StartupDrawer from "@/startup_display/startup_drawer";
+import SideDrawer from "@/components/side_drawer";
 import Icon from "@/components/icon/icon";
 import ConfirmModal from "@/components/confirm-modal";
+import StartupView from "../(startup-display-components)/startup_view";
 
 export default function BrowseStartups() {
     const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -120,11 +121,30 @@ export default function BrowseStartups() {
                 />
             </div>
             {selectedStartup && (
-                <StartupDrawer
-                    startup={selectedStartup}
-                    onClose={() => setSelectedStartup(null)}
-                    onDel={() => setIsDelModalOpen(true)}
-                />
+                <SideDrawer onClose={() => setSelectedStartup(null)}>
+                    <div className="flex flex-row w-full justify-start items-center gap-2 mt-10">
+                        <a
+                            href={
+                                selectedStartup.id
+                                    ? `/browse/${selectedStartup.id}`
+                                    : undefined
+                            }
+                        >
+                            <Icon
+                                name={"edit"}
+                                size="md"
+                                className="stroke-indigo-600 hover:stroke-[2]"
+                            />
+                        </a>
+                        <Icon
+                            name={"delete"}
+                            size="md"
+                            className="stroke-rose-600 hover:stroke-[2]"
+                            onClick={() => setIsDelModalOpen(true)}
+                        />
+                    </div>
+                    <StartupView startup={selectedStartup} />
+                </SideDrawer>
             )}
         </div>
     );

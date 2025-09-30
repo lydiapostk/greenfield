@@ -9,7 +9,7 @@ import {
     DomainCheckResponse,
 } from "../(startup-display-components)/startup-data-type";
 import StartupTable from "../(startup-display-components)/startup_table";
-import StartupDrawer from "../(startup-display-components)/startup_drawer";
+import StartupDrawer from "../../../components/side_drawer";
 import { useRouter } from "next/navigation";
 
 const lookupSteps = [
