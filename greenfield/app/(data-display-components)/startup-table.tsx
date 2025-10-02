@@ -3,7 +3,7 @@
 import Checkbox from "@/components/checkbox";
 import { StartupType } from "./data-type";
 
-interface StartupTableProp {
+interface StartupTableProps {
     startups: StartupType[];
     onClickStartup?: (startup: StartupType | null) => void;
     selectedIds?: number[];
@@ -15,7 +15,7 @@ export default function StartupTable({
     onClickStartup,
     selectedIds,
     setSelectedIds,
-}: StartupTableProp) {
+}: StartupTableProps) {
     // Toggle single row
     const toggleRow = (id: number) => {
         setSelectedIds?.((prev) =>
@@ -45,8 +45,9 @@ export default function StartupTable({
                                     <Checkbox
                                         id="check_all"
                                         checked={
+                                            selectedIds.length > 0 &&
                                             selectedIds.length ===
-                                            startups.length
+                                                startups.length
                                         }
                                         onChange={toggleAll}
                                     />

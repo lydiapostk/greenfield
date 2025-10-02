@@ -6,11 +6,11 @@ import { getCitationAsElement, textOrUnknown } from "./citation";
 import CollapsibleSection from "./collapsible-section";
 import { StartupType } from "./data-type";
 
-export interface StartupViewProp {
+export interface StartupViewProps {
     startup: StartupType;
 }
 
-export default function StartupView({ startup }: StartupViewProp) {
+export default function StartupView({ startup }: StartupViewProps) {
     const trlExplanation = (
         <div className="pb-6">
             <h4 className="italic">How was TRL estimated?</h4>{" "}
