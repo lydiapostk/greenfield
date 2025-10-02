@@ -203,6 +203,17 @@ export default function BrowseStartups() {
                     ) : (
                         <StartupView startup={selectedStartup} />
                     )}
+                    {/* Show tool bar again */}
+                    <div className="flex flex-row w-full justify-start items-center gap-2 mt-6">
+                        <ToggleViewEditButton
+                            inEditMode={inEditMode}
+                            setInEditMode={setInEditMode}
+                        />
+                        <DeleteButton
+                            onClick={() => setIsDelModalOpen(true)}
+                            showText={true}
+                        />
+                    </div>
                 </SideDrawer>
             )}
         </div>
