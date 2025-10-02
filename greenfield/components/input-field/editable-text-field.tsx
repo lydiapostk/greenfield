@@ -108,7 +108,7 @@ export default function EditableTextField<T>({
                                 if (e.key === "Enter") commitChange();
                                 if (e.key === "Escape") cancelChange();
                             }}
-                            className={`rounded border min-w-full ${textAreaSizeStyle} bg-stone-100 px-1 ${fontStyle}`}
+                            className={`rounded border min-w-full ${textAreaSizeStyle} bg-stone-100 px-1 ${fontStyle} lg:h-52 text-wrap`}
                             placeholder={placeholder}
                         />
                     ) : (

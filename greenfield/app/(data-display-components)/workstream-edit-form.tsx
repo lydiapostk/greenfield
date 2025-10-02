@@ -2,9 +2,7 @@ import { useState } from "react";
 
 import Icon from "@/components/icon/icon";
 import EditableTextField from "@/components/input-field/editable-text-field";
-import EditableDropdownField from "@/components/input-field/editable-dropdown-field";
 
-import { COUNTRIES } from "./countries";
 import { WorkstreamType, WorkstreamUpsertType } from "./data-type";
 import StartupTable from "./startup-table";
 

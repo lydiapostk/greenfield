@@ -83,16 +83,17 @@ export default function LookupStartupInfo() {
             const res = await fetch(
                 `${
                     process.env.NEXT_PUBLIC_API_URL
-                }/startups/fetch/by_website?lookup_url=${encodeURIComponent(
-                    url
-                )}`
+                }/startups/by_website?lookup_url=${encodeURIComponent(url)}`
             );
 
             const data: StartupType = await res.json();
-            return data;
+            console.log(data);
+            if (res.ok) return data;
+            if (res.status == 404) return null; // It is expected that this could be null
+            // Otherwise, this may be an unexpected error
+            throw `Exception: ${res.statusText}`;
         } catch (error) {
-            resetLookupStatus(error);
-            return null;
+            throw `Exception: ${error}`;
         }
     };
 
@@ -133,7 +134,14 @@ export default function LookupStartupInfo() {
             setError("");
             const normalisedURL = await checkURL(startupURL);
             if (!normalisedURL) return; // TODO: Implement website URL suggestion
-            const maybeRecord = await checkDB(normalisedURL);
+            let maybeRecord;
+            try {
+                maybeRecord = await checkDB(normalisedURL);
+            } catch (error) {
+                resetLookupStatus(error as string);
+                return; // An error occured, stop now.
+            }
+            console.log(maybeRecord);
             setStep(lookupSteps[3]);
             if (maybeRecord) {
                 setTimeout(() => {

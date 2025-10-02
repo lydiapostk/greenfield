@@ -22,11 +22,14 @@ import {
     StartupFoundersType,
     verifyInputIsURL,
     CompetitorsType,
+    StartupUpsertType,
+    StartupReadType,
+    StartupPropertyTypes,
 } from "./data-type";
 
 interface StartupEditFormProps {
-    startup: StartupType;
-    setStartup: (startup: StartupType) => void;
+    startup: StartupReadType;
+    setStartup: (startup: StartupReadType) => void;
 }
 
 interface StartupEditFormExplanationProps {
@@ -35,8 +38,11 @@ interface StartupEditFormExplanationProps {
         | "ref_tech"
         | "ref_uvp"
         | "trl_explanation";
-    startup: StartupType;
-    updateField: (field: keyof StartupType, value: string | string[]) => void;
+    startup: StartupReadType;
+    updateField: (
+        field: keyof StartupUpsertType,
+        value: string | string[]
+    ) => void;
 }
 
 function StartupEditFormExplanation({
@@ -95,27 +101,29 @@ export default function StartupEditForm({
     const years_option = ListOfYearsAsString(currentYear - 50, currentYear);
 
     const updateField = (
-        field: keyof StartupType,
-        value: string | string[] | StartupFoundersType | CompetitorsType
+        field: keyof StartupUpsertType,
+        value: StartupPropertyTypes
     ) => {
         if (!startup.id) return;
-        const startup_update: Record<
-            string,
-            number | string | string[] | StartupFoundersType | CompetitorsType
-        > = {
-            id: startup.id,
-        };
-        if (typeof value == "string") startup_update[field] = value.trim();
-        else startup_update[field] = value;
-        fetch(`${process.env.NEXT_PUBLIC_API_URL}/startups/update/by_id`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(startup_update),
-        })
+        const startup_update: Record<string, StartupPropertyTypes> = {};
+        if (typeof value == "string") {
+            if (value.trim() == "") return;
+            startup_update[field] = value.trim();
+        } else startup_update[field] = value;
+        fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/startups/${encodeURIComponent(
+                startup.id
+            )}`,
+            {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(startup_update),
+            }
+        )
             .then((res) =>
-                res.json().then((data: StartupType) => {
+                res.json().then((data: StartupReadType) => {
                     setStartup(data);
                 })
             )
@@ -142,7 +150,7 @@ export default function StartupEditForm({
             <EditableTextField
                 label="Company Name"
                 field_key="company_name"
-                value={startup.company_name}
+                value={startup.company_name ? startup.company_name : ""}
                 onSave={updateField}
                 fontStyle="text-3xl font-bold mr-3"
                 showLabel={false}

@@ -1,21 +1,21 @@
 "use ref";
 
 import Checkbox from "@/components/checkbox";
-import { StartupType } from "./data-type";
+import { StartupReadType, StartupType } from "./data-type";
 
-interface StartupTableProps {
-    startups: StartupType[];
-    onClickStartup?: (startup: StartupType | null) => void;
+interface StartupTableProps<T extends StartupReadType | StartupType> {
+    startups: T[];
+    onClickStartup?: (startup: T | null) => void;
     selectedIds?: number[];
     setSelectedIds?: React.Dispatch<React.SetStateAction<number[]>>;
 }
 
-export default function StartupTable({
+export default function StartupTable<T extends StartupReadType | StartupType>({
     startups,
     onClickStartup,
     selectedIds,
     setSelectedIds,
-}: StartupTableProps) {
+}: StartupTableProps<T>) {
     // Toggle single row
     const toggleRow = (id: number) => {
         setSelectedIds?.((prev) =>
@@ -69,7 +69,7 @@ export default function StartupTable({
                         <tbody>
                             {startups.map((startup, i) => (
                                 <tr
-                                    key={startup.id}
+                                    key={i}
                                     onClick={() => {
                                         if (onClickStartup)
                                             onClickStartup(startup);

@@ -10,9 +10,9 @@ import httpx
 from openai import OpenAI
 import os
 from pydantic import BaseModel, ValidationError
-from sqlmodel import Session, select
+from sqlmodel import Session
 from api.database import get_session
-from api.models.data_models import Startup
+from api.models.data_models import Startup, StartupUpsert
 
 load_dotenv()
 
@@ -23,59 +23,6 @@ client = OpenAI(
 )
 
 CA_CERT_PATH = os.getenv("CA_CERT_PATH", None)
-
-TEMP_PLACEHOLDER_JSON_OUTPUT: Startup = {
-    "company_name": "Weitu AI",
-    "company_website": "https://weitu.ai",
-    "year_founded": "2024",
-    "country": "Hong Kong",
-    "num_employees": "11-50",
-    "founders": {"Liwei Wang, Ph.D.": ""},
-    "investors": [
-        "ICO Group Limited",
-        "Unnamed global internet technology companies and angel investors",
-    ],
-    "funding_stage": "Seed",
-    "funds_raised": "$1M-$5M",
-    "ref_funding": [
-        "TipRanks: ICO Group Limited announces subscription of preferred shares in Weitu AI Inc. for US$3,000,000 (https://www.tipranks.com/news/company-announcements/ico-group-limited-announces-subscription-of-preferred-shares-in-weitu-ai-inc)",
-        "AIBase / \u7ad9\u957f\u4e4b\u5bb6 reporting Weitu AI completed an angel round with a post-money valuation of US$100M (https://www.aibase.com/news/5602)",
-        "1AI.net coverage of Weitu AI's angel round and valuation (https://www.1ai.net/en/4418.html)",
-    ],
-    "tech_offering": "Weitu AI develops full\u2011stack multimodal large models and products that understand and generate across text, image, audio and video modalities. Their platform focuses on multimodal understanding, retrieval and generation, and exposes productized applications such as InstMind (YouTube-video understanding and insight extraction). The company positions its technology to accelerate multimodal workflows for both individual productivity and enterprise applications, and to integrate into device manufacturers and service systems for richer interactive experiences.",
-    "ref_tech": [
-        "Weitu AI official site \u2013 technology and products overview (https://weitu.ai/)",
-        "Weitu AI English site \u2013 product mention (InstMind) and multimodal model focus (https://weitu.ai/en)",
-        "Weitu AI hiring page describing multimodal algorithm roles and stack (https://weitu.ai/en/join-us/)",
-    ],
-    "uvp": "Weitu AI's unique value proposition is delivering practical, product\u2011driven multimodal AI that converts complex audio/video/text/image inputs into actionable insights and interactive experiences. By building full\u2011stack multimodal models and shipping verticalized products (e.g., video understanding tools) the company aims to raise individual productivity and enable businesses to embed multimodal intelligence into devices and services\u2014targeting scenarios from smartphone AI features to enterprise data asset unlocking.",
-    "ref_uvp": [
-        "Weitu AI official site \u2013 product and mission statement (https://weitu.ai/)",
-        "Weitu AI English site \u2013 product positioning and InstMind showcase (https://weitu.ai/en)",
-    ],
-    "trl": "TRL 5-7",
-    "trl_explanation": "Weitu AI presents deployed product prototypes (InstMind) and commercial collaborations with device makers and internet companies, indicating validated prototypes and early commercial integration rather than only research proofs of concept.",
-    "competitors": [
-        {
-            "OpenAI": {
-                "description": "Provider of large multimodal models (GPT family) and APIs used for text, image and limited multimodal tasks; strong ecosystem and developer adoption.",
-                "url": "https://openai.com",
-            }
-        },
-        {
-            "Anthropic": {
-                "description": "Developer of large language models with a focus on safety and helpfulness; expanding multimodal capabilities and enterprise offerings as alternatives to other LLM providers.",
-                "url": "https://www.anthropic.com",
-            }
-        },
-    ],
-    "use_cases": [
-        "Automated understanding and summarization of long-form videos (education, training, content indexing)",
-        "Multimodal assistant and on\u2011device AI features for smartphones and consumer devices",
-        "Enterprise multimodal data search and insight extraction from mixed media repositories",
-        "Interactive multimodal interfaces for service robots and intelligent systems",
-    ],
-}
 
 
 class CheckDomainResponse(BaseModel):
@@ -211,7 +158,7 @@ def lookup_startup(
     startup = None
     while not startup:
         try:
-            startup = Startup.model_validate(startup_info)
+            startup = StartupUpsert.model_validate(startup_info)
         except ValidationError as e:
             e_locs = [err["loc"] for err in e.errors()]
             for keys_to_delete in e_locs:
@@ -222,11 +169,9 @@ def lookup_startup(
                     for key_to_delete in keys_to_delete[:-1]:
                         target_dict = target_dict[key_to_delete]
                     target_dict.pop(keys_to_delete[-1])
-    # startup = Startup.model_validate(TEMP_PLACEHOLDER_JSON_OUTPUT)
     startup.company_website = startup_url
+    startup = Startup(**startup.model_dump())
     session.add(startup)
     session.commit()
-    startup = session.exec(
-        select(Startup).where(Startup.company_website == startup_url)
-    ).one_or_none()  # Fetch updated startup
+    session.refresh(startup)  # Fetch updated startup
     return startup

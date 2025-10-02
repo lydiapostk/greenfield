@@ -133,7 +133,7 @@ class CompetitorsType(TypeDecorator):
 
 # -------------------- Base SQLModel --------------------
 class StartupBase(SQLModel):
-    company_name: str
+    company_name: Optional[str] = None
     company_website: Optional[str] = Field(default=None, unique=True)
     year_founded: Optional[str] = None
     country: Optional[str] = None
@@ -223,8 +223,8 @@ class Startup(StartupBase, table=True):
     )
 
 
-class StartupUpdate(StartupBase):
-    company_name: Optional[str] = None
+class StartupUpsert(StartupBase):
+    pass
 
 
 class WorkstreamBase(SQLModel):

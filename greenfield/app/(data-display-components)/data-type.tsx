@@ -4,36 +4,19 @@ export type WorkstreamType = components["schemas"]["WorkstreamRead"];
 export type WorkstreamUpsertType = components["schemas"]["WorkstreamUpsert"];
 
 export type StartupType = components["schemas"]["Startup"];
-export type StartupUpdateType = components["schemas"]["StartupUpdate"];
+export type StartupReadType = components["schemas"]["StartupReadLite"];
 export type StartupFoundersType = components["schemas"]["Startup"]["founders"];
 export type CompetitorsType = components["schemas"]["Competitors"];
+export type StartupPropertyTypes =
+    | string
+    | string[]
+    | StartupFoundersType
+    | CompetitorsType;
+
+export type StartupUpsertType = components["schemas"]["StartupUpsert"];
 export type DomainCheckResponse = components["schemas"]["CheckDomainResponse"];
 export type BulkDeleteStartupsResponse =
-    operations["delete_item_startups_bulk_by_ids_delete"]["responses"];
-export const StartupStringParams: (keyof StartupUpdateType)[] = [
-    /** Company Name */
-    "company_name",
-    /** Company Website */
-    "company_website",
-    /** Year Founded */
-    "year_founded",
-    /** Country */
-    "country",
-    /** Num Employees */
-    "num_employees",
-    /** Funding Stage */
-    "funding_stage",
-    /** Funds Raised */
-    "funds_raised",
-    /** Tech Offering */
-    "tech_offering",
-    /** Uvp */
-    "uvp",
-    /** Trl */
-    "trl",
-    /** Trl Explanation */
-    "trl_explanation",
-];
+    operations["delete_item_startups_by_ids_delete"]["responses"];
 
 export const ListOfYearsAsString = (start: number, end: number) => {
     const years: string[] = [];

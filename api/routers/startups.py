@@ -1,13 +1,14 @@
 from typing import Optional
 from dotenv import load_dotenv
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, HTTPException, Query
 from fastapi import Depends
 from openai import OpenAI
 import os
 from pydantic import BaseModel
 from sqlmodel import Session, select
 from api.database import get_session
-from api.models.data_models import Startup, StartupUpdate
+from api.models.data_models import Startup, StartupUpsert
+from api.models.read_models import StartupReadLite
 
 load_dotenv()
 
@@ -23,51 +24,55 @@ class StatusResponse(BaseModel):
     error: Optional[str]
 
 
-@router.get("/", response_model=list[Startup])
+@router.get("/", response_model=list[StartupReadLite])
 def list_startups(session: Session = Depends(get_session)):
     return session.exec(select(Startup).order_by(Startup.company_name)).all()
 
 
-@router.get("/fetch/by_id", response_model=Startup | None)
-def get_startup_by_id(id: str = Query(...), session: Session = Depends(get_session)):
-    startup = session.get(Startup, id)
-    return startup
+@router.get("/by_id/{startup_id}", response_model=StartupReadLite)
+def get_startup_by_id(startup_id: int, session: Session = Depends(get_session)):
+    db_startup = session.get(Startup, startup_id)
+    if not db_startup:
+        raise HTTPException(status_code=404, detail="Start-up not found")
+    return db_startup
 
 
-@router.get("/fetch/by_website", response_model=Startup | None)
+@router.get("/by_website", response_model=Startup | None)
 def get_startup_by_website(
     lookup_url: str = Query(...), session: Session = Depends(get_session)
 ):
-    startup = session.exec(
+    maybe_startup = session.exec(
         select(Startup).where(Startup.company_website == lookup_url)
     ).one_or_none()
-    return startup
+    return maybe_startup
 
 
-@router.post("/update/by_id", response_model=Startup | None)
+@router.put("/{startup_id}", response_model=StartupReadLite)
 def update_startup_by_id(
-    startup_update: StartupUpdate, session: Session = Depends(get_session)
+    startup_id: int,
+    startup_update: StartupUpsert,
+    session: Session = Depends(get_session),
 ):
-    startup = session.get(Startup, startup_update.id)
-    if not startup:
-        return None
+    db_startup = session.get(Startup, startup_id)
+    if not db_startup:
+        raise HTTPException(status_code=404, detail="Start-up not found")
     update_data = startup_update.model_dump(exclude_unset=True)
-    startup.sqlmodel_update(update_data)
-    session.add(startup)
+    db_startup.sqlmodel_update(update_data)
+    session.add(db_startup)
     session.commit()
-    session.refresh(startup)
-    return startup
+    session.refresh(db_startup)
+    return db_startup
 
 
-@router.delete("/bulk/by_ids", response_model=StatusResponse)
+@router.delete("/by_ids", response_model=StatusResponse)
 def delete_item(ids: list[int], session: Session = Depends(get_session)):
     for id in ids:
-        startup = session.get(Startup, id)
-        if not startup:
+        db_startup = session.get(Startup, id)
+        if not db_startup:
             return StatusResponse(
                 ok=False, error="No matching items found"
             )  # Cancel delete if anything is missing
-        session.delete(startup)
+        session.delete(db_startup)
 
     session.commit()
     return StatusResponse(ok=True, error=None)

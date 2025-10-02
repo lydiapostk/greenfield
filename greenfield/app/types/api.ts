@@ -21,7 +21,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/startups/fetch/by_id": {
+    "/startups/by_id/{startup_id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -29,7 +29,7 @@ export interface paths {
             cookie?: never;
         };
         /** Get Startup By Id */
-        get: operations["get_startup_by_id_startups_fetch_by_id_get"];
+        get: operations["get_startup_by_id_startups_by_id__startup_id__get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -38,7 +38,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/startups/fetch/by_website": {
+    "/startups/by_website": {
         parameters: {
             query?: never;
             header?: never;
@@ -46,7 +46,7 @@ export interface paths {
             cookie?: never;
         };
         /** Get Startup By Website */
-        get: operations["get_startup_by_website_startups_fetch_by_website_get"];
+        get: operations["get_startup_by_website_startups_by_website_get"];
         put?: never;
         post?: never;
         delete?: never;
@@ -55,7 +55,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/startups/update/by_id": {
+    "/startups/{startup_id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -63,16 +63,16 @@ export interface paths {
             cookie?: never;
         };
         get?: never;
-        put?: never;
         /** Update Startup By Id */
-        post: operations["update_startup_by_id_startups_update_by_id_post"];
+        put: operations["update_startup_by_id_startups__startup_id__put"];
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/startups/bulk/by_ids": {
+    "/startups/by_ids": {
         parameters: {
             query?: never;
             header?: never;
@@ -83,7 +83,7 @@ export interface paths {
         put?: never;
         post?: never;
         /** Delete Item */
-        delete: operations["delete_item_startups_bulk_by_ids_delete"];
+        delete: operations["delete_item_startups_by_ids_delete"];
         options?: never;
         head?: never;
         patch?: never;
@@ -239,7 +239,27 @@ export interface components {
             risks?: string | null;
             /** Collaboration Potential */
             collaboration_potential?: string | null;
+            startup: components["schemas"]["StartupReadLite"];
+        };
+        /** EvaluationReadWithStartupLite */
+        EvaluationReadWithStartupLite: {
+            /** Competitive Advantage */
+            competitive_advantage?: string | null;
+            /** Risks */
+            risks?: string | null;
+            /** Collaboration Potential */
+            collaboration_potential?: string | null;
             startup: components["schemas"]["StartupLite"];
+        };
+        /** EvaluationReadWithWorkstreamLite */
+        EvaluationReadWithWorkstreamLite: {
+            /** Competitive Advantage */
+            competitive_advantage?: string | null;
+            /** Risks */
+            risks?: string | null;
+            /** Collaboration Potential */
+            collaboration_potential?: string | null;
+            workstream: components["schemas"]["WorkstreamLite"];
         };
         /**
          * Founders
@@ -270,10 +290,8 @@ export interface components {
         NumEmployeesEnum: "1-10" | "11-50" | "51-100" | "101-1000" | ">1000";
         /** Startup */
         Startup: {
-            /** Id */
-            id?: number | null;
             /** Company Name */
-            company_name: string;
+            company_name?: string | null;
             /** Company Website */
             company_website?: string | null;
             /** Year Founded */
@@ -306,6 +324,8 @@ export interface components {
             competitors?: components["schemas"]["Competitors"] | null;
             /** Use Cases */
             use_cases?: string[] | null;
+            /** Id */
+            id?: number | null;
         };
         /** StartupLite */
         StartupLite: {
@@ -319,10 +339,52 @@ export interface components {
             company_website: string | null;
             founders?: components["schemas"]["Founders"] | null;
         };
-        /** StartupUpdate */
-        StartupUpdate: {
+        /** StartupReadLite */
+        StartupReadLite: {
+            /** Company Name */
+            company_name?: string | null;
+            /** Company Website */
+            company_website?: string | null;
+            /** Year Founded */
+            year_founded?: string | null;
+            /** Country */
+            country?: string | null;
+            num_employees?: components["schemas"]["NumEmployeesEnum"] | null;
+            founders?: components["schemas"]["Founders"] | null;
+            /** Investors */
+            investors?: string[] | null;
+            funding_stage?: components["schemas"]["FundingStageEnum"] | null;
+            funds_raised?: components["schemas"]["FundsRaisedEnum"] | null;
+            /** Ref Funding */
+            ref_funding?: string[] | null;
+            /** Tech Offering */
+            tech_offering?: string | null;
+            /** Ref Tech */
+            ref_tech?: string[] | null;
+            /** Tech Embedding */
+            tech_embedding?: number[] | null;
+            /** Uvp */
+            uvp?: string | null;
+            /** Ref Uvp */
+            ref_uvp?: string[] | null;
+            /** Uvp Embedding */
+            uvp_embedding?: number[] | null;
+            trl?: components["schemas"]["TrlEnum"] | null;
+            /** Trl Explanation */
+            trl_explanation?: string | null;
+            competitors?: components["schemas"]["Competitors"] | null;
+            /** Use Cases */
+            use_cases?: string[] | null;
             /** Id */
             id: number;
+            /**
+             * Evaluations
+             * @default []
+             */
+            evaluations: components["schemas"]["EvaluationReadWithWorkstreamLite"][];
+        };
+        /** StartupUpsert */
+        StartupUpsert: {
             /** Company Name */
             company_name?: string | null;
             /** Company Website */
@@ -379,8 +441,25 @@ export interface components {
             /** Error Type */
             type: string;
         };
+        /** WorkstreamLite */
+        WorkstreamLite: {
+            /** Id */
+            id: number;
+            /**
+             * Create Date
+             * Format: date
+             */
+            create_date: string;
+            /** Title */
+            title: string | null;
+        };
         /** WorkstreamRead */
         WorkstreamRead: {
+            /**
+             * Title
+             * @default Untitled
+             */
+            title: string;
             /** Use Case */
             use_case?: string | null;
             /** Challenge */
@@ -392,10 +471,43 @@ export interface components {
             /** Id */
             id: number;
             /**
+             * Create Date
+             * Format: date
+             */
+            create_date: string;
+            /**
              * Evaluations
              * @default []
              */
             evaluations: components["schemas"]["EvaluationReadWithStartup"][];
+        };
+        /** WorkstreamReadLite */
+        WorkstreamReadLite: {
+            /**
+             * Title
+             * @default Untitled
+             */
+            title: string;
+            /** Use Case */
+            use_case?: string | null;
+            /** Challenge */
+            challenge?: string | null;
+            /** Analyst */
+            analyst?: string | null;
+            /** Overall Recommendation */
+            overall_recommendation?: string | null;
+            /** Id */
+            id: number;
+            /**
+             * Create Date
+             * Format: date
+             */
+            create_date: string;
+            /**
+             * Evaluations
+             * @default []
+             */
+            evaluations: components["schemas"]["EvaluationReadWithStartupLite"][];
         };
         /** WorkstreamStartupEvaluation */
         WorkstreamStartupEvaluation: {
@@ -421,6 +533,11 @@ export interface components {
         };
         /** WorkstreamUpsert */
         WorkstreamUpsert: {
+            /**
+             * Title
+             * @default Untitled
+             */
+            title: string;
             /** Use Case */
             use_case?: string | null;
             /** Challenge */
@@ -454,18 +571,18 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Startup"][];
+                    "application/json": components["schemas"]["StartupReadLite"][];
                 };
             };
         };
     };
-    get_startup_by_id_startups_fetch_by_id_get: {
+    get_startup_by_id_startups_by_id__startup_id__get: {
         parameters: {
-            query: {
-                id: string;
-            };
+            query?: never;
             header?: never;
-            path?: never;
+            path: {
+                startup_id: number;
+            };
             cookie?: never;
         };
         requestBody?: never;
@@ -476,7 +593,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Startup"] | null;
+                    "application/json": components["schemas"]["StartupReadLite"];
                 };
             };
             /** @description Validation Error */
@@ -490,7 +607,7 @@ export interface operations {
             };
         };
     };
-    get_startup_by_website_startups_fetch_by_website_get: {
+    get_startup_by_website_startups_by_website_get: {
         parameters: {
             query: {
                 lookup_url: string;
@@ -521,16 +638,18 @@ export interface operations {
             };
         };
     };
-    update_startup_by_id_startups_update_by_id_post: {
+    update_startup_by_id_startups__startup_id__put: {
         parameters: {
             query?: never;
             header?: never;
-            path?: never;
+            path: {
+                startup_id: number;
+            };
             cookie?: never;
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["StartupUpdate"];
+                "application/json": components["schemas"]["StartupUpsert"];
             };
         };
         responses: {
@@ -540,7 +659,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Startup"] | null;
+                    "application/json": components["schemas"]["StartupReadLite"];
                 };
             };
             /** @description Validation Error */
@@ -554,7 +673,7 @@ export interface operations {
             };
         };
     };
-    delete_item_startups_bulk_by_ids_delete: {
+    delete_item_startups_by_ids_delete: {
         parameters: {
             query?: never;
             header?: never;
@@ -664,7 +783,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["WorkstreamRead"][];
+                    "application/json": components["schemas"]["WorkstreamReadLite"][];
                 };
             };
         };
@@ -688,7 +807,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["WorkstreamRead"];
+                    "application/json": components["schemas"]["WorkstreamReadLite"];
                 };
             };
             /** @description Validation Error */

@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 import os
 
 # import your models
-from api import models  # adjust import path
+from api.models import data_models  # adjust import path
 
 # load .env
 load_dotenv()
@@ -25,12 +25,14 @@ for s in startups:
     # ✅ Validate founders + competitors before inserting
     founders = None
     if s.get("founders"):
-        founders = models.Founders.model_validate(s["founders"]).model_dump()
+        founders = data_models.Founders.model_validate(s["founders"]).model_dump()
 
     competitors = None
     if s.get("competitors"):
         print(s["competitors"])
-        competitors = models.Competitors.model_validate(s["competitors"]).model_dump()
+        competitors = data_models.Competitors.model_validate(
+            s["competitors"]
+        ).model_dump()
 
     cur.execute(
         """

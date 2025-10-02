@@ -3,7 +3,7 @@
 import { use, useEffect, useState } from "react";
 import Icon from "@/components/icon/icon";
 import StartupEditForm from "@/data_display/startup-edit-form";
-import { StartupType } from "@/data_display/data-type";
+import { StartupReadType, StartupType } from "@/data_display/data-type";
 
 export default function DoubleClick({
     params,
@@ -13,16 +13,16 @@ export default function DoubleClick({
     const { startup_id } = use(params); // unwrap the Promise
     const decodedStartupId = decodeURIComponent(startup_id);
     const [error, setError] = useState<string>("");
-    const [startup, setStartup] = useState<StartupType | null>(null);
+    const [startup, setStartup] = useState<StartupReadType | null>(null);
 
     useEffect(() => {
         fetch(
             `${
                 process.env.NEXT_PUBLIC_API_URL
-            }/startups/fetch/by_id?id=${encodeURIComponent(decodedStartupId)}`
+            }/startups/by_id/${encodeURIComponent(decodedStartupId)}`
         )
             .then((res) =>
-                res.json().then((data: StartupType) => {
+                res.json().then((data: StartupReadType) => {
                     setStartup(data);
                 })
             )

@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import SideDrawer from "@/components/side_drawer";
 import ConfirmModal from "@/components/confirm-modal";
 import Icon from "@/components/icon/icon";
-import { StartupType } from "@/data_display/data-type";
+import { StartupReadType, StartupType } from "@/data_display/data-type";
 import StartupEditForm from "@/data_display/startup-edit-form";
 import StartupTable from "@/data_display/startup-table";
 import StartupView from "@/data_display/startup-view";
@@ -13,11 +13,11 @@ import DeleteButton from "./delete-button";
 
 export default function BrowseStartups() {
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [startups, setStartups] = useState<StartupType[]>([]);
+    const [startups, setStartups] = useState<StartupReadType[]>([]);
     useEffect(() => {
         fetch(`${process.env.NEXT_PUBLIC_API_URL}/startups/`)
             .then((res) =>
-                res.json().then((data: StartupType[]) => {
+                res.json().then((data: StartupReadType[]) => {
                     setStartups(data);
                     setIsLoading(false);
                 })
@@ -27,9 +27,8 @@ export default function BrowseStartups() {
 
     // Sidebar controls
     const [inFullScreen, setInFullScreen] = useState<boolean>(false);
-    const [selectedStartup, setSelectedStartup] = useState<StartupType | null>(
-        null
-    );
+    const [selectedStartup, setSelectedStartup] =
+        useState<StartupReadType | null>(null);
     const [inEditMode, setInEditMode] = useState<boolean>(false);
     useEffect(() => {
         if (!selectedStartup) return;
@@ -47,7 +46,7 @@ export default function BrowseStartups() {
     const [search, setSearch] = useState<string>("");
     const filteredValues = useMemo(() => {
         return startups.filter((startup) =>
-            startup.company_name.toLowerCase().includes(search.toLowerCase())
+            startup.company_name?.toLowerCase().includes(search.toLowerCase())
         );
     }, [startups, search]);
 

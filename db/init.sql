@@ -29,7 +29,7 @@ CREATE TYPE trl AS ENUM('TRL 1-4', 'TRL 5-7', 'TRL 8-9');
 CREATE TABLE
     startups (
         id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-        company_name TEXT NOT NULL,
+        company_name TEXT,
         company_website TEXT UNIQUE,
         year_founded VARCHAR(4),
         country TEXT,

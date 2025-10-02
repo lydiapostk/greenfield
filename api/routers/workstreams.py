@@ -13,7 +13,7 @@ router = APIRouter(tags=["workstreams"])
 def create_workstream(
     workstream_create: WorkstreamUpsert, session: Session = Depends(get_session)
 ):
-    workstream = Workstream.model_validate(workstream_create)
+    workstream = Workstream(**workstream_create.model_dump())
     session.add(workstream)
     session.commit()
     session.refresh(workstream)

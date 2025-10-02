@@ -1,6 +1,6 @@
 "use client";
 
-import { getCitationAsElement, textOrToBeFilled } from "./citation";
+import { textOrToBeFilled } from "./citation";
 import { WorkstreamType } from "./data-type";
 
 export interface WorkstreamPreviewProps {
