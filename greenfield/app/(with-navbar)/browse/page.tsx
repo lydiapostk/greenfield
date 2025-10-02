@@ -8,6 +8,8 @@ import { StartupType } from "@/data_display/data-type";
 import StartupEditForm from "@/data_display/startup-edit-form";
 import StartupTable from "@/data_display/startup-table";
 import StartupView from "@/data_display/startup-view";
+import ToggleViewEditButton from "./toggle-view-edit-button";
+import DeleteButton from "./delete-button";
 
 export default function BrowseStartups() {
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -138,27 +140,12 @@ export default function BrowseStartups() {
             <div className="self-center lg:w-3/5">
                 {/* Table tools */}
                 <div className="flex flex-row justify-start items-center py-2">
-                    <div
-                        className={`inline-flex bg-rose-600 rounded-2xl px-3 py-1.5 
-                                hover:bg-rose-700 stroke-2 gap-1 transition ease-in
-                                ${
-                                    selectedIds.length > 0 && !selectedStartup
-                                        ? "cursor-pointer"
-                                        : "cursor-default opacity-0"
-                                }`}
-                        onClick={() => {
-                            if (selectedIds.length === 0) return;
-                            setIsDelModalOpen(true);
-                        }}
-                    >
-                        <Icon
-                            name={"delete"}
-                            color="white"
-                            size={"sm"}
-                            className="self-center"
-                        />
-                        Delete ({selectedIds.length})
-                    </div>
+                    <DeleteButton
+                        onClick={() => setIsDelModalOpen(true)}
+                        showText={true}
+                        deleteText={`Delete (${selectedIds.length})`}
+                        disabled={selectedIds.length == 0 || !!selectedStartup}
+                    />
                 </div>
                 {/* Table */}
                 <StartupTable
@@ -180,40 +167,14 @@ export default function BrowseStartups() {
                     {/* Sidebar tools */}
                     <div className="flex flex-row w-full justify-between items-center mt-10">
                         <div className="flex flex-row w-full justify-start items-center gap-2">
-                            {/* Toggle between edit or view mode */}
-                            <div
-                                className={`inline-flex w-fit rounded-2xl px-3 py-1.5 mb-6 self-end 
-                                        stroke-2 gap-1 transition ease-in cursor-pointer 
-                                        ${
-                                            inEditMode
-                                                ? "bg-violet-200  hover:bg-violet-100 text-stone-700"
-                                                : "bg-violet-600  hover:bg-violet-700 text-stone-200"
-                                        } font-medium`}
-                                onClick={() => setInEditMode(!inEditMode)}
-                            >
-                                {!inEditMode && (
-                                    <Icon
-                                        name={"edit"}
-                                        size="md"
-                                        className="stroke-stone-200 hover:stroke-[2]"
-                                    />
-                                )}
-                                {inEditMode ? "Exit edit mode" : "Edit"}
-                            </div>
-                            {/* Delete function */}
-                            <div
-                                className={`inline-flex bg-rose-600 rounded-2xl px-3 py-1.5 mb-6 self-end 
-                                        hover:bg-rose-700 stroke-2 gap-1 transition ease-in cursor-pointer 
-                                        w-fit text-stone-200 font-medium`}
+                            <ToggleViewEditButton
+                                inEditMode={inEditMode}
+                                setInEditMode={setInEditMode}
+                            />
+                            <DeleteButton
                                 onClick={() => setIsDelModalOpen(true)}
-                            >
-                                <Icon
-                                    name={"delete"}
-                                    size="md"
-                                    className="stroke-stone-200 hover:stroke-[2]"
-                                />
-                                Delete
-                            </div>
+                                showText={true}
+                            />
                         </div>
                         {/* Enter full screen */}
                         <div
