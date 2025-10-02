@@ -235,7 +235,7 @@ class WorkstreamBase(SQLModel):
     overall_recommendation: Optional[str] = None
 
 
-class WorkstreamCreate(WorkstreamBase):
+class WorkstreamUpsert(WorkstreamBase):
     pass
 
 
@@ -266,3 +266,40 @@ class WorkstreamStartupEvaluation(WorkstreamStartupEvaluationBase, table=True):
     startup_id: int = Field(foreign_key="startups.id", primary_key=True)
     workstream: Workstream = Relationship(back_populates="evaluations")
     startup: Startup = Relationship(back_populates="evaluations")
+
+
+# Startup info (lightweight, only expose what’s needed in evaluation)
+class StartupLite(SQLModel):
+    id: int
+    company_name: str
+    country: Optional[str] = None
+
+
+# Startup info (lightweight, only expose what’s needed in evaluation)
+class WorkstreamLite(SQLModel):
+    id: int
+    use_case: Optional[str]
+    users: Optional[List[str]]
+    analyst: Optional[str]
+
+
+# Evaluation with nested startup info
+class EvaluationReadWithStartup(WorkstreamStartupEvaluationBase):
+    startup: StartupLite
+
+
+# Evaluation with nested workstream info
+class EvaluationReadWithWorkstream(WorkstreamStartupEvaluationBase):
+    workstream: WorkstreamLite
+
+
+# Workstream with evaluations
+class WorkstreamRead(WorkstreamBase):
+    id: int
+    evaluations: List[EvaluationReadWithStartup] = []
+
+
+# Workstream with evaluations
+class StartupRead(StartupBase):
+    id: int
+    evaluations: List[EvaluationReadWithWorkstream] = []

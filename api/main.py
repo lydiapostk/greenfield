@@ -5,7 +5,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from openai import OpenAI
 from api.database import init_db
-from api.routers import evaluation, lookup, startups, workstreams
+from api.routers import evaluations, lookup, startups, workstreams
 
 load_dotenv()
 
@@ -33,5 +33,5 @@ app.add_middleware(
 )
 app.include_router(startups.router, prefix="/startups")
 app.include_router(lookup.router, prefix="/lookup")
-app.include_router(workstreams.router, prefix="/lookup")
-app.include_router(evaluation.router, prefix="/lookup")
+app.include_router(workstreams.router, prefix="/workstreams")
+app.include_router(evaluations.router, prefix="/evaluations")

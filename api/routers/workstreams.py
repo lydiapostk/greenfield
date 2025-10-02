@@ -3,14 +3,14 @@ from sqlmodel import Session, select
 from typing import List
 
 from api.database import get_session
-from api.models import Workstream, WorkstreamCreate
+from api.models import Workstream, WorkstreamRead, WorkstreamUpsert
 
-router = APIRouter(prefix="/workstreams", tags=["workstreams"])
+router = APIRouter(tags=["workstreams"])
 
 
-@router.post("/", response_model=Workstream)
+@router.post("/", response_model=WorkstreamRead)
 def create_workstream(
-    workstream_create: WorkstreamCreate, session: Session = Depends(get_session)
+    workstream_create: WorkstreamUpsert, session: Session = Depends(get_session)
 ):
     workstream = Workstream.model_validate(workstream_create)
     session.add(workstream)
@@ -19,14 +19,14 @@ def create_workstream(
     return workstream
 
 
-@router.get("/", response_model=List[Workstream])
+@router.get("/", response_model=List[WorkstreamRead])
 def list_workstreams(session: Session = Depends(get_session)):
     return session.exec(select(Workstream)).all()
 
 
-@router.put("/{workstream_id}", response_model=Workstream)
+@router.put("/{workstream_id}", response_model=WorkstreamRead)
 def update_workstream(
-    workstream_id: int, ws: Workstream, session: Session = Depends(get_session)
+    workstream_id: int, ws: WorkstreamUpsert, session: Session = Depends(get_session)
 ):
     db_ws = session.get(Workstream, workstream_id)
     if not db_ws:

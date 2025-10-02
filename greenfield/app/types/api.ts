@@ -126,7 +126,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/lookup/workstreams/": {
+    "/workstreams/": {
         parameters: {
             query?: never;
             header?: never;
@@ -134,17 +134,17 @@ export interface paths {
             cookie?: never;
         };
         /** List Workstreams */
-        get: operations["list_workstreams_lookup_workstreams__get"];
+        get: operations["list_workstreams_workstreams__get"];
         put?: never;
         /** Create Workstream */
-        post: operations["create_workstream_lookup_workstreams__post"];
+        post: operations["create_workstream_workstreams__post"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/lookup/workstreams/{workstream_id}": {
+    "/workstreams/{workstream_id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -153,7 +153,7 @@ export interface paths {
         };
         get?: never;
         /** Update Workstream */
-        put: operations["update_workstream_lookup_workstreams__workstream_id__put"];
+        put: operations["update_workstream_workstreams__workstream_id__put"];
         post?: never;
         delete?: never;
         options?: never;
@@ -161,7 +161,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/lookup/evaluations/": {
+    "/evaluations/": {
         parameters: {
             query?: never;
             header?: never;
@@ -169,17 +169,17 @@ export interface paths {
             cookie?: never;
         };
         /** List Evaluations */
-        get: operations["list_evaluations_lookup_evaluations__get"];
+        get: operations["list_evaluations_evaluations__get"];
         put?: never;
         /** Create Evaluation */
-        post: operations["create_evaluation_lookup_evaluations__post"];
+        post: operations["create_evaluation_evaluations__post"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/lookup/evaluations/{workstream_id}/{startup_id}": {
+    "/evaluations/{workstream_id}/{startup_id}": {
         parameters: {
             query?: never;
             header?: never;
@@ -188,7 +188,7 @@ export interface paths {
         };
         get?: never;
         /** Update Evaluation */
-        put: operations["update_evaluation_lookup_evaluations__workstream_id___startup_id__put"];
+        put: operations["update_evaluation_evaluations__workstream_id___startup_id__put"];
         post?: never;
         delete?: never;
         options?: never;
@@ -230,6 +230,16 @@ export interface components {
         Competitors: {
             [key: string]: components["schemas"]["CompetitorInfo"];
         }[];
+        /** EvaluationReadWithStartup */
+        EvaluationReadWithStartup: {
+            /** Competitive Advantage */
+            competitive_advantage?: string | null;
+            /** Risks */
+            risks?: string | null;
+            /** Collaboration Potential */
+            collaboration_potential?: string | null;
+            startup: components["schemas"]["StartupLite"];
+        };
         /**
          * Founders
          * @description Map of founder name -> website URL
@@ -296,6 +306,15 @@ export interface components {
             /** Use Cases */
             use_cases?: string[] | null;
         };
+        /** StartupLite */
+        StartupLite: {
+            /** Id */
+            id: number;
+            /** Company Name */
+            company_name: string;
+            /** Country */
+            country?: string | null;
+        };
         /** StartupUpdate */
         StartupUpdate: {
             /** Id */
@@ -356,8 +375,8 @@ export interface components {
             /** Error Type */
             type: string;
         };
-        /** Workstream */
-        Workstream: {
+        /** WorkstreamRead */
+        WorkstreamRead: {
             /** Use Case */
             use_case?: string | null;
             /** Challenge */
@@ -369,20 +388,12 @@ export interface components {
             /** Overall Recommendation */
             overall_recommendation?: string | null;
             /** Id */
-            id?: number | null;
-        };
-        /** WorkstreamCreate */
-        WorkstreamCreate: {
-            /** Use Case */
-            use_case?: string | null;
-            /** Challenge */
-            challenge?: string | null;
-            /** Users */
-            users?: string[] | null;
-            /** Analyst */
-            analyst?: string | null;
-            /** Overall Recommendation */
-            overall_recommendation?: string | null;
+            id: number;
+            /**
+             * Evaluations
+             * @default []
+             */
+            evaluations: components["schemas"]["EvaluationReadWithStartup"][];
         };
         /** WorkstreamStartupEvaluation */
         WorkstreamStartupEvaluation: {
@@ -405,6 +416,19 @@ export interface components {
             risks?: string | null;
             /** Collaboration Potential */
             collaboration_potential?: string | null;
+        };
+        /** WorkstreamUpsert */
+        WorkstreamUpsert: {
+            /** Use Case */
+            use_case?: string | null;
+            /** Challenge */
+            challenge?: string | null;
+            /** Users */
+            users?: string[] | null;
+            /** Analyst */
+            analyst?: string | null;
+            /** Overall Recommendation */
+            overall_recommendation?: string | null;
         };
     };
     responses: never;
@@ -625,7 +649,7 @@ export interface operations {
             };
         };
     };
-    list_workstreams_lookup_workstreams__get: {
+    list_workstreams_workstreams__get: {
         parameters: {
             query?: never;
             header?: never;
@@ -640,12 +664,12 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Workstream"][];
+                    "application/json": components["schemas"]["WorkstreamRead"][];
                 };
             };
         };
     };
-    create_workstream_lookup_workstreams__post: {
+    create_workstream_workstreams__post: {
         parameters: {
             query?: never;
             header?: never;
@@ -654,7 +678,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["WorkstreamCreate"];
+                "application/json": components["schemas"]["WorkstreamUpsert"];
             };
         };
         responses: {
@@ -664,7 +688,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Workstream"];
+                    "application/json": components["schemas"]["WorkstreamRead"];
                 };
             };
             /** @description Validation Error */
@@ -678,7 +702,7 @@ export interface operations {
             };
         };
     };
-    update_workstream_lookup_workstreams__workstream_id__put: {
+    update_workstream_workstreams__workstream_id__put: {
         parameters: {
             query?: never;
             header?: never;
@@ -689,7 +713,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["Workstream"];
+                "application/json": components["schemas"]["WorkstreamUpsert"];
             };
         };
         responses: {
@@ -699,7 +723,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Workstream"];
+                    "application/json": components["schemas"]["WorkstreamRead"];
                 };
             };
             /** @description Validation Error */
@@ -713,7 +737,7 @@ export interface operations {
             };
         };
     };
-    list_evaluations_lookup_evaluations__get: {
+    list_evaluations_evaluations__get: {
         parameters: {
             query?: {
                 workstream_id?: number | null;
@@ -745,7 +769,7 @@ export interface operations {
             };
         };
     };
-    create_evaluation_lookup_evaluations__post: {
+    create_evaluation_evaluations__post: {
         parameters: {
             query?: never;
             header?: never;
@@ -778,7 +802,7 @@ export interface operations {
             };
         };
     };
-    update_evaluation_lookup_evaluations__workstream_id___startup_id__put: {
+    update_evaluation_evaluations__workstream_id___startup_id__put: {
         parameters: {
             query?: never;
             header?: never;

@@ -6,7 +6,7 @@ from typing import List
 from api.database import get_session
 from api.models import WorkstreamStartupEvaluation, WorkstreamStartupEvaluationUpdate
 
-router = APIRouter(prefix="/evaluations", tags=["evaluations"])
+router = APIRouter(tags=["evaluations"])
 
 
 @router.post("/", response_model=WorkstreamStartupEvaluation)
