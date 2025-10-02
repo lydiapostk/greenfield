@@ -22,7 +22,7 @@ import {
     StartupFoundersType,
     verifyInputIsURL,
     CompetitorsType,
-} from "./startup-data-type";
+} from "./data-type";
 
 interface StartupEditFormProps {
     startup: StartupType;

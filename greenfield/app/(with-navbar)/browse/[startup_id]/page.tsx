@@ -3,7 +3,7 @@
 import { use, useEffect, useState } from "react";
 import Icon from "@/components/icon/icon";
 import StartupEditForm from "@/data_display/startup-edit-form";
-import { StartupType } from "@/data_display/startup-data-type";
+import { StartupType } from "@/data_display/data-type";
 
 export default function DoubleClick({
     params,

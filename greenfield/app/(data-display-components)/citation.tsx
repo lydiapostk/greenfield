@@ -2,7 +2,7 @@ import Icon from "@/components/icon/icon";
 import EditableDictionaryField, {
     DictionaryEntry,
 } from "@/components/input-field/editable-dictionary-field";
-import { StartupType, verifyInputIsURL } from "./startup-data-type";
+import { StartupType, verifyInputIsURL } from "./data-type";
 
 export const textOrUnknown = (text: string | undefined | null) =>
     text ? text : <p className="text-gray-700">Unknown</p>;

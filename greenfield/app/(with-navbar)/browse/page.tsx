@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import SideDrawer from "@/components/side_drawer";
 import ConfirmModal from "@/components/confirm-modal";
 import Icon from "@/components/icon/icon";
-import { StartupType } from "@/data_display/startup-data-type";
+import { StartupType } from "@/data_display/data-type";
 import StartupEditForm from "@/data_display/startup-edit-form";
 import StartupTable from "@/data_display/startup-table";
 import StartupView from "@/data_display/startup-view";

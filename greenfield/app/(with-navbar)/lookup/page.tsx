@@ -7,10 +7,7 @@ import { typingEffect } from "@/components/animate-text";
 import Icon from "@/components/icon/icon";
 import StartupDrawer from "@/components/side_drawer";
 import TextInputField from "@/components/input-field/input-text-field";
-import {
-    StartupType,
-    DomainCheckResponse,
-} from "@/data_display/startup-data-type";
+import { StartupType, DomainCheckResponse } from "@/data_display/data-type";
 import StartupTable from "@/data_display/startup-table";
 import StartupView from "@/data_display/startup-view";
 

@@ -1,7 +1,7 @@
 "use ref";
 
 import Checkbox from "@/components/checkbox";
-import { StartupType } from "./startup-data-type";
+import { StartupType } from "./data-type";
 
 interface StartupTableProp {
     startups: StartupType[];
