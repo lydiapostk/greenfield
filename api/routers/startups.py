@@ -55,7 +55,7 @@ def update_startup_by_id(
     startup.sqlmodel_update(update_data)
     session.add(startup)
     session.commit()
-    startup = session.get(Startup, startup.id)
+    session.refresh(startup)
     return startup
 
 

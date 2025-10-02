@@ -1,6 +1,6 @@
 from typing import Any, Optional, List, Dict
 from pydantic import HttpUrl, RootModel, BaseModel, field_validator
-from sqlmodel import SQLModel, Field, Column, JSON, TypeDecorator
+from sqlmodel import Relationship, SQLModel, Field, Column, JSON, TypeDecorator
 from sqlalchemy.dialects.postgresql import ENUM
 from pgvector.sqlalchemy import Vector
 import enum
@@ -217,7 +217,52 @@ class StartupBase(SQLModel):
 class Startup(StartupBase, table=True):
     __tablename__ = "startups"
     id: Optional[int] = Field(default=None, primary_key=True)
+    evaluations: List["WorkstreamStartupEvaluation"] = Relationship(
+        back_populates="startup",
+        sa_relationship_kwargs={"cascade": "all, delete-orphan"},
+    )
 
 
 class StartupUpdate(StartupBase):
     company_name: Optional[str] = None
+
+
+class WorkstreamBase(SQLModel):
+    use_case: Optional[str] = None
+    challenge: Optional[str] = None
+    users: Optional[List[str]] = Field(sa_column=Column(JSON), default=None)
+    analyst: Optional[str] = None
+    overall_recommendation: Optional[str] = None
+
+
+class WorkstreamCreate(WorkstreamBase):
+    pass
+
+
+class Workstream(WorkstreamBase, table=True):
+    __tablename__ = "workstreams"
+
+    id: Optional[int] = Field(default=None, primary_key=True)
+    evaluations: List["WorkstreamStartupEvaluation"] = Relationship(
+        back_populates="workstream",
+        sa_relationship_kwargs={"cascade": "all, delete-orphan"},
+    )
+
+
+class WorkstreamStartupEvaluationBase(SQLModel):
+    competitive_advantage: Optional[str] = None
+    risks: Optional[str] = None
+    collaboration_potential: Optional[str] = None
+
+
+class WorkstreamStartupEvaluationUpdate(WorkstreamStartupEvaluationBase):
+    pass
+
+
+class WorkstreamStartupEvaluation(WorkstreamStartupEvaluationBase, table=True):
+    __tablename__ = "workstream_startup_evaluations"
+
+    workstream_id: int = Field(foreign_key="workstreams.id", primary_key=True)
+    startup_id: int = Field(foreign_key="startups.id", primary_key=True)
+    workstream: Workstream = Relationship(back_populates="evaluations")
+    startup: Startup = Relationship(back_populates="evaluations")

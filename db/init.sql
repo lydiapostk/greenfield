@@ -54,3 +54,24 @@ CREATE TABLE
         competitors JSONB,
         use_cases JSONB
     );
+
+-- Workstreams table
+CREATE TABLE
+    workstreams (
+        id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+        use_case TEXT,
+        challenge TEXT,
+        analyst TEXT,
+        overall_recommendation TEXT
+    );
+
+-- Workstream ↔ Startup Evaluation table (edge with properties)
+CREATE TABLE
+    workstream_startup_evaluations (
+        workstream_id INT NOT NULL REFERENCES workstreams (id) ON DELETE CASCADE,
+        startup_id INT NOT NULL REFERENCES startups (id) ON DELETE CASCADE,
+        competitive_advantage TEXT,
+        risks TEXT,
+        collaboration_potential TEXT,
+        PRIMARY KEY (workstream_id, startup_id)
+    );
