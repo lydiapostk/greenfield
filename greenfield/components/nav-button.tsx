@@ -1,13 +1,14 @@
 interface NavButtonProps {
     title: string;
     href: string;
-    mode?: "light" | "dark";
+    mode?: "light" | "dark" | "pop";
     className?: string;
 }
 
 const colourCSS = {
-    light: "text-black bg-teal-100/25 hover:bg-teal-100/50",
-    dark: "text-white bg-indigo-800/25 hover:bg-indigo-800/75",
+    light: "text-black bg-emerald-100/65 hover:bg-emerald-100/85",
+    dark: "text-white bg-indigo-800/65 hover:bg-indigo-800/85",
+    pop: "text-white bg-violet-800/65 hover:bg-violet-800/85",
 };
 
 export default function NavButton({

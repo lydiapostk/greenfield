@@ -8,23 +8,25 @@ interface EditableFieldProps<T> extends InputFieldType<string> {
     onSave: (field: T, value: string) => void;
     label: string;
     field_key: T;
-    value: string;
+    value?: string;
     multiline?: boolean;
     fontStyle?: string;
     showLabel?: boolean;
     textAreaSize?: "sm" | "md" | "lg" | number;
+    placeholder?: string;
 }
 
 export default function EditableTextField<T>({
     onSave,
     label,
     field_key,
-    value,
+    value = "",
     fontStyle = "",
     disabled = false,
     multiline = false,
     showLabel = true,
     textAreaSize = "md",
+    placeholder = "Please fill in...",
 }: EditableFieldProps<T>) {
     const [isEditing, setIsEditing] = useState(false);
     const [draft, setDraft] = useState<string>(value);
@@ -80,13 +82,15 @@ export default function EditableTextField<T>({
             {!isEditing && (
                 <p
                     className={`rounded w-fit max-w-full text-wrap ${
-                        disabled
-                            ? "cursor-not-allowed text-gray-500"
-                            : " hover:bg-stone-300 cursor-pointer"
+                        !disabled && value !== ""
+                            ? " hover:bg-stone-300 cursor-pointer"
+                            : `text-gray-500 ${
+                                  disabled ? "cursor-not-allowed" : "italic"
+                              }`
                     } ${fontStyle} `}
                     onClick={() => !disabled && setIsEditing(true)}
                 >
-                    {value}
+                    {value == "" ? placeholder : value}
                 </p>
             )}
 
@@ -105,6 +109,7 @@ export default function EditableTextField<T>({
                                 if (e.key === "Escape") cancelChange();
                             }}
                             className={`rounded border min-w-full ${textAreaSizeStyle} bg-stone-100 px-1 ${fontStyle}`}
+                            placeholder={placeholder}
                         />
                     ) : (
                         <input
@@ -116,6 +121,7 @@ export default function EditableTextField<T>({
                                 if (e.key === "Escape") cancelChange();
                             }}
                             className={`rounded border w-fit bg-stone-100/75 px-1 ${fontStyle}`}
+                            placeholder={placeholder}
                         />
                     )}
                     <div className="flex flex-row justify-end items-center gap-1">

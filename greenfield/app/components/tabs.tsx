@@ -19,12 +19,22 @@ const browseNavItem = (className?: string) => (
         className={className}
     />
 );
+const anaylseNavItem = (className?: string) => (
+    <NavButton
+        title="Analyse"
+        key="analyse"
+        href="/analyse"
+        mode="pop"
+        className={className}
+    />
+);
 
-export type ValidInternalPaths = "/browse" | "/lookup" | string;
+export type ValidInternalPaths = "/browse" | "/lookup" | "/analyse" | string;
 
 export const navItems = (className?: string) => [
     lookupNavItem(className),
     browseNavItem(className),
+    anaylseNavItem(className),
 ];
 
 export const inactiveNavItems = (
@@ -33,9 +43,11 @@ export const inactiveNavItems = (
 ) => {
     switch (currPath) {
         case "/browse":
-            return [lookupNavItem(className)];
+            return [lookupNavItem(className), anaylseNavItem(className)];
         case "/lookup":
-            return [browseNavItem(className)];
+            return [browseNavItem(className), anaylseNavItem(className)];
+        case "/analyse":
+            return [lookupNavItem(className), browseNavItem(className)];
         default:
             return navItems(className);
     }

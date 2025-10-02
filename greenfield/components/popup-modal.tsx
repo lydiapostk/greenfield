@@ -39,7 +39,7 @@ export default function ConfirmModal({
 
     return (
         <div className="fixed inset-0 bg-black/50 bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-white rounded-2xl shadow-lg p-6 w-96">
+            <div className="bg-white rounded-2xl shadow-lg p-6 min-w-96 w-fit h-fit">
                 {children}
             </div>
         </div>

@@ -230,7 +230,6 @@ class StartupUpdate(StartupBase):
 class WorkstreamBase(SQLModel):
     use_case: Optional[str] = None
     challenge: Optional[str] = None
-    users: Optional[List[str]] = Field(sa_column=Column(JSON), default=None)
     analyst: Optional[str] = None
     overall_recommendation: Optional[str] = None
 
@@ -273,13 +272,14 @@ class StartupLite(SQLModel):
     id: int
     company_name: str
     country: Optional[str] = None
+    company_website: Optional[str]
+    founders: Optional[Founders] = Field(default=None, sa_column=Column(FoundersType))
 
 
 # Startup info (lightweight, only expose what’s needed in evaluation)
 class WorkstreamLite(SQLModel):
     id: int
     use_case: Optional[str]
-    users: Optional[List[str]]
     analyst: Optional[str]
 
 

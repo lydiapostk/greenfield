@@ -24,6 +24,14 @@ def list_workstreams(session: Session = Depends(get_session)):
     return session.exec(select(Workstream)).all()
 
 
+@router.get("/{workstream_id}", response_model=List[WorkstreamRead])
+def get_workstream(workstream_id: int, session: Session = Depends(get_session)):
+    db_ws = session.get(Workstream, workstream_id)
+    if not db_ws:
+        raise HTTPException(status_code=404, detail="Workstream not found")
+    return db_ws
+
+
 @router.put("/{workstream_id}", response_model=WorkstreamRead)
 def update_workstream(
     workstream_id: int, ws: WorkstreamUpsert, session: Session = Depends(get_session)

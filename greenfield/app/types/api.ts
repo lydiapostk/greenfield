@@ -151,7 +151,8 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /** Get Workstream */
+        get: operations["get_workstream_workstreams__workstream_id__get"];
         /** Update Workstream */
         put: operations["update_workstream_workstreams__workstream_id__put"];
         post?: never;
@@ -314,6 +315,9 @@ export interface components {
             company_name: string;
             /** Country */
             country?: string | null;
+            /** Company Website */
+            company_website: string | null;
+            founders?: components["schemas"]["Founders"] | null;
         };
         /** StartupUpdate */
         StartupUpdate: {
@@ -381,8 +385,6 @@ export interface components {
             use_case?: string | null;
             /** Challenge */
             challenge?: string | null;
-            /** Users */
-            users?: string[] | null;
             /** Analyst */
             analyst?: string | null;
             /** Overall Recommendation */
@@ -423,8 +425,6 @@ export interface components {
             use_case?: string | null;
             /** Challenge */
             challenge?: string | null;
-            /** Users */
-            users?: string[] | null;
             /** Analyst */
             analyst?: string | null;
             /** Overall Recommendation */
@@ -689,6 +689,37 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["WorkstreamRead"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_workstream_workstreams__workstream_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                workstream_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WorkstreamRead"][];
                 };
             };
             /** @description Validation Error */

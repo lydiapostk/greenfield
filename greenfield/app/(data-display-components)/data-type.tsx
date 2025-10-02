@@ -1,6 +1,7 @@
 import { components, operations } from "@/app/types/api";
 
 export type WorkstreamType = components["schemas"]["WorkstreamRead"];
+export type WorkstreamUpsertType = components["schemas"]["WorkstreamUpsert"];
 
 export type StartupType = components["schemas"]["Startup"];
 export type StartupUpdateType = components["schemas"]["StartupUpdate"];
