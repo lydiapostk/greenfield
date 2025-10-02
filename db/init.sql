@@ -62,7 +62,8 @@ CREATE TABLE
         use_case TEXT,
         challenge TEXT,
         analyst TEXT,
-        overall_recommendation TEXT
+        overall_recommendation TEXT,
+        create_date DATE NOT NULL DEFAULT (CURRENT_DATE AT TIME ZONE 'Asia/Singapore')
     );
 
 -- Workstream ↔ Startup Evaluation table (edge with properties)

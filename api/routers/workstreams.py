@@ -3,12 +3,13 @@ from sqlmodel import Session, select
 from typing import List
 
 from api.database import get_session
-from api.models import Workstream, WorkstreamRead, WorkstreamUpsert
+from api.models.data_models import Workstream, WorkstreamUpsert
+from api.models.read_models import WorkstreamRead, WorkstreamReadLite
 
 router = APIRouter(tags=["workstreams"])
 
 
-@router.post("/", response_model=WorkstreamRead)
+@router.post("/", response_model=WorkstreamReadLite)
 def create_workstream(
     workstream_create: WorkstreamUpsert, session: Session = Depends(get_session)
 ):
@@ -19,7 +20,7 @@ def create_workstream(
     return workstream
 
 
-@router.get("/", response_model=List[WorkstreamRead])
+@router.get("/", response_model=List[WorkstreamReadLite])
 def list_workstreams(session: Session = Depends(get_session)):
     return session.exec(select(Workstream)).all()
 

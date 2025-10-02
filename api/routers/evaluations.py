@@ -4,7 +4,10 @@ from sqlmodel import Session, select
 from typing import List
 
 from api.database import get_session
-from api.models import WorkstreamStartupEvaluation, WorkstreamStartupEvaluationUpdate
+from api.models.data_models import (
+    WorkstreamStartupEvaluation,
+    WorkstreamStartupEvaluationUpdate,
+)
 
 router = APIRouter(tags=["evaluations"])
 

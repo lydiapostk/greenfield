@@ -12,7 +12,7 @@ import os
 from pydantic import BaseModel, ValidationError
 from sqlmodel import Session, select
 from api.database import get_session
-from api.models import Startup
+from api.models.data_models import Startup
 
 load_dotenv()
 

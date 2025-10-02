@@ -1,3 +1,4 @@
+from datetime import date
 from typing import Any, Optional, List, Dict
 from pydantic import HttpUrl, RootModel, BaseModel, field_validator
 from sqlmodel import Relationship, SQLModel, Field, Column, JSON, TypeDecorator
@@ -78,7 +79,7 @@ class FoundersType(TypeDecorator):
         """Prepare DB → Python"""
         if value is None:
             return None
-        from .models import Founders  # lazy import to avoid circular refs
+        from .data_models import Founders  # lazy import to avoid circular refs
 
         return Founders.model_validate(value)
 
@@ -132,7 +133,6 @@ class CompetitorsType(TypeDecorator):
 
 # -------------------- Base SQLModel --------------------
 class StartupBase(SQLModel):
-    id: int = Field(primary_key=True)
     company_name: str
     company_website: Optional[str] = Field(default=None, unique=True)
     year_founded: Optional[str] = None
@@ -228,6 +228,7 @@ class StartupUpdate(StartupBase):
 
 
 class WorkstreamBase(SQLModel):
+    title: str = Field(default="Untitled")
     use_case: Optional[str] = None
     challenge: Optional[str] = None
     analyst: Optional[str] = None
@@ -242,6 +243,13 @@ class Workstream(WorkstreamBase, table=True):
     __tablename__ = "workstreams"
 
     id: Optional[int] = Field(default=None, primary_key=True)
+    create_date: date = Field(
+        default=None,
+        nullable=False,
+        sa_column_kwargs={
+            "server_default": "(CURRENT_DATE AT TIME ZONE 'Asia/Singapore')"
+        },
+    )
     evaluations: List["WorkstreamStartupEvaluation"] = Relationship(
         back_populates="workstream",
         sa_relationship_kwargs={"cascade": "all, delete-orphan"},
@@ -265,41 +273,3 @@ class WorkstreamStartupEvaluation(WorkstreamStartupEvaluationBase, table=True):
     startup_id: int = Field(foreign_key="startups.id", primary_key=True)
     workstream: Workstream = Relationship(back_populates="evaluations")
     startup: Startup = Relationship(back_populates="evaluations")
-
-
-# Startup info (lightweight, only expose what’s needed in evaluation)
-class StartupLite(SQLModel):
-    id: int
-    company_name: str
-    country: Optional[str] = None
-    company_website: Optional[str]
-    founders: Optional[Founders] = Field(default=None, sa_column=Column(FoundersType))
-
-
-# Startup info (lightweight, only expose what’s needed in evaluation)
-class WorkstreamLite(SQLModel):
-    id: int
-    use_case: Optional[str]
-    analyst: Optional[str]
-
-
-# Evaluation with nested startup info
-class EvaluationReadWithStartup(WorkstreamStartupEvaluationBase):
-    startup: StartupLite
-
-
-# Evaluation with nested workstream info
-class EvaluationReadWithWorkstream(WorkstreamStartupEvaluationBase):
-    workstream: WorkstreamLite
-
-
-# Workstream with evaluations
-class WorkstreamRead(WorkstreamBase):
-    id: int
-    evaluations: List[EvaluationReadWithStartup] = []
-
-
-# Workstream with evaluations
-class StartupRead(StartupBase):
-    id: int
-    evaluations: List[EvaluationReadWithWorkstream] = []

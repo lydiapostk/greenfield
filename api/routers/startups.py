@@ -7,7 +7,7 @@ import os
 from pydantic import BaseModel
 from sqlmodel import Session, select
 from api.database import get_session
-from api.models import Startup, StartupUpdate
+from api.models.data_models import Startup, StartupUpdate
 
 load_dotenv()
 
