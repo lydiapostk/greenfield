@@ -1,5 +1,17 @@
-import EditableTextField from "@/components/input-field/editable-text-field";
 import { useState } from "react";
+
+import Icon from "@/components/icon/icon";
+import EditableTextField from "@/components/input-field/editable-text-field";
+import EditableDropdownField from "@/components/input-field/editable-dropdown-field";
+import EditableDictionaryField, {
+    DictionaryEntry,
+} from "@/components/input-field/editable-dictionary-field";
+import EditableListField from "@/components/input-field/editable-list-field";
+
+import { getCitationAsEditableElement } from "./citation";
+import CollapsibleSection from "./collapsible-section";
+import { COUNTRIES } from "./countries";
+import EditableCompetitorsField from "./editable-competitors";
 import {
     StartupType,
     ListOfYearsAsString,
@@ -11,16 +23,6 @@ import {
     verifyInputIsURL,
     CompetitorsType,
 } from "./startup-data-type";
-import { getCitationAsEditableElement } from "./citation";
-import EditableDropdownField from "@/components/input-field/editable-dropdown-field";
-import { COUNTRIES } from "./countries";
-import Icon from "@/components/icon/icon";
-import CollapsibleSection from "./collapsible-section";
-import EditableDictionaryField, {
-    DictionaryEntry,
-} from "@/components/input-field/editable-dictionary-field";
-import EditableListField from "@/components/input-field/editable-list-field";
-import EditableCompetitorsField from "./editable-competitors";
 
 interface StartupEditFormProps {
     startup: StartupType;

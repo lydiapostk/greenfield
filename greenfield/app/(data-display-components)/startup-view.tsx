@@ -1,10 +1,10 @@
 "use client";
 
-import Icon from "@/components/icon/icon";
-import { StartupType } from "./startup-data-type";
 import { useRef } from "react";
-import CollapsibleSection from "./collapsible-section";
+import Icon from "@/components/icon/icon";
 import { getCitationAsElement, textOrUnknown } from "./citation";
+import CollapsibleSection from "./collapsible-section";
+import { StartupType } from "./startup-data-type";
 
 export interface StartupViewProp {
     startup: StartupType;

@@ -20,7 +20,7 @@
         ],
         "paths": {
             "@/*": ["./*"],
-            "@/startup_display/*": ["./app/(startup-display-components)/*"],
+            "@/data_display/*": ["./app/(data-display-components)/*"],
         }
     },
     "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

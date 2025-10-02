@@ -1,13 +1,13 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import StartupTable from "@/startup_display/startup_table";
-import { StartupType } from "@/startup_display/startup-data-type";
 import SideDrawer from "@/components/side_drawer";
-import Icon from "@/components/icon/icon";
 import ConfirmModal from "@/components/confirm-modal";
-import StartupView from "@/app/(startup-display-components)/startup_view";
-import StartupEditForm from "@/app/(startup-display-components)/startup-edit-form";
+import Icon from "@/components/icon/icon";
+import { StartupType } from "@/data_display/startup-data-type";
+import StartupEditForm from "@/data_display/startup-edit-form";
+import StartupTable from "@/data_display/startup-table";
+import StartupView from "@/data_display/startup-view";
 
 export default function BrowseStartups() {
     const [isLoading, setIsLoading] = useState<boolean>(false);

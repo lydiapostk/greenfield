@@ -1,17 +1,18 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+
 import { typingEffect } from "@/components/animate-text";
 import Icon from "@/components/icon/icon";
+import StartupDrawer from "@/components/side_drawer";
 import TextInputField from "@/components/input-field/input-text-field";
-import { useEffect, useRef, useState } from "react";
 import {
     StartupType,
     DomainCheckResponse,
-} from "@/app/(startup-display-components)/startup-data-type";
-import StartupTable from "@/app/(startup-display-components)/startup_table";
-import StartupDrawer from "@/components/side_drawer";
-import { useRouter } from "next/navigation";
-import StartupView from "@/app/(startup-display-components)/startup_view";
+} from "@/data_display/startup-data-type";
+import StartupTable from "@/data_display/startup-table";
+import StartupView from "@/data_display/startup-view";
 
 const lookupSteps = [
     "userInput",

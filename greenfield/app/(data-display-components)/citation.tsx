@@ -1,9 +1,8 @@
 import Icon from "@/components/icon/icon";
-import { StartupType, verifyInputIsURL } from "./startup-data-type";
 import EditableDictionaryField, {
     DictionaryEntry,
 } from "@/components/input-field/editable-dictionary-field";
-import { use } from "react";
+import { StartupType, verifyInputIsURL } from "./startup-data-type";
 
 export const textOrUnknown = (text: string | undefined | null) =>
     text ? text : <p className="text-gray-700">Unknown</p>;

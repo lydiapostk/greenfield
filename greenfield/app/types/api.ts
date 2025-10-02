@@ -126,6 +126,76 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/lookup/workstreams/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Workstreams */
+        get: operations["list_workstreams_lookup_workstreams__get"];
+        put?: never;
+        /** Create Workstream */
+        post: operations["create_workstream_lookup_workstreams__post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/lookup/workstreams/{workstream_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Update Workstream */
+        put: operations["update_workstream_lookup_workstreams__workstream_id__put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/lookup/evaluations/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Evaluations */
+        get: operations["list_evaluations_lookup_evaluations__get"];
+        put?: never;
+        /** Create Evaluation */
+        post: operations["create_evaluation_lookup_evaluations__post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/lookup/evaluations/{workstream_id}/{startup_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Update Evaluation */
+        put: operations["update_evaluation_lookup_evaluations__workstream_id___startup_id__put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -285,6 +355,56 @@ export interface components {
             msg: string;
             /** Error Type */
             type: string;
+        };
+        /** Workstream */
+        Workstream: {
+            /** Use Case */
+            use_case?: string | null;
+            /** Challenge */
+            challenge?: string | null;
+            /** Users */
+            users?: string[] | null;
+            /** Analyst */
+            analyst?: string | null;
+            /** Overall Recommendation */
+            overall_recommendation?: string | null;
+            /** Id */
+            id?: number | null;
+        };
+        /** WorkstreamCreate */
+        WorkstreamCreate: {
+            /** Use Case */
+            use_case?: string | null;
+            /** Challenge */
+            challenge?: string | null;
+            /** Users */
+            users?: string[] | null;
+            /** Analyst */
+            analyst?: string | null;
+            /** Overall Recommendation */
+            overall_recommendation?: string | null;
+        };
+        /** WorkstreamStartupEvaluation */
+        WorkstreamStartupEvaluation: {
+            /** Competitive Advantage */
+            competitive_advantage?: string | null;
+            /** Risks */
+            risks?: string | null;
+            /** Collaboration Potential */
+            collaboration_potential?: string | null;
+            /** Workstream Id */
+            workstream_id: number;
+            /** Startup Id */
+            startup_id: number;
+        };
+        /** WorkstreamStartupEvaluationUpdate */
+        WorkstreamStartupEvaluationUpdate: {
+            /** Competitive Advantage */
+            competitive_advantage?: string | null;
+            /** Risks */
+            risks?: string | null;
+            /** Collaboration Potential */
+            collaboration_potential?: string | null;
         };
     };
     responses: never;
@@ -492,6 +612,195 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["Startup"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_workstreams_lookup_workstreams__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Workstream"][];
+                };
+            };
+        };
+    };
+    create_workstream_lookup_workstreams__post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WorkstreamCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Workstream"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_workstream_lookup_workstreams__workstream_id__put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                workstream_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Workstream"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Workstream"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_evaluations_lookup_evaluations__get: {
+        parameters: {
+            query?: {
+                workstream_id?: number | null;
+                startup_id?: number | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WorkstreamStartupEvaluation"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_evaluation_lookup_evaluations__post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WorkstreamStartupEvaluation"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WorkstreamStartupEvaluation"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_evaluation_lookup_evaluations__workstream_id___startup_id__put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                workstream_id: number;
+                startup_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WorkstreamStartupEvaluationUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WorkstreamStartupEvaluation"];
                 };
             };
             /** @description Validation Error */

@@ -1,9 +1,9 @@
 "use client";
 
 import { use, useEffect, useState } from "react";
-import StartupEditForm from "@/app/(startup-display-components)/startup-edit-form";
-import { StartupType } from "@/app/(startup-display-components)/startup-data-type";
 import Icon from "@/components/icon/icon";
+import StartupEditForm from "@/data_display/startup-edit-form";
+import { StartupType } from "@/data_display/startup-data-type";
 
 export default function DoubleClick({
     params,
