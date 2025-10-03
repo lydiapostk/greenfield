@@ -56,8 +56,8 @@ export default function WorkstreamTable({
                             <th className="p-4 max-w-[150px] whitespace-nowrap">
                                 S/N
                             </th>
+                            <th className="p-4">Title</th>
                             <th className="p-4">Use Case</th>
-                            <th className="p-4">Challenge</th>
                             <th className="p-4">Startups</th>
                         </tr>
                     </thead>
@@ -90,10 +90,10 @@ export default function WorkstreamTable({
                                     {i + 1}
                                 </td>
                                 <td className="p-4 max-w-md truncate">
-                                    {workstreams.use_case}
+                                    {workstreams.title}
                                 </td>
                                 <td className="p-4 max-w-md truncate">
-                                    {workstreams.challenge}
+                                    {workstreams.use_case}
                                 </td>
                                 <td className="p-4 max-w-md truncate">
                                     {workstreams.evaluations

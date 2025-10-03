@@ -235,10 +235,6 @@ class WorkstreamBase(SQLModel):
     overall_recommendation: Optional[str] = None
 
 
-class WorkstreamUpsert(WorkstreamBase):
-    pass
-
-
 class Workstream(WorkstreamBase, table=True):
     __tablename__ = "workstreams"
 

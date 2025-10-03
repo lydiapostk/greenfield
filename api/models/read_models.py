@@ -32,6 +32,11 @@ class WorkstreamReadLite(WorkstreamBase):
     evaluations: List[EvaluationReadWithStartupLite] = []
 
 
+# Workstream upsert should be with startup lite
+class WorkstreamUpsert(WorkstreamBase):
+    startup_ids: List[int] = Field(default_factory=list)
+
+
 ########################################
 # Startup with minimal workstream info #
 ########################################

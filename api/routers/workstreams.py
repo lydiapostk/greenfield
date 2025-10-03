@@ -3,8 +3,12 @@ from sqlmodel import Session, select
 from typing import List
 
 from api.database import get_session
-from api.models.data_models import Workstream, WorkstreamUpsert
-from api.models.read_models import WorkstreamRead, WorkstreamReadLite
+from api.models.data_models import (
+    Startup,
+    Workstream,
+    WorkstreamStartupEvaluation,
+)
+from api.models.read_models import WorkstreamRead, WorkstreamReadLite, WorkstreamUpsert
 
 router = APIRouter(tags=["workstreams"])
 
@@ -13,8 +17,22 @@ router = APIRouter(tags=["workstreams"])
 def create_workstream(
     workstream_create: WorkstreamUpsert, session: Session = Depends(get_session)
 ):
-    workstream = Workstream(**workstream_create.model_dump())
+    upsert_dict = workstream_create.model_dump()
+    maybe_startup_ids = upsert_dict.pop("startup_ids", [])
+    workstream = Workstream(**upsert_dict)
     session.add(workstream)
+    session.flush()  # ensures workstream.id is available
+
+    # Create evaluations for each startup
+    for sid in maybe_startup_ids:
+        startup = session.get(Startup, sid)
+        if not startup:
+            raise HTTPException(status_code=404, detail=f"Startup {sid} not found")
+        evaluation = WorkstreamStartupEvaluation(
+            workstream=workstream,
+            startup=startup,
+        )
+        session.add(evaluation)
     session.commit()
     session.refresh(workstream)
     return workstream
