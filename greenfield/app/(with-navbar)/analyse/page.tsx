@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import SideDrawer from "@/components/side_drawer";
 import Icon from "@/components/icon/icon";
 import ConfirmModal from "@/components/confirm-modal";
@@ -32,6 +32,12 @@ export default function BrowseWorkstreams() {
 
     // Table controls
     const [selectedIds, setSelectedIds] = useState<number[]>([]);
+    const [search, setSearch] = useState<string>("");
+    const filteredValues = useMemo(() => {
+        return workstreams.filter((ws) =>
+            ws.title.toLowerCase().includes(search.toLowerCase())
+        );
+    }, [workstreams, search]);
 
     // Delete Modal
     const [isDelModalOpen, setIsDelModalOpen] = useState<boolean>(false);
@@ -66,6 +72,15 @@ export default function BrowseWorkstreams() {
             <h1 className="text-xl font-bold mt-12 self-center ">
                 Workstreams
             </h1>
+            <input
+                id="table_search"
+                type="text"
+                placeholder="Search..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="max-w-4/5 px-4 py-2 my-2 self-center rounded-2xl bg-white/10 focus:outline-none focus:ring-0 focus:bg-white/20"
+                autoFocus
+            />
             {/* Delete Modal */}
             {isDelModalOpen && (
                 <ConfirmModal
@@ -121,7 +136,7 @@ export default function BrowseWorkstreams() {
                 </div>
                 {/* Table */}
                 <WorkstreamTable
-                    workstreams={workstreams}
+                    workstreams={filteredValues}
                     onClickWorkstream={setSelectedWorkstream}
                     selectedIds={selectedIds}
                     setSelectedIds={setSelectedIds}

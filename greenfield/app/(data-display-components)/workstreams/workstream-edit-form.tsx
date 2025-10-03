@@ -3,10 +3,7 @@ import { useState } from "react";
 import Icon from "@/components/icon/icon";
 import EditableTextField from "@/components/input-field/editable-text-field";
 
-import {
-    WorkstreamReadType,
-    WorkstreamUpsertType,
-} from "@/data_display/data-type";
+import { WorkstreamReadType } from "@/data_display/data-type";
 import StartupTable from "@/startups/startup-table";
 import { getUpdateWSFunction } from "@/data_display/utils";
 
@@ -23,7 +20,7 @@ export default function WorkstreamEditForm({
 
     const funcUpdateWS = getUpdateWSFunction({
         workstream_id: workstream.id,
-        updateWorkstream: updateWorkstream,
+        onSuccess: updateWorkstream,
         setError: setError,
     });
 

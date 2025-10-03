@@ -18,6 +18,7 @@ export type WorkstreamUpsertType = components["schemas"]["WorkstreamUpsert"];
 export type WorkstreamCreateDisplayType = WorkstreamUpsertType & {
     startups: StartupReadType[];
 };
+export type WorkstreamPropertyTypes = string | number[] | null | undefined;
 
 export type DomainCheckResponse = components["schemas"]["CheckDomainResponse"];
 export type BulkDeleteStartupsResponse =

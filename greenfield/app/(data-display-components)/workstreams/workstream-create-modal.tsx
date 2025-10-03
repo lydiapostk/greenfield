@@ -88,7 +88,7 @@ export default function WorkstreamCreateModal({
                         onClick={() => {
                             setIsCreateModalOpen(false);
                         }}
-                        className="px-4 py-2 rounded-lg bg-stone-200 text-stone-700 hover:bg-stone-300"
+                        className="px-4 py-2 rounded-lg bg-stone-200 text-stone-700 hover:bg-stone-300 cursor-pointer"
                     >
                         Cancel
                     </button>
@@ -97,7 +97,7 @@ export default function WorkstreamCreateModal({
                             onCreateWorkstream();
                             setCreateError("");
                         }}
-                        className="px-4 py-2 rounded-lg bg-violet-800/65 text-white hover:bg-violet-800/85"
+                        className="px-4 py-2 rounded-lg bg-violet-800/65 text-white hover:bg-violet-800/85 cursor-pointer"
                     >
                         Create
                     </button>

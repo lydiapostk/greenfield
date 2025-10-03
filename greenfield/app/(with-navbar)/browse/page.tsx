@@ -7,7 +7,11 @@ import ConfirmModal from "@/components/confirm-modal";
 import DropdownButton from "@/components/dropdown-button";
 import Icon from "@/components/icon/icon";
 import SideDrawer from "@/components/side_drawer";
-import { StartupReadType, WorkstreamType } from "@/data_display/data-type";
+import {
+    StartupReadType,
+    WorkstreamReadType,
+    WorkstreamType,
+} from "@/data_display/data-type";
 import { deleteFromDB } from "@/data_display/utils";
 import StartupEditForm from "@/startups/startup-edit-form";
 import StartupTable from "@/startups/startup-table";
@@ -16,6 +20,7 @@ import StartupView from "@/startups/startup-view";
 import ToggleViewEditButton from "../components/toggle-view-edit-button";
 import DeleteButton from "../components/delete-button";
 import WorkstreamCreateModal from "@/app/(data-display-components)/workstreams/workstream-create-modal";
+import WorkstreamSelectModal from "@/app/(data-display-components)/workstreams/workstream-select-modal";
 
 export default function BrowseStartups() {
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -116,9 +121,12 @@ export default function BrowseStartups() {
         });
     };
 
-    // CREATE MODAL
+    // Create WS Modal
     const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
     const router = useRouter();
+
+    // Insert into WS Modal
+    const [isInsertModalOpen, setIsInsertModalOpen] = useState<boolean>(false);
 
     return (
         <div className="flex flex-col justify-start w-full h-full text-white">
@@ -174,6 +182,17 @@ export default function BrowseStartups() {
                     }}
                 />
             )}
+            {/* Insert to WS Modal */}
+            {isInsertModalOpen && (
+                <WorkstreamSelectModal
+                    setIsLoading={setIsLoading}
+                    isModalOpen={setIsInsertModalOpen}
+                    startup_ids={selectedIds}
+                    onSuccess={(data: WorkstreamReadType) => {
+                        router.push(`/analyse/${data.id}`);
+                    }}
+                />
+            )}
 
             <div className="self-center lg:w-3/5">
                 {/* Table tools */}
@@ -186,7 +205,12 @@ export default function BrowseStartups() {
                                     setIsCreateModalOpen(true);
                                 },
                             },
-                            { label: "Existing", onClick: () => {} },
+                            {
+                                label: "Existing",
+                                onClick: () => {
+                                    setIsInsertModalOpen(true);
+                                },
+                            },
                         ]}
                         text={`Add to workstream (${selectedIds.length})`}
                         showText={true}

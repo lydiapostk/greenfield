@@ -57,7 +57,7 @@ export default function ConfirmModal({
                 <div className="mt-6 flex justify-end space-x-3">
                     <button
                         onClick={onClose}
-                        className="px-4 py-2 rounded-lg bg-stone-200 text-stone-700 hover:bg-stone-300"
+                        className="px-4 py-2 rounded-lg bg-stone-200 text-stone-700 hover:bg-stone-300 cursor-pointer"
                     >
                         {cancelText}
                     </button>
@@ -66,7 +66,7 @@ export default function ConfirmModal({
                             onConfirm();
                             onClose();
                         }}
-                        className="px-4 py-2 rounded-lg bg-rose-600 text-white hover:bg-rose-700"
+                        className="px-4 py-2 rounded-lg bg-rose-600 text-white hover:bg-rose-700 cursor-pointer"
                     >
                         {confirmText}
                     </button>
