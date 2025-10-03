@@ -24,7 +24,7 @@ export default function WorkstreamPreview({
                 Go to workstream
                 <Icon name="arrowRight" className="" />
             </a>
-            <div className="flex flex-col justify-start w-full gap-2">
+            <div className="flex flex-col justify-start w-full gap-6">
                 <div>
                     <span className="font-bold">Use case:</span>{" "}
                     {textOrToBeFilled(workstream.use_case)}
@@ -40,27 +40,34 @@ export default function WorkstreamPreview({
                             No start-ups added yet.
                         </div>
                     )}
-                    <ul className="list-disc pl-5">
+                    <ul className="list-disc list-outside pl-5">
                         {workstream.evaluations.map((evaluation) => {
                             const sup = evaluation.startup;
+                            const hasWebsite =
+                                sup.company_website &&
+                                sup.company_website != "";
                             return (
                                 <li key={sup.id}>
-                                    <span className="font-medium whitespace-nowrap">
-                                        {evaluation.startup.company_name}
-                                    </span>
-                                    {sup.company_website &&
-                                        sup.company_website != "" && (
-                                            <a
-                                                href={sup.company_website}
-                                                target="_blank"
-                                                className="hover:text-indigo-900 hover:underline truncate"
-                                            >
-                                                <Icon
-                                                    name="website"
-                                                    className="fill-indigo-900"
-                                                />
-                                            </a>
+                                    <a
+                                        href={
+                                            sup.company_website &&
+                                            sup.company_website != ""
+                                                ? sup.company_website
+                                                : undefined
+                                        }
+                                        target={
+                                            hasWebsite ? "_blank" : undefined
+                                        }
+                                        className="truncate flex flex-row justify-start items-start gap-2 
+                                        hover:text-indigo-900 hover:underline cursor-pointer"
+                                    >
+                                        <span className="font-medium whitespace-nowrap">
+                                            {evaluation.startup.company_name}
+                                        </span>
+                                        {hasWebsite && (
+                                            <Icon name="website" size={"md"} />
                                         )}
+                                    </a>
                                 </li>
                             );
                         })}
