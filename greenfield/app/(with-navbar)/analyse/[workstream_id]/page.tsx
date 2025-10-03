@@ -2,8 +2,8 @@
 
 import { use, useEffect, useState } from "react";
 import Icon from "@/components/icon/icon";
-// import WorkstreamEditForm from "@/data_display/workstream-edit-form";
-import { WorkstreamType } from "@/data_display/data-type";
+import { WorkstreamReadType } from "@/data_display/data-type";
+import WorkstreamEditForm from "@/workstreams/workstream-edit-form";
 
 export default function DoubleClick({
     params,
@@ -13,7 +13,9 @@ export default function DoubleClick({
     const { workstream_id } = use(params); // unwrap the Promise
     const decodedWorkstreamId = decodeURIComponent(workstream_id);
     const [error, setError] = useState<string>("");
-    const [workstream, setWorkstream] = useState<WorkstreamType | null>(null);
+    const [workstream, setWorkstream] = useState<WorkstreamReadType | null>(
+        null
+    );
 
     useEffect(() => {
         fetch(
@@ -25,7 +27,7 @@ export default function DoubleClick({
             }
         )
             .then((res) =>
-                res.json().then((data: WorkstreamType) => {
+                res.json().then((data: WorkstreamReadType) => {
                     if (!res.ok) {
                         setError(
                             `Unexpected error occured when fetching workstream!\n${res.statusText}`
@@ -64,12 +66,12 @@ export default function DoubleClick({
                         {error}
                     </div>
                 )}
-                {/* {workstream && (
-                    <StartupEditForm
-                        startup={workstream}
-                        setStartup={setWorkstream}
+                {workstream && (
+                    <WorkstreamEditForm
+                        workstream={workstream}
+                        updateWorkstream={setWorkstream}
                     />
-                )} */}
+                )}
             </div>
         </div>
     );

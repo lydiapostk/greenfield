@@ -1,3 +1,5 @@
+import { WorkstreamReadType, WorkstreamUpsertType } from "./data-type";
+
 export const textOrUnknown = (text: string | undefined | null) =>
     text ? text : <p className="text-gray-700">Unknown</p>;
 
@@ -52,4 +54,47 @@ export function deleteFromDB({
         .finally(() => {
             setIsLoading(false);
         });
+}
+
+interface updateWSParams {
+    workstream_id: number;
+    updateWorkstream?: (ws: WorkstreamReadType) => void;
+    setError?: (errMsg: string) => void;
+}
+
+export function getUpdateWSFunction({
+    workstream_id,
+    updateWorkstream = () => {},
+    setError = () => {},
+}: updateWSParams) {
+    return (field: keyof WorkstreamUpsertType, value: string) => {
+        const workstream_update: Record<string, string> = {};
+        workstream_update[field] = value.trim();
+        fetch(
+            `${
+                process.env.NEXT_PUBLIC_API_URL
+            }/workstreams/${encodeURIComponent(workstream_id)}`,
+            {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(workstream_update),
+            }
+        )
+            .then((res) =>
+                res.json().then((data: WorkstreamReadType) => {
+                    if (res.ok) updateWorkstream(data);
+                    else
+                        setError(
+                            `Unexpected error occured when updating workstream!\n${res.statusText}`
+                        );
+                })
+            )
+            .catch((error) =>
+                setError(
+                    `Unexpected error occured when updating workstream!\n${error}`
+                )
+            );
+    };
 }

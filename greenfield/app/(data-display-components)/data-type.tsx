@@ -12,6 +12,7 @@ export type StartupPropertyTypes =
 
 export type StartupUpsertType = components["schemas"]["StartupUpsert"];
 
+export type WorkstreamReadType = components["schemas"]["WorkstreamRead"];
 export type WorkstreamType = components["schemas"]["WorkstreamReadLite"];
 export type WorkstreamUpsertType = components["schemas"]["WorkstreamUpsert"];
 export type WorkstreamCreateDisplayType = WorkstreamUpsertType & {
