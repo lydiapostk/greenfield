@@ -4,15 +4,11 @@ import { useEffect, useState } from "react";
 import SideDrawer from "@/components/side_drawer";
 import Icon from "@/components/icon/icon";
 import ConfirmModal from "@/components/confirm-modal";
-import {
-    WorkstreamCreateDisplayType,
-    WorkstreamType,
-} from "@/data_display/data-type";
+import { WorkstreamType } from "@/data_display/data-type";
 import { deleteFromDB } from "@/data_display/utils";
 import WorkstreamTable from "@/workstreams/workstream-table";
 import DeleteButton from "../components/delete-button";
 import CreateButton from "../components/create-button";
-import { useRouter } from "next/navigation";
 import WorkstreamPreview from "@/workstreams/workstream-preview";
 import WorkstreamCreateModal from "@/workstreams/workstream-create-modal";
 
@@ -62,7 +58,7 @@ export default function BrowseWorkstreams() {
         });
     };
 
-    // CREATE MODAL
+    // Create Modal
     const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
 
     return (
@@ -111,7 +107,7 @@ export default function BrowseWorkstreams() {
                     <CreateButton
                         onClick={() => setIsCreateModalOpen(true)}
                         showText={true}
-                        createText={`Create workstream`}
+                        createText={`Add workstream`}
                         disabled={!!selectedWorkstream}
                     />
                     <DeleteButton

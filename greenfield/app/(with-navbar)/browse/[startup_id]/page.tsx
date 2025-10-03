@@ -19,7 +19,8 @@ export default function DoubleClick({
         fetch(
             `${
                 process.env.NEXT_PUBLIC_API_URL
-            }/startups/by_id/${encodeURIComponent(decodedStartupId)}`
+            }/startups/by_id/${encodeURIComponent(decodedStartupId)}`,
+            { method: "GET" }
         )
             .then((res) =>
                 res.json().then((data: StartupReadType) => {

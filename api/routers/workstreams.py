@@ -43,7 +43,7 @@ def list_workstreams(session: Session = Depends(get_session)):
     return session.exec(select(Workstream)).all()
 
 
-@router.get("/{workstream_id}", response_model=List[WorkstreamRead])
+@router.get("/{workstream_id}", response_model=WorkstreamRead)
 def get_workstream(workstream_id: int, session: Session = Depends(get_session)):
     db_ws = session.get(Workstream, workstream_id)
     if not db_ws:

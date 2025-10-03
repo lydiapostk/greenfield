@@ -1,16 +1,21 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import SideDrawer from "@/components/side_drawer";
+import { useRouter } from "next/navigation";
+
 import ConfirmModal from "@/components/confirm-modal";
+import DropdownButton from "@/components/dropdown-button";
 import Icon from "@/components/icon/icon";
-import { StartupReadType } from "@/data_display/data-type";
+import SideDrawer from "@/components/side_drawer";
+import { StartupReadType, WorkstreamType } from "@/data_display/data-type";
+import { deleteFromDB } from "@/data_display/utils";
 import StartupEditForm from "@/startups/startup-edit-form";
 import StartupTable from "@/startups/startup-table";
 import StartupView from "@/startups/startup-view";
+
 import ToggleViewEditButton from "../components/toggle-view-edit-button";
 import DeleteButton from "../components/delete-button";
-import { deleteFromDB } from "@/data_display/utils";
+import WorkstreamCreateModal from "@/app/(data-display-components)/workstreams/workstream-create-modal";
 
 export default function BrowseStartups() {
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -111,6 +116,10 @@ export default function BrowseStartups() {
         });
     };
 
+    // CREATE MODAL
+    const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
+    const router = useRouter();
+
     return (
         <div className="flex flex-col justify-start w-full h-full text-white">
             <h1 className="text-xl font-bold mt-12 self-center ">
@@ -152,9 +161,38 @@ export default function BrowseStartups() {
                 </div>
             )}
 
+            {/* Create Modal */}
+            {isCreateModalOpen && (
+                <WorkstreamCreateModal
+                    setIsLoading={setIsLoading}
+                    setIsCreateModalOpen={setIsCreateModalOpen}
+                    startups={startups.filter((startup) =>
+                        selectedIds.includes(startup.id)
+                    )}
+                    onSuccess={(data: WorkstreamType) => {
+                        router.push(`/analyse/${data.id}`);
+                    }}
+                />
+            )}
+
             <div className="self-center lg:w-3/5">
                 {/* Table tools */}
-                <div className="flex flex-row justify-start items-center py-2">
+                <div className="flex flex-row justify-start items-center py-2 gap-2">
+                    <DropdownButton
+                        options={[
+                            {
+                                label: "New",
+                                onClick: () => {
+                                    setIsCreateModalOpen(true);
+                                },
+                            },
+                            { label: "Existing", onClick: () => {} },
+                        ]}
+                        text={`Add to workstream (${selectedIds.length})`}
+                        showText={true}
+                        disabled={selectedIds.length == 0 || !!selectedStartup}
+                        hideWhenDisabled={true}
+                    />
                     <DeleteButton
                         onClick={() => setIsDelModalOpen(true)}
                         showText={true}

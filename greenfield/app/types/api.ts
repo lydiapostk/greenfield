@@ -855,7 +855,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["WorkstreamRead"][];
+                    "application/json": components["schemas"]["WorkstreamRead"];
                 };
             };
             /** @description Validation Error */

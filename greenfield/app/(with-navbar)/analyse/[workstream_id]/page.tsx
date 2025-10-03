@@ -21,7 +21,7 @@ export default function DoubleClick({
                 process.env.NEXT_PUBLIC_API_URL
             }/workstreams/${encodeURIComponent(decodedWorkstreamId)}`,
             {
-                method: "DELETE",
+                method: "GET",
             }
         )
             .then((res) =>

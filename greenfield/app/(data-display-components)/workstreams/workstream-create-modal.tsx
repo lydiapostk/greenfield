@@ -2,6 +2,7 @@
 import PopupModal from "@/components/popup-modal";
 import { useState } from "react";
 import {
+    StartupReadType,
     WorkstreamCreateDisplayType,
     WorkstreamType,
 } from "@/data_display/data-type";
@@ -11,18 +12,20 @@ interface WorkstreamCreateModalProps {
     setIsLoading: (isLoading: boolean) => void;
     setIsCreateModalOpen: (isOpen: boolean) => void;
     onSuccess?: (ws: WorkstreamType) => void;
+    startups?: StartupReadType[];
 }
 
 export default function WorkstreamCreateModal({
     setIsLoading,
     setIsCreateModalOpen,
     onSuccess = () => {},
+    startups = [],
 }: WorkstreamCreateModalProps) {
     // CREATE MODAL
     const [createError, setCreateError] = useState<string>("");
     const [newWs, setNewWs] = useState<WorkstreamCreateDisplayType>({
         title: "Untitled",
-        startups: [],
+        startups: startups,
     });
     const onCreateWorkstream = () => {
         setIsLoading(true);
