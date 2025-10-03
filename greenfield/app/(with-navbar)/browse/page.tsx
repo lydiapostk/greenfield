@@ -132,7 +132,10 @@ export default function BrowseStartups() {
                     confirmText={`Delete (${
                         selectedStartup ? 1 : selectedIds.length
                     })`}
-                    onClose={() => setIsDelModalOpen(false)}
+                    onClose={() => {
+                        setIsDelModalOpen(false);
+                        setDelError("");
+                    }}
                     onConfirm={() =>
                         selectedStartup
                             ? onDelStartups([selectedStartup.id as number])
@@ -173,7 +176,6 @@ export default function BrowseStartups() {
                         setSelectedStartup(null);
                         setInFullScreen(false);
                         setInEditMode(false);
-                        setDelError("");
                     }}
                     inFullScreen={inFullScreen}
                 >

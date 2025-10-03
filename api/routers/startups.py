@@ -1,10 +1,8 @@
-from typing import Optional
 from dotenv import load_dotenv
 from fastapi import APIRouter, HTTPException, Query
 from fastapi import Depends
 from openai import OpenAI
 import os
-from pydantic import BaseModel
 from sqlmodel import Session, select
 from api.database import get_session
 from api.models.data_models import Startup, StartupUpsert
