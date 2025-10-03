@@ -40,6 +40,43 @@ export default function BrowseStartups() {
         updatedStartups[idxToUpdate] = selectedStartup;
         setStartups(updatedStartups);
     }, [selectedStartup]);
+    const toggleEditViewComponent = () => (
+        <ToggleViewEditButton
+            inEditMode={inEditMode}
+            setInEditMode={setInEditMode}
+        />
+    );
+    const deleteButtonComponent = (delText?: string) => (
+        <DeleteButton
+            onClick={() => setIsDelModalOpen(true)}
+            showText={true}
+            deleteText={delText}
+        />
+    );
+    const toggleFullscreenComponent = () => (
+        <div
+            className={`inline-flex w-fit rounded-2xl px-3 py-1.5 mb-6 self-end 
+                                        stroke-2 gap-1 transition ease-in cursor-pointer 
+                                        hover:bg-stone-300`}
+            onClick={() => setInFullScreen(!inFullScreen)}
+        >
+            <Icon
+                name={inFullScreen ? "arrowsPointingIn" : "arrowsPointingOut"}
+                size="md"
+                className="stroke-stone-800 hover:stroke-[2]"
+            />
+        </div>
+    );
+    const toolbar = (hasFullscreenToggle = false) => (
+        <div className="flex flex-row w-full justify-between items-center mt-10">
+            <div className="flex flex-row w-full justify-start items-center gap-2">
+                {toggleEditViewComponent()}
+                {deleteButtonComponent()}
+            </div>
+            {/* Enter full screen */}
+            {hasFullscreenToggle && toggleFullscreenComponent()}
+        </div>
+    );
 
     // Table controls
     const [selectedIds, setSelectedIds] = useState<number[]>([]);
@@ -163,55 +200,22 @@ export default function BrowseStartups() {
                     inFullScreen={inFullScreen}
                 >
                     {/* Sidebar tools */}
-                    <div className="flex flex-row w-full justify-between items-center mt-10">
-                        <div className="flex flex-row w-full justify-start items-center gap-2">
-                            <ToggleViewEditButton
-                                inEditMode={inEditMode}
-                                setInEditMode={setInEditMode}
-                            />
-                            <DeleteButton
-                                onClick={() => setIsDelModalOpen(true)}
-                                showText={true}
-                            />
-                        </div>
-                        {/* Enter full screen */}
-                        <div
-                            className={`inline-flex w-fit rounded-2xl px-3 py-1.5 mb-6 self-end 
-                                        stroke-2 gap-1 transition ease-in cursor-pointer 
-                                        hover:bg-stone-300`}
-                            onClick={() => setInFullScreen(!inFullScreen)}
-                        >
-                            <Icon
-                                name={
-                                    inFullScreen
-                                        ? "arrowsPointingIn"
-                                        : "arrowsPointingOut"
-                                }
-                                size="md"
-                                className="stroke-stone-800 hover:stroke-[2]"
-                            />
-                        </div>
-                    </div>
+
                     {/* Choice of displaying edit or view mode*/}
                     {inEditMode ? (
                         <StartupEditForm
                             startup={selectedStartup}
                             setStartup={setSelectedStartup}
+                            topToolbar={toolbar(true)}
+                            bottomToolbar={toolbar(false)}
                         />
                     ) : (
-                        <StartupView startup={selectedStartup} />
+                        <StartupView
+                            startup={selectedStartup}
+                            topToolbar={toolbar(true)}
+                            bottomToolbar={toolbar(false)}
+                        />
                     )}
-                    {/* Show tool bar again */}
-                    <div className="flex flex-row w-full justify-start items-center gap-2 mt-6">
-                        <ToggleViewEditButton
-                            inEditMode={inEditMode}
-                            setInEditMode={setInEditMode}
-                        />
-                        <DeleteButton
-                            onClick={() => setIsDelModalOpen(true)}
-                            showText={true}
-                        />
-                    </div>
                 </SideDrawer>
             )}
         </div>

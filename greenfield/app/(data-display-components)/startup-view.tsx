@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { ReactElement, useRef } from "react";
 import Icon from "@/components/icon/icon";
 import { getCitationAsElement, textOrUnknown } from "./citation";
 import CollapsibleSection from "./collapsible-section";
@@ -8,9 +8,15 @@ import { StartupType } from "./data-type";
 
 export interface StartupViewProps {
     startup: StartupType;
+    topToolbar?: ReactElement;
+    bottomToolbar?: ReactElement;
 }
 
-export default function StartupView({ startup }: StartupViewProps) {
+export default function StartupView({
+    startup,
+    topToolbar,
+    bottomToolbar,
+}: StartupViewProps) {
     const trlExplanation = (
         <div className="pb-6">
             <h4 className="italic">How was TRL estimated?</h4>{" "}
@@ -35,7 +41,18 @@ export default function StartupView({ startup }: StartupViewProps) {
     );
 
     return (
-        <div className="flex flex-col justify-start items-start mt-6 gap-4 w-full space-y-8 min-h-fit overflow-auto">
+        <div
+            className="flex flex-col w-full place-self-center 
+            justify-start items-start mt-6 gap-4 space-y-8 min-h-fit overflow-auto"
+        >
+            {topToolbar}
+            <a
+                className="flex flex-row justify-start items-center my-0 cursor-pointer hover:underline"
+                href={`browse/${startup.id}`}
+            >
+                Go to startup
+                <Icon name="arrowRight" className="" />
+            </a>
             <div className="text-3xl font-bold mr-3 my-0">
                 {startup.company_name}
             </div>
@@ -246,6 +263,7 @@ export default function StartupView({ startup }: StartupViewProps) {
                     )}
                 </div>
             </div>
+            {bottomToolbar}
         </div>
     );
 }

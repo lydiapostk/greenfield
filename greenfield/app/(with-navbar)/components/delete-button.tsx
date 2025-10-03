@@ -17,7 +17,7 @@ export default function DeleteButton({
 }: DeleteButtonProps) {
     return (
         <div
-            className={`inline-flex bg-rose-600 rounded-2xl px-3 py-1.5 mb-6 self-end 
+            className={`inline-flex bg-rose-600 rounded-2xl px-3 py-1.5 mb-6
                         hover:bg-rose-700 stroke-2 gap-1 transition ease-in cursor-pointer 
                         w-fit text-stone-200 font-medium ${
                             disabled

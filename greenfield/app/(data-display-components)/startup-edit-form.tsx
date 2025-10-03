@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { ReactElement, useState } from "react";
 
 import Icon from "@/components/icon/icon";
 import EditableTextField from "@/components/input-field/editable-text-field";
@@ -13,7 +13,6 @@ import CollapsibleSection from "./collapsible-section";
 import { COUNTRIES } from "./countries";
 import EditableCompetitorsField from "./editable-competitors";
 import {
-    StartupType,
     ListOfYearsAsString,
     numEmployeesLabels,
     fundingRaisedLabels,
@@ -21,7 +20,6 @@ import {
     trlLabels,
     StartupFoundersType,
     verifyInputIsURL,
-    CompetitorsType,
     StartupUpsertType,
     StartupReadType,
     StartupPropertyTypes,
@@ -30,6 +28,8 @@ import {
 interface StartupEditFormProps {
     startup: StartupReadType;
     setStartup: (startup: StartupReadType) => void;
+    topToolbar?: ReactElement;
+    bottomToolbar?: ReactElement;
 }
 
 interface StartupEditFormExplanationProps {
@@ -95,6 +95,8 @@ function StartupEditFormExplanation({
 export default function StartupEditForm({
     startup,
     setStartup,
+    topToolbar,
+    bottomToolbar,
 }: StartupEditFormProps) {
     const [error, setError] = useState<string>("");
     const currentYear = new Date().getFullYear();
@@ -135,6 +137,7 @@ export default function StartupEditForm({
 
     return (
         <div className="flex flex-col justify-start items-start mt-6 gap-4 w-full space-y-8 min-h-fit overflow-auto">
+            {topToolbar}
             {error && error !== "" && (
                 <div className="flex flex-row items-center justify-start gap-2 font-mono italic text-red-700">
                     <Icon
@@ -317,6 +320,7 @@ export default function StartupEditForm({
                 value={startup.investors ? startup.investors : []}
                 onSave={updateField}
             />
+            {bottomToolbar}
         </div>
     );
 }
