@@ -9,3 +9,9 @@ export type sizeStyleOptions = keyof typeof sizeMap | number;
 export const sizeStyle = (size: keyof typeof sizeMap | number) => {
     return typeof size == "number" ? `w-${size} h-${size}` : sizeMap[size];
 };
+
+export const colourCSS = {
+    light: "text-black bg-emerald-100/65 hover:bg-emerald-100/85",
+    dark: "text-white bg-indigo-800/65 hover:bg-indigo-800/85",
+    pop: "text-white bg-violet-800/65 hover:bg-violet-800/85",
+};

@@ -1,6 +1,6 @@
 "use client";
 import Icon from "./icon/icon";
-import { sizeStyleOptions } from "./size-box";
+import { sizeStyleOptions } from "./style";
 
 interface CheckboxProps {
     id?: string;

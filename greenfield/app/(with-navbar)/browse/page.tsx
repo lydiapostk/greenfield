@@ -8,8 +8,8 @@ import { StartupReadType, StartupType } from "@/data_display/data-type";
 import StartupEditForm from "@/data_display/startup-edit-form";
 import StartupTable from "@/data_display/startup-table";
 import StartupView from "@/data_display/startup-view";
-import ToggleViewEditButton from "./toggle-view-edit-button";
-import DeleteButton from "./delete-button";
+import ToggleViewEditButton from "../components/toggle-view-edit-button";
+import DeleteButton from "../components/delete-button";
 
 export default function BrowseStartups() {
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -115,7 +115,6 @@ export default function BrowseStartups() {
             {/* Delete Modal */}
             {isDelModalOpen && (
                 <ConfirmModal
-                    isOpen={true}
                     confirmText={`Delete (${
                         selectedStartup ? 1 : selectedIds.length
                     })`}

@@ -60,11 +60,11 @@ export default function EditableTextField<T>({
     const textAreaSizeStyle = (() => {
         switch (textAreaSize) {
             case "sm":
-                return "min-h-[80px]";
+                return "min-h-24";
             case "md":
-                return "min-h-[100px]";
+                return "min-h-40";
             case "lg":
-                return "min-h-[200px]";
+                return "min-h-52";
             default:
                 return `min-h-[${textAreaSize}px]`;
         }
@@ -108,7 +108,7 @@ export default function EditableTextField<T>({
                                 if (e.key === "Enter") commitChange();
                                 if (e.key === "Escape") cancelChange();
                             }}
-                            className={`rounded border min-w-full ${textAreaSizeStyle} bg-stone-100 px-1 ${fontStyle} lg:h-52 text-wrap`}
+                            className={`rounded border min-w-full ${textAreaSizeStyle} bg-stone-100 px-1 ${fontStyle} text-wrap`}
                             placeholder={placeholder}
                         />
                     ) : (

@@ -61,59 +61,57 @@ export default function WorkstreamTable({
                             <th className="p-4">Startups</th>
                         </tr>
                     </thead>
-                    {workstreams.length === 0 ? (
-                        <caption className="px-4 py-2 text-stone-200 w-full italic">
-                            No results
-                        </caption>
-                    ) : (
-                        <tbody>
-                            {workstreams.map((workstreams, i) => (
-                                <tr
-                                    key={workstreams.id}
-                                    onClick={() => {
-                                        if (onClickWorkstream)
-                                            onClickWorkstream(workstreams);
-                                    }}
-                                    className="cursor-pointer hover:bg-white/20 transition"
-                                >
-                                    {selectedIds && setSelectedIds && (
-                                        <td className="p-3 text-center align-middle">
-                                            <Checkbox
-                                                id={workstreams.id?.toString()}
-                                                checked={selectedIds.includes(
+                    <tbody>
+                        {workstreams.map((workstreams, i) => (
+                            <tr
+                                key={workstreams.id}
+                                onClick={() => {
+                                    if (onClickWorkstream)
+                                        onClickWorkstream(workstreams);
+                                }}
+                                className="cursor-pointer hover:bg-white/20 transition"
+                            >
+                                {selectedIds && setSelectedIds && (
+                                    <td className="p-3 text-center align-middle">
+                                        <Checkbox
+                                            id={workstreams.id?.toString()}
+                                            checked={selectedIds.includes(
+                                                workstreams.id as number
+                                            )}
+                                            onChange={() =>
+                                                toggleRow(
                                                     workstreams.id as number
-                                                )}
-                                                onChange={() =>
-                                                    toggleRow(
-                                                        workstreams.id as number
-                                                    )
-                                                }
-                                            />
-                                        </td>
-                                    )}
-                                    <td className="p-4 max-w-md truncate">
-                                        {i + 1}
+                                                )
+                                            }
+                                        />
                                     </td>
-                                    <td className="p-4 max-w-md truncate">
-                                        {workstreams.use_case}
-                                    </td>
-                                    <td className="p-4 max-w-md truncate">
-                                        {workstreams.challenge}
-                                    </td>
-                                    <td className="p-4 max-w-md truncate">
-                                        {workstreams.evaluations
-                                            .map(
-                                                (evaluation) =>
-                                                    evaluation.startup
-                                                        .company_name
-                                            )
-                                            .join(", ")}
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    )}
+                                )}
+                                <td className="p-4 max-w-md truncate">
+                                    {i + 1}
+                                </td>
+                                <td className="p-4 max-w-md truncate">
+                                    {workstreams.use_case}
+                                </td>
+                                <td className="p-4 max-w-md truncate">
+                                    {workstreams.challenge}
+                                </td>
+                                <td className="p-4 max-w-md truncate">
+                                    {workstreams.evaluations
+                                        .map(
+                                            (evaluation) =>
+                                                evaluation.startup.company_name
+                                        )
+                                        .join(", ")}
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
                 </table>
+                {workstreams.length === 0 && (
+                    <div className="px-4 py-2 text-stone-300 w-full italic text-center">
+                        No entry
+                    </div>
+                )}
             </div>
         </div>
     );

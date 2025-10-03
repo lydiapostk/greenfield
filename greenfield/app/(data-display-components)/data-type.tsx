@@ -1,8 +1,5 @@
 import { components, operations } from "@/app/types/api";
 
-export type WorkstreamType = components["schemas"]["WorkstreamRead"];
-export type WorkstreamUpsertType = components["schemas"]["WorkstreamUpsert"];
-
 export type StartupType = components["schemas"]["Startup"];
 export type StartupReadType = components["schemas"]["StartupReadLite"];
 export type StartupFoundersType = components["schemas"]["Startup"]["founders"];
@@ -14,6 +11,13 @@ export type StartupPropertyTypes =
     | CompetitorsType;
 
 export type StartupUpsertType = components["schemas"]["StartupUpsert"];
+
+export type WorkstreamType = components["schemas"]["WorkstreamReadLite"];
+export type WorkstreamUpsertType = components["schemas"]["WorkstreamUpsert"];
+export type WorkstreamCreateDisplayType = WorkstreamUpsertType & {
+    startups: StartupReadType[];
+};
+
 export type DomainCheckResponse = components["schemas"]["CheckDomainResponse"];
 export type BulkDeleteStartupsResponse =
     operations["delete_item_startups_by_ids_delete"]["responses"];

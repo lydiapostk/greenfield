@@ -546,6 +546,8 @@ export interface components {
             analyst?: string | null;
             /** Overall Recommendation */
             overall_recommendation?: string | null;
+            /** Startup Ids */
+            startup_ids?: number[];
         };
     };
     responses: never;

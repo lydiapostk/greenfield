@@ -61,57 +61,53 @@ export default function StartupTable<T extends StartupReadType | StartupType>({
                             <th className="p-4">Company Website</th>
                         </tr>
                     </thead>
-                    {startups.length === 0 ? (
-                        <caption className="px-4 py-2 text-stone-200 w-full italic">
-                            No results
-                        </caption>
-                    ) : (
-                        <tbody>
-                            {startups.map((startup, i) => (
-                                <tr
-                                    key={i}
-                                    onClick={() => {
-                                        if (onClickStartup)
-                                            onClickStartup(startup);
-                                    }}
-                                    className="cursor-pointer hover:bg-white/20 transition"
-                                >
-                                    {selectedIds && setSelectedIds && (
-                                        <td className="p-3 text-center align-middle">
-                                            <Checkbox
-                                                id={startup.id?.toString()}
-                                                checked={selectedIds.includes(
-                                                    startup.id as number
-                                                )}
-                                                onChange={() =>
-                                                    toggleRow(
-                                                        startup.id as number
-                                                    )
-                                                }
-                                            />
-                                        </td>
-                                    )}
-                                    <td className="p-4 max-w-md truncate">
-                                        {i + 1}
+                    <tbody>
+                        {startups.map((startup, i) => (
+                            <tr
+                                key={i}
+                                onClick={() => {
+                                    if (onClickStartup) onClickStartup(startup);
+                                }}
+                                className="cursor-pointer hover:bg-white/20 transition"
+                            >
+                                {selectedIds && setSelectedIds && (
+                                    <td className="p-3 text-center align-middle">
+                                        <Checkbox
+                                            id={startup.id?.toString()}
+                                            checked={selectedIds.includes(
+                                                startup.id as number
+                                            )}
+                                            onChange={() =>
+                                                toggleRow(startup.id as number)
+                                            }
+                                        />
                                     </td>
-                                    <td className="p-4 max-w-md truncate">
-                                        {startup.company_name}
-                                    </td>
-                                    <td className="p-4 max-w-xs truncate">
-                                        {startup.founders
-                                            ? Object.keys(
-                                                  startup.founders
-                                              ).join(", ")
-                                            : "Unknown"}
-                                    </td>
-                                    <td className="p-4 max-w-md truncate">
-                                        {startup.company_website}
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    )}
+                                )}
+                                <td className="p-4 max-w-md truncate">
+                                    {i + 1}
+                                </td>
+                                <td className="p-4 max-w-md truncate">
+                                    {startup.company_name}
+                                </td>
+                                <td className="p-4 max-w-xs truncate">
+                                    {startup.founders
+                                        ? Object.keys(startup.founders).join(
+                                              ", "
+                                          )
+                                        : "Unknown"}
+                                </td>
+                                <td className="p-4 max-w-md truncate">
+                                    {startup.company_website}
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
                 </table>
+                {startups.length === 0 && (
+                    <div className="px-4 py-2 text-stone-300 w-full italic text-center">
+                        No entry
+                    </div>
+                )}
             </div>
         </div>
     );

@@ -107,7 +107,6 @@ export default function StartupEditForm({
         if (!startup.id) return;
         const startup_update: Record<string, StartupPropertyTypes> = {};
         if (typeof value == "string") {
-            if (value.trim() == "") return;
             startup_update[field] = value.trim();
         } else startup_update[field] = value;
         fetch(
@@ -237,7 +236,7 @@ export default function StartupEditForm({
                     value={startup.tech_offering ? startup.tech_offering : ""}
                     onSave={updateField}
                     multiline={true}
-                    textAreaSize={250}
+                    textAreaSize={"lg"}
                 />
                 <StartupEditFormExplanation
                     explanation_type={"ref_tech"}
@@ -253,7 +252,7 @@ export default function StartupEditForm({
                     value={startup.uvp ? startup.uvp : ""}
                     onSave={updateField}
                     multiline={true}
-                    textAreaSize={250}
+                    textAreaSize={"lg"}
                 />
                 <StartupEditFormExplanation
                     explanation_type={"ref_uvp"}

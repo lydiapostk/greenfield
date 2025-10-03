@@ -1,15 +1,11 @@
+import { colourCSS } from "./style";
+
 interface NavButtonProps {
     title: string;
     href: string;
     mode?: "light" | "dark" | "pop";
     className?: string;
 }
-
-const colourCSS = {
-    light: "text-black bg-emerald-100/65 hover:bg-emerald-100/85",
-    dark: "text-white bg-indigo-800/65 hover:bg-indigo-800/85",
-    pop: "text-white bg-violet-800/65 hover:bg-violet-800/85",
-};
 
 export default function NavButton({
     title,

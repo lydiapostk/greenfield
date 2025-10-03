@@ -4,12 +4,15 @@ import { useEffect, useMemo, useState } from "react";
 import SideDrawer from "@/components/side_drawer";
 import Icon from "@/components/icon/icon";
 import ConfirmModal from "@/components/confirm-modal";
-import { WorkstreamType } from "@/data_display/data-type";
+import {
+    WorkstreamCreateDisplayType,
+    WorkstreamType,
+} from "@/data_display/data-type";
 import WorkstreamTable from "@/data_display/workstream-table";
 import PopupModal from "@/components/popup-modal";
-import WorkstreamEditForm from "@/app/(data-display-components)/workstream-edit-form";
-// import StartupView from "@/app/(data-display-components)/startup-view";
-// import StartupEditForm from "@/data_display/startup-edit-form";
+import WorkstreamCreateForm from "@/app/(data-display-components)/workstream-create-form";
+import DeleteButton from "../components/delete-button";
+import CreateButton from "../components/create-button";
 
 export default function BrowseWorkstreams() {
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -50,7 +53,7 @@ export default function BrowseWorkstreams() {
                     if (!res.ok || !data.ok) {
                         setIsDelModalOpen(true);
                         setDelError(
-                            "Unexpected error during deletion occured!"
+                            "Unexpected error occurred during deletion!"
                         );
                     } else {
                         // Reset
@@ -80,16 +83,63 @@ export default function BrowseWorkstreams() {
             });
     };
 
+    // CREATE MODAL
+    const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
+    const [createError, setCreateError] = useState<string>("");
+    const [newWs, setNewWs] = useState<WorkstreamCreateDisplayType>({
+        title: "Untitled",
+        startups: [],
+    });
+    const onCreateWorkstream = () => {
+        setIsLoading(true);
+        setIsCreateModalOpen(false);
+        setCreateError("");
+        const { startups, ...updateWithoutStartups } = newWs;
+        updateWithoutStartups["startup_ids"] = startups.map(
+            (startup) => startup.id
+        );
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/workstreams`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(updateWithoutStartups),
+        })
+            .then((res) =>
+                res.json().then((data: WorkstreamType) => {
+                    if (!res.ok) {
+                        setIsCreateModalOpen(true);
+                        setCreateError(res.statusText);
+                    } else {
+                        // Reset
+                        setNewWs({
+                            title: "Untitled",
+                            startups: [],
+                        });
+                        setSelectedWorkstream(null);
+                        setWorkstreams([...workstreams, data]);
+                    }
+                })
+            )
+            .catch((e: unknown) => {
+                setIsCreateModalOpen(true);
+                if (e instanceof Error) {
+                    setCreateError(e.message);
+                } else {
+                    setCreateError("Unexpected error");
+                }
+            })
+            .finally(() => {
+                setIsLoading(false);
+            });
+    };
+
     return (
         <div className="flex flex-col justify-start w-full h-full text-white">
             <h1 className="text-xl font-bold mt-12 self-center ">
                 Workstreams
             </h1>
-
             {/* Delete Modal */}
             {isDelModalOpen && (
                 <ConfirmModal
-                    isOpen={true}
                     confirmText={`Delete (${
                         selectedWorkstream ? 1 : selectedIds.length
                     })`}
@@ -106,54 +156,67 @@ export default function BrowseWorkstreams() {
             )}
 
             {/* Create Modal */}
-            {true && (
+            {isCreateModalOpen && (
                 <PopupModal
-                    isOpen={true}
-                    onClose={() => {}}
-                    onConfirm={() => {}}
+                    onClose={() => {
+                        setIsCreateModalOpen(false);
+                    }}
+                    onConfirm={onCreateWorkstream}
                 >
                     <div className="text-black">
                         <h1 className="text-xl font-semibold">
                             Create workstream
                         </h1>
 
-                        <WorkstreamEditForm />
+                        <WorkstreamCreateForm
+                            workstream={newWs}
+                            updateWorkstream={setNewWs}
+                            error={createError}
+                        />
+                        <div className="mt-6 flex justify-end space-x-3">
+                            <button
+                                onClick={() => {
+                                    setIsCreateModalOpen(false);
+                                }}
+                                className="px-4 py-2 rounded-lg bg-stone-200 text-stone-700 hover:bg-stone-300"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={() => {
+                                    onCreateWorkstream();
+                                }}
+                                className="px-4 py-2 rounded-lg bg-violet-800/65 text-white hover:bg-violet-800/85"
+                            >
+                                Create
+                            </button>
+                        </div>
                     </div>
                 </PopupModal>
             )}
-
             {/* Spinning Modal */}
             {isLoading && (
                 <div className="fixed inset-0 bg-black/50 bg-opacity-50 flex items-center justify-center z-50">
                     <Icon name={"spinner"} color="blue" size={"lg"} />
                 </div>
             )}
-
             <div className="self-center lg:w-3/5">
                 {/* Table tools */}
                 <div className="flex flex-row justify-start items-center py-2">
-                    <div
-                        className={`inline-flex bg-rose-600 rounded-2xl px-3 py-1.5 
-                                hover:bg-rose-700 stroke-2 gap-1 transition ease-in
-                                ${
-                                    selectedIds.length > 0 &&
-                                    !selectedWorkstream
-                                        ? "cursor-pointer"
-                                        : "cursor-default opacity-0"
-                                }`}
-                        onClick={() => {
-                            if (selectedIds.length === 0) return;
-                            setIsDelModalOpen(true);
-                        }}
-                    >
-                        <Icon
-                            name={"delete"}
-                            color="white"
-                            size={"sm"}
-                            className="self-center"
-                        />
-                        Delete ({selectedIds.length})
-                    </div>
+                    <CreateButton
+                        onClick={() => setIsCreateModalOpen(true)}
+                        showText={true}
+                        createText={`Create workstream`}
+                        disabled={!!selectedWorkstream}
+                    />
+                    <DeleteButton
+                        onClick={() => setIsDelModalOpen(true)}
+                        showText={true}
+                        deleteText={`Delete (${selectedIds.length})`}
+                        disabled={
+                            selectedIds.length == 0 || !!selectedWorkstream
+                        }
+                    />
                 </div>
                 {/* Table */}
                 <WorkstreamTable

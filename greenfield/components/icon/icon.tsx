@@ -1,5 +1,5 @@
 import { icons } from "@/components/icon/icon-svgs";
-import { sizeStyle, sizeStyleOptions } from "../size-box";
+import { sizeStyle, sizeStyleOptions } from "../style";
 
 type IconName = keyof typeof icons;
 

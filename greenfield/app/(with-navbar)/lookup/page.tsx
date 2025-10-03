@@ -141,7 +141,6 @@ export default function LookupStartupInfo() {
                 resetLookupStatus(error as string);
                 return; // An error occured, stop now.
             }
-            console.log(maybeRecord);
             setStep(lookupSteps[3]);
             if (maybeRecord) {
                 setTimeout(() => {

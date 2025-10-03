@@ -3,7 +3,6 @@ import { ReactNode, useEffect } from "react";
 import Icon from "./icon/icon";
 
 interface ConfirmModalProps {
-    isOpen: boolean;
     title?: string;
     message?: string | ReactNode;
     confirmText?: string;
@@ -14,7 +13,6 @@ interface ConfirmModalProps {
 }
 
 export default function ConfirmModal({
-    isOpen,
     title = "Are you sure?",
     message = "This action cannot be undone.",
     confirmText = "Confirm",
@@ -23,8 +21,6 @@ export default function ConfirmModal({
     onClose,
     onConfirm,
 }: ConfirmModalProps) {
-    if (!isOpen) return null;
-    // close modal on escape
     useEffect(() => {
         const handleEscapeKey = (e: KeyboardEvent) => {
             if (e.key === "Escape") onClose();
