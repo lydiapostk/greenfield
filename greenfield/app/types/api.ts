@@ -15,7 +15,8 @@ export interface paths {
         get: operations["list_startups_startups__get"];
         put?: never;
         post?: never;
-        delete?: never;
+        /** Delete Item */
+        delete: operations["delete_item_startups__delete"];
         options?: never;
         head?: never;
         patch?: never;
@@ -67,23 +68,6 @@ export interface paths {
         put: operations["update_startup_by_id_startups__startup_id__put"];
         post?: never;
         delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/startups/by_ids": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        /** Delete Item */
-        delete: operations["delete_item_startups_by_ids_delete"];
         options?: never;
         head?: never;
         patch?: never;
@@ -421,13 +405,6 @@ export interface components {
             /** Use Cases */
             use_cases?: string[] | null;
         };
-        /** StatusResponse */
-        StatusResponse: {
-            /** Ok */
-            ok: boolean;
-            /** Error */
-            error: string | null;
-        };
         /**
          * TrlEnum
          * @enum {string}
@@ -579,6 +556,41 @@ export interface operations {
             };
         };
     };
+    delete_item_startups__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": number[];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     get_startup_by_id_startups_by_id__startup_id__get: {
         parameters: {
             query?: never;
@@ -663,39 +675,6 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["StartupReadLite"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    delete_item_startups_by_ids_delete: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": number[];
-            };
-        };
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["StatusResponse"];
                 };
             };
             /** @description Validation Error */

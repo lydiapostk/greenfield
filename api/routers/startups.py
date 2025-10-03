@@ -19,11 +19,6 @@ client = OpenAI(
 )
 
 
-class StatusResponse(BaseModel):
-    ok: bool
-    error: Optional[str]
-
-
 @router.get("/", response_model=list[StartupReadLite])
 def list_startups(session: Session = Depends(get_session)):
     return session.exec(select(Startup).order_by(Startup.company_name)).all()
@@ -64,15 +59,14 @@ def update_startup_by_id(
     return db_startup
 
 
-@router.delete("/by_ids", response_model=StatusResponse)
+@router.delete("/", response_model=dict)
 def delete_item(ids: list[int], session: Session = Depends(get_session)):
     for id in ids:
         db_startup = session.get(Startup, id)
         if not db_startup:
-            return StatusResponse(
-                ok=False, error="No matching items found"
+            raise HTTPException(
+                status_code=404, detail="Start-up not found"
             )  # Cancel delete if anything is missing
         session.delete(db_startup)
-
     session.commit()
-    return StatusResponse(ok=True, error=None)
+    return {"deleted": True}

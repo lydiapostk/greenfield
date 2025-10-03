@@ -20,7 +20,7 @@ export type WorkstreamCreateDisplayType = WorkstreamUpsertType & {
 
 export type DomainCheckResponse = components["schemas"]["CheckDomainResponse"];
 export type BulkDeleteStartupsResponse =
-    operations["delete_item_startups_by_ids_delete"]["responses"];
+    operations["delete_item_startups__delete"]["responses"];
 
 export const ListOfYearsAsString = (start: number, end: number) => {
     const years: string[] = [];

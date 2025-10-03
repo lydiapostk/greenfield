@@ -15,6 +15,7 @@ import DeleteButton from "../components/delete-button";
 import CreateButton from "../components/create-button";
 import { useRouter } from "next/navigation";
 import WorkstreamPreview from "@/workstreams/workstream-preview";
+import { deleteFromDB } from "@/app/(data-display-components)/utils";
 
 export default function BrowseWorkstreams() {
     const router = useRouter();
@@ -43,47 +44,25 @@ export default function BrowseWorkstreams() {
     const [isDelModalOpen, setIsDelModalOpen] = useState<boolean>(false);
     const [delError, setDelError] = useState<string>("");
     const onDelWorkstreams = (workstreamIDsToDel: number[]) => {
-        setIsLoading(true);
-        setIsDelModalOpen(false);
-        setDelError("");
-        fetch(`${process.env.NEXT_PUBLIC_API_URL}/workstreams`, {
-            method: "DELETE",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(workstreamIDsToDel),
-        })
-            .then((res) =>
-                res.json().then((data) => {
-                    if (!res.ok || !data.deleted) {
-                        setIsDelModalOpen(true);
-                        setDelError(
-                            `Error occurred during deletion: ${res.statusText}`
-                        );
-                    } else {
-                        // Reset
-                        setSelectedIds([]);
-                        setSelectedWorkstream(null);
-                        setWorkstreams(
-                            workstreams.filter(
-                                (workstream) =>
-                                    !workstreamIDsToDel.includes(
-                                        workstream.id as number
-                                    )
+        deleteFromDB({
+            type: "workstreams",
+            idsToDel: workstreamIDsToDel,
+            setIsLoading: setIsLoading,
+            setIsDelModalOpen: setIsDelModalOpen,
+            setError: setDelError,
+            onSuccess: () => {
+                setSelectedIds([]);
+                setSelectedWorkstream(null);
+                setWorkstreams(
+                    workstreams.filter(
+                        (workstream) =>
+                            !workstreamIDsToDel.includes(
+                                workstream.id as number
                             )
-                        );
-                    }
-                })
-            )
-            .catch((e: unknown) => {
-                setIsDelModalOpen(true);
-                if (e instanceof Error) {
-                    setDelError(e.message);
-                } else {
-                    setDelError("Unexpected error");
-                }
-            })
-            .finally(() => {
-                setIsLoading(false);
-            });
+                    )
+                );
+            },
+        });
     };
 
     // CREATE MODAL

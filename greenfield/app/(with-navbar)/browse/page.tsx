@@ -10,6 +10,7 @@ import StartupTable from "@/startups/startup-table";
 import StartupView from "@/startups/startup-view";
 import ToggleViewEditButton from "../components/toggle-view-edit-button";
 import DeleteButton from "../components/delete-button";
+import { deleteFromDB } from "@/data_display/utils";
 
 export default function BrowseStartups() {
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -91,47 +92,23 @@ export default function BrowseStartups() {
     const [isDelModalOpen, setIsDelModalOpen] = useState<boolean>(false);
     const [delError, setDelError] = useState<string>("");
     const onDelStartups = (startupIDsToDel: number[]) => {
-        setIsLoading(true);
-        setIsDelModalOpen(false);
-        setDelError("");
-        fetch(`${process.env.NEXT_PUBLIC_API_URL}/startups/bulk/by_ids`, {
-            method: "DELETE",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(startupIDsToDel),
-        })
-            .then((res) =>
-                res.json().then((data) => {
-                    if (!res.ok || !data.ok) {
-                        setIsDelModalOpen(true);
-                        setDelError(
-                            "Unexpected error during deletion occured!"
-                        );
-                    } else {
-                        // Reset
-                        setSelectedIds([]);
-                        setSelectedStartup(null);
-                        setStartups(
-                            startups.filter(
-                                (startup) =>
-                                    !startupIDsToDel.includes(
-                                        startup.id as number
-                                    )
-                            )
-                        );
-                    }
-                })
-            )
-            .catch((e: unknown) => {
-                setIsDelModalOpen(true);
-                if (e instanceof Error) {
-                    setDelError(e.message);
-                } else {
-                    setDelError("Unexpected error");
-                }
-            })
-            .finally(() => {
-                setIsLoading(false);
-            });
+        deleteFromDB({
+            type: "startups",
+            idsToDel: startupIDsToDel,
+            setIsLoading: setIsLoading,
+            setIsDelModalOpen: setIsDelModalOpen,
+            setError: setDelError,
+            onSuccess: () => {
+                setSelectedIds([]);
+                setSelectedStartup(null);
+                setStartups(
+                    startups.filter(
+                        (startup) =>
+                            !startupIDsToDel.includes(startup.id as number)
+                    )
+                );
+            },
+        });
     };
 
     return (
