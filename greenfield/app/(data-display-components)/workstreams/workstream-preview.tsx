@@ -1,7 +1,8 @@
 "use client";
 
 import Icon from "@/components/icon/icon";
-import { WorkstreamType, textOrToBeFilled } from "@/data_display/data-type";
+import { WorkstreamType } from "@/data_display/data-type";
+import { textOrToBeFilled } from "@/data_display/utils";
 
 export interface WorkstreamPreviewProps {
     workstream: WorkstreamType;

@@ -4,7 +4,8 @@ import { ReactElement, useRef } from "react";
 import Icon from "@/components/icon/icon";
 import { getCitationAsElement } from "./citation";
 import CollapsibleSection from "@/data_display/collapsible-section";
-import { StartupType, textOrUnknown } from "@/data_display/data-type";
+import { StartupType } from "@/data_display/data-type";
+import { textOrUnknown } from "@/data_display/utils";
 
 export interface StartupViewProps {
     startup: StartupType;
