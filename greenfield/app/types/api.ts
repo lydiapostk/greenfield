@@ -138,7 +138,8 @@ export interface paths {
         put?: never;
         /** Create Workstream */
         post: operations["create_workstream_workstreams__post"];
-        delete?: never;
+        /** Delete Workstream */
+        delete: operations["delete_workstream_workstreams__delete"];
         options?: never;
         head?: never;
         patch?: never;
@@ -810,6 +811,41 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["WorkstreamReadLite"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_workstream_workstreams__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": number[];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
                 };
             };
             /** @description Validation Error */

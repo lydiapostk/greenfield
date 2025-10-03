@@ -65,3 +65,16 @@ def update_workstream(
     session.commit()
     session.refresh(db_ws)
     return db_ws
+
+
+@router.delete("/", response_model=dict)
+def delete_workstream(ids: list[int], session: Session = Depends(get_session)):
+    for id in ids:
+        db_startup = session.get(Workstream, id)
+        if not db_startup:
+            raise HTTPException(
+                status_code=404, detail="Workstream not found"
+            )  # Cancel delete if anything is missing
+        session.delete(db_startup)
+    session.commit()
+    return {"deleted": True}

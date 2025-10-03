@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import SideDrawer from "@/components/side_drawer";
 import Icon from "@/components/icon/icon";
 import ConfirmModal from "@/components/confirm-modal";
@@ -13,8 +13,12 @@ import PopupModal from "@/components/popup-modal";
 import WorkstreamCreateForm from "@/app/(data-display-components)/workstream-create-form";
 import DeleteButton from "../components/delete-button";
 import CreateButton from "../components/create-button";
+import { useRouter } from "next/navigation";
+import WorkstreamPreview from "@/app/(data-display-components)/workstream-preview";
 
 export default function BrowseWorkstreams() {
+    const router = useRouter();
+
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [workstreams, setWorkstreams] = useState<WorkstreamType[]>([]);
     useEffect(() => {
@@ -50,10 +54,10 @@ export default function BrowseWorkstreams() {
         })
             .then((res) =>
                 res.json().then((data) => {
-                    if (!res.ok || !data.ok) {
+                    if (!res.ok || !data.deleted) {
                         setIsDelModalOpen(true);
                         setDelError(
-                            "Unexpected error occurred during deletion!"
+                            `Error occurred during deletion: ${res.statusText}`
                         );
                     } else {
                         // Reset
@@ -231,36 +235,22 @@ export default function BrowseWorkstreams() {
                     onClose={() => {
                         setSelectedWorkstream(null);
                         setInFullScreen(false);
+                        setCreateError("");
+                        setDelError("");
                     }}
                 >
                     {/* Sidebar tools */}
                     <div className="flex flex-row w-full justify-between items-center mt-10">
-                        <div className="flex flex-row w-full justify-start items-center gap-2">
-                            {/* Redirect to view workstream in full */}
-                            <a className="flex flex-row justify-start items-center hover:underline">
-                                Go to workstream
-                                <Icon
-                                    name="arrowRight"
-                                    className="hover:stroke-2"
-                                />
-                            </a>
-                            {/* Delete function */}
-                            <div
-                                className={`inline-flex bg-rose-600 rounded-2xl px-3 py-1.5 mb-6 self-end 
-                                        hover:bg-rose-700 stroke-2 gap-1 transition ease-in cursor-pointer 
-                                        w-fit text-stone-200 font-medium`}
+                        <div className="flex flex-col w-full justify-start items-start">
+                            <DeleteButton
                                 onClick={() => setIsDelModalOpen(true)}
-                            >
-                                <Icon
-                                    name={"delete"}
-                                    size="md"
-                                    className="stroke-stone-200 hover:stroke-[2]"
-                                />
-                                Delete
-                            </div>
+                                showText={true}
+                            />
+                            <WorkstreamPreview
+                                workstream={selectedWorkstream}
+                            />
                         </div>
                     </div>
-                    {/* <WorkstreamView workstream={selectedWorkstream} /> */}
                 </SideDrawer>
             )}
         </div>

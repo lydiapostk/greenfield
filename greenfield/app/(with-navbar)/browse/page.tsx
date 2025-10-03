@@ -196,6 +196,7 @@ export default function BrowseStartups() {
                         setSelectedStartup(null);
                         setInFullScreen(false);
                         setInEditMode(false);
+                        setDelError("");
                     }}
                     inFullScreen={inFullScreen}
                 >
