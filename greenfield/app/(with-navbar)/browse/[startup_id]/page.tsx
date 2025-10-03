@@ -2,7 +2,7 @@
 
 import { use, useEffect, useState } from "react";
 import Icon from "@/components/icon/icon";
-import StartupEditForm from "@/data_display/startup-edit-form";
+import StartupEditForm from "@/startups/startup-edit-form";
 import { StartupReadType, StartupType } from "@/data_display/data-type";
 
 export default function DoubleClick({

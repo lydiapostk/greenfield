@@ -1,10 +1,11 @@
-import { useState } from "react";
-
 import Icon from "@/components/icon/icon";
 import EditableTextField from "@/components/input-field/editable-text-field";
 
-import { WorkstreamCreateDisplayType, WorkstreamUpsertType } from "./data-type";
-import StartupTable from "./startup-table";
+import {
+    WorkstreamCreateDisplayType,
+    WorkstreamUpsertType,
+} from "@/data_display/data-type";
+import StartupTable from "@/startups/startup-table";
 
 interface WorkstreamCreateFormProps<> {
     workstream: WorkstreamCreateDisplayType;

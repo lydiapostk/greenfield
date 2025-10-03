@@ -5,9 +5,9 @@ import SideDrawer from "@/components/side_drawer";
 import ConfirmModal from "@/components/confirm-modal";
 import Icon from "@/components/icon/icon";
 import { StartupReadType } from "@/data_display/data-type";
-import StartupEditForm from "@/data_display/startup-edit-form";
-import StartupTable from "@/data_display/startup-table";
-import StartupView from "@/data_display/startup-view";
+import StartupEditForm from "@/startups/startup-edit-form";
+import StartupTable from "@/startups/startup-table";
+import StartupView from "@/startups/startup-view";
 import ToggleViewEditButton from "../components/toggle-view-edit-button";
 import DeleteButton from "../components/delete-button";
 

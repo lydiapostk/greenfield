@@ -8,13 +8,13 @@ import {
     WorkstreamCreateDisplayType,
     WorkstreamType,
 } from "@/data_display/data-type";
-import WorkstreamTable from "@/data_display/workstream-table";
+import WorkstreamTable from "@/workstreams/workstream-table";
 import PopupModal from "@/components/popup-modal";
-import WorkstreamCreateForm from "@/app/(data-display-components)/workstream-create-form";
+import WorkstreamCreateForm from "@/workstreams/workstream-create-form";
 import DeleteButton from "../components/delete-button";
 import CreateButton from "../components/create-button";
 import { useRouter } from "next/navigation";
-import WorkstreamPreview from "@/app/(data-display-components)/workstream-preview";
+import WorkstreamPreview from "@/workstreams/workstream-preview";
 
 export default function BrowseWorkstreams() {
     const router = useRouter();
@@ -33,7 +33,6 @@ export default function BrowseWorkstreams() {
     }, []);
 
     // Sidebar controls
-    const [inFullScreen, setInFullScreen] = useState<boolean>(false);
     const [selectedWorkstream, setSelectedWorkstream] =
         useState<WorkstreamType | null>(null);
 
@@ -234,7 +233,6 @@ export default function BrowseWorkstreams() {
                 <SideDrawer
                     onClose={() => {
                         setSelectedWorkstream(null);
-                        setInFullScreen(false);
                         setCreateError("");
                         setDelError("");
                     }}

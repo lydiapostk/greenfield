@@ -21,6 +21,8 @@
         "paths": {
             "@/*": ["./*"],
             "@/data_display/*": ["./app/(data-display-components)/*"],
+            "@/startups/*": ["./app/(data-display-components)/startups/*"],
+            "@/workstreams/*": ["./app/(data-display-components)/workstreams/*"],
         }
     },
     "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

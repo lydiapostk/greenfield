@@ -8,9 +8,9 @@ import EditableDictionaryField, {
 } from "@/components/input-field/editable-dictionary-field";
 import EditableListField from "@/components/input-field/editable-list-field";
 
+import CollapsibleSection from "@/data_display/collapsible-section";
+import { COUNTRIES } from "@/data_display/countries";
 import { getCitationAsEditableElement } from "./citation";
-import CollapsibleSection from "./collapsible-section";
-import { COUNTRIES } from "./countries";
 import EditableCompetitorsField from "./editable-competitors";
 import {
     ListOfYearsAsString,
@@ -23,7 +23,7 @@ import {
     StartupUpsertType,
     StartupReadType,
     StartupPropertyTypes,
-} from "./data-type";
+} from "../data-type";
 
 interface StartupEditFormProps {
     startup: StartupReadType;

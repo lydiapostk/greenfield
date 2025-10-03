@@ -2,9 +2,9 @@
 
 import { ReactElement, useRef } from "react";
 import Icon from "@/components/icon/icon";
-import { getCitationAsElement, textOrUnknown } from "./citation";
-import CollapsibleSection from "./collapsible-section";
-import { StartupType } from "./data-type";
+import { getCitationAsElement } from "./citation";
+import CollapsibleSection from "@/data_display/collapsible-section";
+import { StartupType, textOrUnknown } from "@/data_display/data-type";
 
 export interface StartupViewProps {
     startup: StartupType;

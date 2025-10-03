@@ -1,7 +1,7 @@
 "use ref";
 
 import Checkbox from "@/components/checkbox";
-import { WorkstreamType } from "./data-type";
+import { WorkstreamType } from "@/data_display/data-type";
 
 interface WrokstreamTableProps {
     workstreams: WorkstreamType[];

@@ -2,7 +2,7 @@
 
 import Icon from "@/components/icon/icon";
 import { useEffect, useState } from "react";
-import { CompetitorsType } from "./data-type";
+import { CompetitorsType } from "@/data_display/data-type";
 
 export interface CompetitorEntry {
     name: string;
