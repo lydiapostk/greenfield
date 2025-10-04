@@ -78,6 +78,7 @@ export function getUpdateWSFunction({
         const workstream_update: Record<string, WorkstreamPropertyTypes> = {};
         if (typeof value == "string") workstream_update[field] = value.trim();
         else workstream_update[field] = value;
+        console.log(workstream_update);
         fetch(
             `${
                 process.env.NEXT_PUBLIC_API_URL

@@ -62,6 +62,18 @@ def update_workstream(
     update_data = ws.model_dump(exclude_unset=True)
     db_ws.sqlmodel_update(update_data)
     session.add(db_ws)
+
+    # Create evaluations for each startup
+    for sid in ws.startup_ids:
+        startup = session.get(Startup, sid)
+        if not startup:
+            raise HTTPException(status_code=404, detail=f"Startup {sid} not found")
+        evaluation = WorkstreamStartupEvaluation(
+            workstream=db_ws,
+            startup=startup,
+        )
+        session.add(evaluation)
+
     session.commit()
     session.refresh(db_ws)
     return db_ws
