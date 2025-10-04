@@ -4,11 +4,11 @@ import { ReactElement, useRef } from "react";
 import Icon from "@/components/icon/icon";
 import { getCitationAsElement } from "./citation";
 import CollapsibleSection from "@/data_display/collapsible-section";
-import { StartupType } from "@/data_display/data-type";
+import { StartupReadType, StartupType } from "@/data_display/data-type";
 import { textOrUnknown } from "@/data_display/utils";
 
 export interface StartupViewProps {
-    startup: StartupType;
+    startup: StartupReadType;
     topToolbar?: ReactElement;
     bottomToolbar?: ReactElement;
 }
@@ -261,6 +261,29 @@ export default function StartupView({
                         </ul>
                     ) : (
                         <p className="text-gray-700">"Unknown"</p>
+                    )}
+                </div>
+                <div className="mt-6 w-full">
+                    <h3 className="font-bold mb-2">Workstreams</h3>
+                    {startup && (
+                        <ul className="list-disc pl-5">
+                            {startup.evaluations.map((evaluation) => (
+                                <li
+                                    key={evaluation.workstream.id}
+                                    className=" w-full text-gray-700 font-medium"
+                                >
+                                    <a
+                                        className="hover:underline cursor-pointer"
+                                        href={`/analyse/${evaluation.workstream.id}`}
+                                    >
+                                        {evaluation.workstream.title}
+                                    </a>
+                                    <p className="text-gray-500 font-medium italic text-sm">
+                                        {`Created: ${evaluation.workstream.create_date}`}
+                                    </p>
+                                </li>
+                            ))}
+                        </ul>
                     )}
                 </div>
             </div>

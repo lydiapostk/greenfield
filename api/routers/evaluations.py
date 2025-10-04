@@ -10,7 +10,7 @@ from api.models.data_models import (
     WorkstreamStartupEvaluation,
     WorkstreamStartupEvaluationUpdate,
 )
-from api.models.read_models import WorkstreamRead
+from api.models.read_models import EvaluationReadWithStartup, WorkstreamRead
 
 router = APIRouter(tags=["evaluations"])
 
@@ -65,7 +65,7 @@ def list_evaluations(
     return session.exec(query).all()
 
 
-@router.put("/{workstream_id}/{startup_id}", response_model=WorkstreamStartupEvaluation)
+@router.put("/{workstream_id}/{startup_id}", response_model=EvaluationReadWithStartup)
 def upsert_evaluations(
     workstream_id: int,
     startup_id: int,
