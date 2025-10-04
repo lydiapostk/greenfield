@@ -14,7 +14,7 @@ export default function EditableDropdownField<V>({
     field_key,
     value,
     values,
-    fontStyle = "",
+    valueStyle = "",
     disabled = false,
     showLabel = true,
     searchable = false,
@@ -118,7 +118,7 @@ export default function EditableDropdownField<V>({
                         disabled
                             ? "cursor-not-allowed text-gray-500"
                             : " hover:bg-stone-300 cursor-pointer"
-                    } ${fontStyle} `}
+                    } ${valueStyle} `}
                     onClick={() => !disabled && setIsEditing(true)}
                 >
                     {value}

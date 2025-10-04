@@ -46,7 +46,7 @@ export default function DoubleClick({
     }, []);
 
     return (
-        <div className="w-full h-full bg-stone-200">
+        <div className="w-full h-full bg-stone-200 overflow-y-auto">
             <div className="w-4xl overflow-hidden place-self-center my-10 flex flex-col justify-start">
                 {(!workstream || isLoading) && (
                     <Icon

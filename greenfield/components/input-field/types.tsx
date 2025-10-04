@@ -24,10 +24,11 @@ export interface EditableInputFieldType<
         setIsEditing: (isEditing: boolean) => void
     ) => void;
     label: string;
+    labelStyle?: string;
+    showLabel?: boolean;
     field_key: V;
     value?: T;
-    fontStyle?: string;
-    showLabel?: boolean;
+    valueStyle?: string;
     searchable?: boolean;
 }
 
@@ -40,7 +41,7 @@ export interface EditableCustomFieldType<T, V> {
     label: string;
     field_key: V;
     value?: T;
-    fontStyle?: string;
+    valueStyle?: string;
     showLabel?: boolean;
     searchable?: boolean;
     placeholder?: string;

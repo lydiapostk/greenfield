@@ -12,9 +12,10 @@ interface EditableFieldProps<V> extends EditableInputFieldType<string, V> {
 export default function EditableTextField<V>({
     onSave,
     label,
+    labelStyle = "",
     field_key,
     value = "",
-    fontStyle = "",
+    valueStyle = "",
     disabled = false,
     multiline = false,
     showLabel = true,
@@ -79,7 +80,11 @@ export default function EditableTextField<V>({
                 multiline ? "flex flex-col" : "flex flex-row"
             } justify-start w-full gap-2 mb-0`}
         >
-            {showLabel && <span className="font-bold min-w-fit">{label}</span>}
+            {showLabel && (
+                <span className={`font-bold min-w-fit ${labelStyle}`}>
+                    {label}
+                </span>
+            )}
 
             {/* Read Mode */}
             {!isEditing && (
@@ -90,7 +95,7 @@ export default function EditableTextField<V>({
                             : `text-gray-500 ${
                                   disabled ? "cursor-not-allowed" : "italic"
                               }`
-                    } ${fontStyle} `}
+                    } ${valueStyle} `}
                     onClick={() => !disabled && setIsEditing(true)}
                 >
                     {value == "" ? placeholder : value}
@@ -108,7 +113,7 @@ export default function EditableTextField<V>({
                             value={draft}
                             onChange={(e) => setDraft(e.target.value)}
                             onKeyDown={onKeyDown}
-                            className={`rounded border min-w-full ${textAreaSizeStyle} bg-stone-100 px-1 ${fontStyle} text-wrap`}
+                            className={`rounded border min-w-full ${textAreaSizeStyle} bg-stone-100 px-1 ${valueStyle} text-wrap`}
                             placeholder={placeholder}
                         />
                     ) : (
@@ -117,7 +122,7 @@ export default function EditableTextField<V>({
                             value={draft}
                             onChange={(e) => setDraft(e.target.value)}
                             onKeyDown={onKeyDown}
-                            className={`rounded border w-fit bg-stone-100/75 px-1 ${fontStyle}`}
+                            className={`rounded border w-fit bg-stone-100/75 px-1 ${valueStyle}`}
                             placeholder={placeholder}
                         />
                     )}

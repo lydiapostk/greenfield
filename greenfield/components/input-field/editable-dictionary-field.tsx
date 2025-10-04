@@ -74,28 +74,6 @@ export default function EditableDictionaryField<V>({
         setIsEditing(false);
     };
 
-    // // cancel change on escape
-    // useEffect(() => {
-    //     const handleEscapeKey = (e: KeyboardEvent) => {
-    //         if (e.key === "Escape") cancelChange();
-    //     };
-    //     document.addEventListener("keydown", handleEscapeKey);
-    //     return () => {
-    //         document.removeEventListener("keydown", handleEscapeKey);
-    //     };
-    // }, [value]);
-
-    // // commit change on enter
-    // useEffect(() => {
-    //     const handleEnterKey = (e: KeyboardEvent) => {
-    //         if (e.key === "Enter") commitChange();
-    //     };
-    //     document.addEventListener("keydown", handleEnterKey);
-    //     return () => {
-    //         document.removeEventListener("keydown", handleEnterKey);
-    //     };
-    // }, [commitChange]);
-
     function onKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
         if (e.key === "Enter") {
             commitChange();

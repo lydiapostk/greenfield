@@ -158,7 +158,7 @@ export default function StartupEditForm({
                 field_key="company_name"
                 value={startup.company_name ? startup.company_name : ""}
                 onSave={updateField}
-                fontStyle="text-3xl font-bold mr-3"
+                valueStyle="text-3xl font-bold mr-3"
                 showLabel={false}
             />
             {startup.company_website && (

@@ -1,4 +1,6 @@
 import {
+    EvaluationReadType,
+    EvaluationUpdateType,
     WorkstreamPropertyTypes,
     WorkstreamReadType,
     WorkstreamUpsertType,
@@ -74,11 +76,13 @@ export function getUpdateWSFunction({
 }: updateWSParams) {
     return (
         field: keyof WorkstreamUpsertType,
-        value: WorkstreamPropertyTypes
+        value: WorkstreamPropertyTypes,
+        setIsEditing: (isEditing: boolean) => void
     ) => {
+        setError("");
         const workstream_update: Record<string, WorkstreamPropertyTypes> = {};
         let query;
-        if ((field = "startup_ids") && !!value) {
+        if (field == "startup_ids" && !!value) {
             query = fetch(
                 `${
                     process.env.NEXT_PUBLIC_API_URL
@@ -95,6 +99,7 @@ export function getUpdateWSFunction({
             if (typeof value == "string")
                 workstream_update[field] = value.trim();
             else workstream_update[field] = value;
+            console.log(workstream_update);
             query = fetch(
                 `${
                     process.env.NEXT_PUBLIC_API_URL
@@ -111,8 +116,10 @@ export function getUpdateWSFunction({
         query
             .then((res) =>
                 res.json().then((data: WorkstreamReadType) => {
-                    if (res.ok) onSuccess(data);
-                    else
+                    if (res.ok) {
+                        onSuccess(data);
+                        setIsEditing(false);
+                    } else
                         setError(
                             `Unexpected error occured when updating workstream!\n${res.statusText}`
                         );
@@ -123,5 +130,54 @@ export function getUpdateWSFunction({
                     `Unexpected error occured when updating workstream!\n${error}`
                 )
             );
+    };
+}
+
+interface updateEvalParams {
+    workstream_id: number;
+    startup_id: number;
+    onSuccess?: (ws: EvaluationReadType) => void;
+    setError?: (errMsg: string) => void;
+}
+
+export function getUpdateEvaluationFunction({
+    workstream_id,
+    startup_id,
+    onSuccess = () => {},
+    setError = () => {},
+}: updateEvalParams) {
+    return (
+        field: keyof EvaluationUpdateType,
+        value: string | null,
+        setIsEditing: (isEditing: boolean) => void
+    ) => {
+        setError("");
+        const evaluation_update: Record<string, string | null> = {};
+        if (typeof value == "string") evaluation_update[field] = value.trim();
+        else evaluation_update[field] = value;
+        fetch(
+            `${
+                process.env.NEXT_PUBLIC_API_URL
+            }/evaluations/${encodeURIComponent(
+                workstream_id
+            )}/${encodeURIComponent(startup_id)}`,
+            {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(evaluation_update),
+            }
+        )
+            .then((res) =>
+                res.json().then((data: EvaluationReadType) => {
+                    if (res.ok) {
+                        console.log(data);
+                        onSuccess(data);
+                        setIsEditing(false);
+                    } else setError(`Unexpected error:\n${res.statusText}`);
+                })
+            )
+            .catch((error) => setError(`Unexpected error:\n${error}`));
     };
 }

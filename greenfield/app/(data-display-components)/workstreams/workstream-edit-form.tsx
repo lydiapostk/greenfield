@@ -5,8 +5,16 @@ import EditableTextField from "@/components/input-field/editable-text-field";
 import Icon from "@/components/icon/icon";
 import SideDrawer from "@/components/side_drawer";
 
-import { StartupReadType, WorkstreamReadType } from "@/data_display/data-type";
-import { deleteFromDB, getUpdateWSFunction } from "@/data_display/utils";
+import {
+    EvaluationReadType,
+    StartupReadType,
+    WorkstreamReadType,
+} from "@/data_display/data-type";
+import {
+    deleteFromDB,
+    getUpdateEvaluationFunction,
+    getUpdateWSFunction,
+} from "@/data_display/utils";
 
 import StartupTable from "@/startups/startup-table";
 import StartupView from "@/startups/startup-view";
@@ -122,7 +130,7 @@ export default function WorkstreamEditForm({
     );
 
     return (
-        <div className="flex flex-col justify-start items-start mt-6 gap-4 w-full space-y-8 min-h-fit overflow-auto">
+        <div className="flex flex-col justify-start items-start mt-6 gap-4 w-full space-y-8 min-h-fit">
             {error && error !== "" && (
                 <div className="flex flex-row items-center justify-start gap-2 font-mono italic text-red-700">
                     <Icon
@@ -173,9 +181,10 @@ export default function WorkstreamEditForm({
                     field_key="title"
                     value={workstream.title}
                     onSave={funcUpdateWS}
-                    fontStyle="text-3xl font-bold"
+                    valueStyle="text-3xl font-bold"
                     showLabel={false}
                 />
+                <span className="text-gray-500 font-medium italic text-sm">{`Created: ${workstream.create_date}`}</span>
                 <EditableTextField
                     label="Use Case:"
                     field_key="use_case"
@@ -260,6 +269,85 @@ export default function WorkstreamEditForm({
                         )}
                     </SideDrawer>
                 )}
+                <div className="flex flex-col gap-6">
+                    {workstream.evaluations.map((evaluation, idx) => {
+                        const onConfirm = getUpdateEvaluationFunction({
+                            workstream_id: workstream.id,
+                            startup_id: evaluation.startup.id,
+                            onSuccess: (evaluation: EvaluationReadType) => {
+                                const updatedEvaluations = [
+                                    ...workstream.evaluations,
+                                ];
+                                updatedEvaluations[idx] = evaluation;
+                                const updatedWorkstream = {
+                                    ...workstream,
+                                    evaluations: updatedEvaluations,
+                                };
+                                updateWorkstream(updatedWorkstream);
+                            },
+                            setError: setError,
+                        });
+                        return (
+                            <div
+                                key={evaluation.startup.id}
+                                className="w-full flex flex-col gap-4"
+                            >
+                                <div className="font-bold text-md text-slate-800 border-b py-2">
+                                    {evaluation.startup.company_name}
+                                </div>
+                                <EditableTextField
+                                    onSave={onConfirm}
+                                    label={"Competitive advantage:"}
+                                    field_key={"competitive_advantage"}
+                                    value={
+                                        evaluation.competitive_advantage
+                                            ? evaluation.competitive_advantage
+                                            : ""
+                                    }
+                                    multiline={true}
+                                    textAreaSize={"sm"}
+                                />
+                                <EditableTextField
+                                    onSave={onConfirm}
+                                    label={"Risks:"}
+                                    field_key={"risks"}
+                                    value={
+                                        evaluation.risks ? evaluation.risks : ""
+                                    }
+                                    multiline={true}
+                                    textAreaSize={"sm"}
+                                />
+                                <EditableTextField
+                                    onSave={onConfirm}
+                                    label={"Collaboration potential:"}
+                                    field_key={"collaboration_potential"}
+                                    value={
+                                        evaluation.collaboration_potential
+                                            ? evaluation.collaboration_potential
+                                            : ""
+                                    }
+                                    multiline={true}
+                                    textAreaSize={"sm"}
+                                />
+                            </div>
+                        );
+                    })}
+                    <div className="w-full">
+                        <EditableTextField
+                            onSave={funcUpdateWS}
+                            label={"Conclusion"}
+                            labelStyle="text-2xl text-semibold mt-6 border-b"
+                            field_key={"overall_recommendation"}
+                            value={
+                                workstream.overall_recommendation
+                                    ? workstream.overall_recommendation
+                                    : ""
+                            }
+                            multiline={true}
+                            textAreaSize={"sm"}
+                        />
+                    </div>
+                </div>
             </div>
         </div>
     );

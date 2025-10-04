@@ -1081,7 +1081,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["WorkstreamStartupEvaluation"];
+                    "application/json": components["schemas"]["EvaluationReadWithStartup"];
                 };
             };
             /** @description Validation Error */

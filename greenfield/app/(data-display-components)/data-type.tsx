@@ -20,6 +20,11 @@ export type WorkstreamCreateDisplayType = WorkstreamUpsertType & {
 };
 export type WorkstreamPropertyTypes = string | number[] | null | undefined;
 
+export type EvaluationReadType =
+    components["schemas"]["EvaluationReadWithStartup"];
+export type EvaluationUpdateType =
+    components["schemas"]["WorkstreamStartupEvaluationUpdate"];
+
 export type DomainCheckResponse = components["schemas"]["CheckDomainResponse"];
 export type BulkDeleteStartupsResponse =
     operations["delete_item_startups__delete"]["responses"];

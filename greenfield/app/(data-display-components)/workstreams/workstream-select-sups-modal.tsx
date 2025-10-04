@@ -7,7 +7,6 @@ import {
     WorkstreamType,
 } from "@/data_display/data-type";
 import { getUpdateWSFunction } from "../utils";
-import { useRouter } from "next/navigation";
 import StartupTable from "../startups/startup-table";
 import Icon from "@/components/icon/icon";
 
@@ -53,7 +52,6 @@ export default function WorkstreamSelectSupsModal({
     }, [startups, search]);
 
     // Insert selected startups to selected workstream
-    const router = useRouter();
     const insertStartupsToWS = () => {
         if (selectedIds.length == 0) return;
         getUpdateWSFunction({
