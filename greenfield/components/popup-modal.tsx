@@ -36,7 +36,7 @@ export default function PopupModal({
 
     return (
         <div className="fixed inset-0 bg-black/50 bg-opacity-50 flex items-center justify-center z-50 max-h-full">
-            <div className="bg-white rounded-2xl shadow-lg p-6 min-w-96 w-fit max-h-[80vh] overflow-y-auto">
+            <div className="bg-sky-100 rounded-2xl shadow-lg p-6 min-w-96 w-fit max-h-[80vh] overflow-y-auto">
                 {children}
             </div>
         </div>

@@ -30,12 +30,14 @@ export default function Checkbox({ checked, onChange, id }: CheckboxProps) {
 
             {/* Custom styled box */}
             <div
-                className={`flex h-5 w-5 items-center justify-center rounded-md bg-stone-200 hover:bg-stone-300`}
+                className={`flex h-5 w-5 items-center justify-center rounded-md ${
+                    checked ? "bg-stone-100" : "bg-stone-50"
+                } hover:bg-stone-200`}
             >
                 {checked && (
                     <Icon
                         name="check"
-                        color="fuchsia"
+                        color="gray"
                         className="stroke-3 p-0.5"
                         size="sm"
                     />

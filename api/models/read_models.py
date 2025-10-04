@@ -50,7 +50,7 @@ class EvaluationReadWithWorkstreamLite(WorkstreamStartupEvaluationBase):
     workstream: WorkstreamLite
 
 
-# Workstream with evaluations
+# Start-up with evaluations
 class StartupReadLite(StartupBase):
     id: int
     evaluations: List[EvaluationReadWithWorkstreamLite] = []
@@ -76,7 +76,6 @@ class EvaluationReadWithWorkstream(WorkstreamStartupEvaluationBase):
     workstream: WorkstreamReadLite
 
 
-class StartupRead(WorkstreamBase):
+class StartupRead(StartupBase):
     id: int
-    create_date: date
     evaluations: List[EvaluationReadWithWorkstream] = []

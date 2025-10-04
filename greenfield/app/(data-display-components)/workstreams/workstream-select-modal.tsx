@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { WorkstreamReadType, WorkstreamType } from "@/data_display/data-type";
 import { getUpdateWSFunction } from "../utils";
 import { useRouter } from "next/navigation";
+import WorkstreamTable from "./workstream-table";
 
 interface WorkstreamSelectModalProps {
     setIsLoading: (isLoading: boolean) => void;
@@ -42,12 +43,18 @@ export default function WorkstreamSelectModal({
     // Insert selected startups to selected workstream
     const router = useRouter();
     const insertStartupToWS = () => {
+        console.log(
+            `Adding to workstream with id: ${selectedId}; startups ${startup_ids}}`
+        );
         if (!selectedId) return;
         getUpdateWSFunction({
             workstream_id: selectedId,
             setError: setError,
             onSuccess: onSuccess,
         })("startup_ids", startup_ids);
+    };
+    const toggleSelect = (id: number | null) => {
+        setSelectedId((prev) => (prev == id ? null : id));
     };
 
     return (
@@ -60,12 +67,23 @@ export default function WorkstreamSelectModal({
         >
             <div className="text-black">
                 <h1 className="text-xl font-semibold">Select workstream</h1>
-                {/* 
-                <WorkstreamCreateForm
-                    workstream={newWs}
-                    updateWorkstream={setNewWs}
-                    error={createError}
-                /> */}
+                <input
+                    id="table_search"
+                    type="text"
+                    placeholder="Search..."
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    className="max-w-4/5 px-4 py-2 my-2 self-center rounded-2xl bg-white/90 focus:outline-none focus:ring-0 focus:bg-white/70"
+                    autoFocus
+                />
+                <WorkstreamTable
+                    workstreams={filteredValues}
+                    selectedId={selectedId}
+                    setSelectedId={setSelectedId}
+                    onClickWorkstream={(ws: WorkstreamType | null) =>
+                        toggleSelect(ws ? ws.id : null)
+                    }
+                />
                 <div className="mt-6 flex justify-end space-x-3">
                     <button
                         onClick={() => {
@@ -85,7 +103,7 @@ export default function WorkstreamSelectModal({
                                 ? "hover:bg-violet-800/85 cursor-pointer"
                                 : ""
                         }`}
-                        disabled={!!selectedId}
+                        disabled={!selectedId}
                     >
                         Add {startup_ids.length} startups
                     </button>

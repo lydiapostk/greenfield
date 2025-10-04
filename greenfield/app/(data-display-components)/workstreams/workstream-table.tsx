@@ -3,11 +3,13 @@
 import Checkbox from "@/components/checkbox";
 import { WorkstreamType } from "@/data_display/data-type";
 
-interface WrokstreamTableProps {
+interface WorkstreamTableProps {
     workstreams: WorkstreamType[];
     onClickWorkstream?: (workstream: WorkstreamType | null) => void;
     selectedIds?: number[];
     setSelectedIds?: React.Dispatch<React.SetStateAction<number[]>>;
+    selectedId?: number | null;
+    setSelectedId?: React.Dispatch<React.SetStateAction<number | null>>;
 }
 
 export default function WorkstreamTable({
@@ -15,12 +17,17 @@ export default function WorkstreamTable({
     onClickWorkstream,
     selectedIds,
     setSelectedIds,
-}: WrokstreamTableProps) {
+    selectedId,
+    setSelectedId,
+}: WorkstreamTableProps) {
     // Toggle single row
     const toggleRow = (id: number) => {
-        setSelectedIds?.((prev) =>
-            prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
-        );
+        if (setSelectedIds && selectedIds)
+            setSelectedIds?.((prev) =>
+                prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+            );
+        if (setSelectedId && selectedId)
+            setSelectedId((prev) => (prev == id ? null : id));
     };
 
     // Toggle all rows
@@ -33,6 +40,8 @@ export default function WorkstreamTable({
         }
     };
 
+    const selectable = (selectedIds && setSelectedIds) || setSelectedId;
+
     return (
         <div className="pb-6 animate-fadeIn">
             {/* Table */}
@@ -40,11 +49,13 @@ export default function WorkstreamTable({
                 <table className="w-full text-left">
                     <thead className="bg-white/20">
                         <tr>
-                            {selectedIds && setSelectedIds && (
+                            {selectable && (
                                 <th className="w-12 p-3 text-center align-middle">
                                     <Checkbox
                                         id="check_all"
                                         checked={
+                                            !!selectedIds &&
+                                            !!setSelectedIds &&
                                             selectedIds.length > 0 &&
                                             selectedIds.length ===
                                                 workstreams.length
@@ -71,13 +82,18 @@ export default function WorkstreamTable({
                                 }}
                                 className="cursor-pointer hover:bg-white/20 transition"
                             >
-                                {selectedIds && setSelectedIds && (
+                                {selectable && (
                                     <td className="p-3 text-center align-middle">
                                         <Checkbox
                                             id={workstreams.id?.toString()}
-                                            checked={selectedIds.includes(
-                                                workstreams.id as number
-                                            )}
+                                            checked={
+                                                selectedIds
+                                                    ? selectedIds.includes(
+                                                          workstreams.id as number
+                                                      )
+                                                    : selectedId ==
+                                                      workstreams.id
+                                            }
                                             onChange={() =>
                                                 toggleRow(
                                                     workstreams.id as number
