@@ -3,9 +3,7 @@ import { ReactElement, useState } from "react";
 import Icon from "@/components/icon/icon";
 import EditableTextField from "@/components/input-field/editable-text-field";
 import EditableDropdownField from "@/components/input-field/editable-dropdown-field";
-import EditableDictionaryField, {
-    DictionaryEntry,
-} from "@/components/input-field/editable-dictionary-field";
+import EditableDictionaryField from "@/components/input-field/editable-dictionary-field";
 import EditableListField from "@/components/input-field/editable-list-field";
 
 import CollapsibleSection from "@/data_display/collapsible-section";
@@ -24,6 +22,7 @@ import {
     StartupReadType,
     StartupPropertyTypes,
 } from "../data-type";
+import { DictionaryEntry } from "@/components/input-field/types";
 
 interface StartupEditFormProps {
     startup: StartupReadType;
