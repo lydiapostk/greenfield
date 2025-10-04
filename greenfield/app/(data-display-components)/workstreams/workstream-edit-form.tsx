@@ -208,24 +208,21 @@ export default function WorkstreamEditForm({
             <div className="flex flex-col justify-start w-full gap-1">
                 <span className="font-bold min-w-fit">Start-ups</span>
                 <div className="flex flex-row justify-start items-center py-2 gap-2">
-                    <DropdownButton
-                        options={[
-                            {
-                                label: "New",
-                                onClick: () => {
-                                    // setIsCreateModalOpen(true); TODO: Implement
-                                },
-                            },
-                            {
-                                label: "Existing",
-                                onClick: () => {
-                                    setIsInsertModalOpen(true);
-                                },
-                            },
-                        ]}
-                        text={`Add start-ups`}
-                        showText={true}
-                    />
+                    <div
+                        onClick={() => {
+                            setIsInsertModalOpen(true);
+                        }}
+                        className=" inline-flex px-3 py-1.5 mb-6 w-fit p-2 stroke-2 gap-1 
+                                    transition ease-in rounded-2xl cursor-pointer font-medium 
+                                    bg-indigo-300 hover:bg-indigo-200 text-indigo-800"
+                    >
+                        <Icon
+                            name={"add"}
+                            size="md"
+                            className="stroke-indigo-800 hover:stroke-[2]"
+                        />
+                        Add start-ups
+                    </div>
                     <DeleteButton
                         onClick={() => setIsDelModalOpen(true)}
                         showText={true}
