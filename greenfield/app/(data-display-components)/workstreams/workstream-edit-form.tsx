@@ -6,7 +6,7 @@ import Icon from "@/components/icon/icon";
 import SideDrawer from "@/components/side_drawer";
 
 import { StartupReadType, WorkstreamReadType } from "@/data_display/data-type";
-import { getUpdateWSFunction } from "@/data_display/utils";
+import { deleteFromDB, getUpdateWSFunction } from "@/data_display/utils";
 
 import StartupTable from "@/startups/startup-table";
 import StartupView from "@/startups/startup-view";
@@ -14,6 +14,7 @@ import StartupEditForm from "@/startups/startup-edit-form";
 import ToggleViewEditButton from "@/app/(with-navbar)/components/toggle-view-edit-button";
 import DeleteButton from "@/app/(with-navbar)/components/delete-button";
 import WorkstreamSelectSupsModal from "./workstream-select-sups-modal";
+import ConfirmModal from "@/components/confirm-modal";
 
 interface WorkstreamEditFormProps<> {
     workstream: WorkstreamReadType;
@@ -49,6 +50,31 @@ export default function WorkstreamEditForm({
         updateWorkstream(updatedWorkstream);
     }, [selectedStartup]);
 
+    // Delete Startup Modal
+    const [isDelModalOpen, setIsDelModalOpen] = useState<boolean>(false);
+    const [delError, setDelError] = useState<string>("");
+    const onRemoveStartupsFromWS = (startupIDsToDel: number[]) => {
+        deleteFromDB({
+            type: ["evaluations", workstream.id],
+            idsToDel: startupIDsToDel,
+            setIsLoading: setIsLoading,
+            setIsDelModalOpen: setIsDelModalOpen,
+            setError: setDelError,
+            onSuccess: () => {
+                const updatedWorkstream = {
+                    ...workstream,
+                    evaluations: [...workstream.evaluations].filter(
+                        (evaluation) =>
+                            !startupIDsToDel.includes(evaluation.startup.id)
+                    ),
+                };
+                updateWorkstream(updatedWorkstream);
+                setSelectedSupIDs([]);
+                setSelectedStartup(null);
+            },
+        });
+    };
+
     // TODO: // Create Startup Modal
     // const [isCreateModalOpen, setIsCreateModalOpen] = useState<boolean>(false);
     // const router = useRouter();
@@ -68,7 +94,11 @@ export default function WorkstreamEditForm({
                     inEditMode={inEditMode}
                     setInEditMode={setInEditMode}
                 />
-                {/* {deleteButtonComponent()} */}
+                <DeleteButton
+                    onClick={() => setIsDelModalOpen(true)}
+                    showText={true}
+                    deleteText={"Remove"}
+                />
             </div>
             {/* Enter full screen */}
             {hasFullscreenToggle && (
@@ -104,6 +134,7 @@ export default function WorkstreamEditForm({
                     {error}
                 </div>
             )}
+
             {/* Insert existing start-ups to workstream */}
             {isInsertModalOpen && workstream && (
                 <WorkstreamSelectSupsModal
@@ -114,6 +145,26 @@ export default function WorkstreamEditForm({
                         updateWorkstream(ws);
                         setIsInsertModalOpen(false);
                     }}
+                />
+            )}
+
+            {/* Delete Modal */}
+            {isDelModalOpen && (
+                <ConfirmModal
+                    message="This action will also permanently remove all evaluations for these start-ups in this workstream."
+                    confirmText={`Remove (${
+                        selectedStartup ? 1 : selectedSupIDs.length
+                    })`}
+                    onClose={() => {
+                        setIsDelModalOpen(false);
+                        setDelError("");
+                    }}
+                    onConfirm={() =>
+                        selectedStartup
+                            ? onRemoveStartupsFromWS([selectedStartup.id])
+                            : onRemoveStartupsFromWS(selectedSupIDs)
+                    }
+                    error={delError}
                 />
             )}
             <div className="flex flex-col justify-start w-full gap-2">
@@ -164,13 +215,14 @@ export default function WorkstreamEditForm({
                         text={`Add start-ups`}
                         showText={true}
                     />
-                    {/* TODO: Implement delete */}
-                    {/* <DeleteButton
+                    <DeleteButton
                         onClick={() => setIsDelModalOpen(true)}
                         showText={true}
-                        deleteText={`Delete (${selectedIds.length})`}
-                        disabled={selectedIds.length == 0 || !!selectedStartup}
-                    /> */}
+                        deleteText={`Remove (${selectedSupIDs.length})`}
+                        disabled={
+                            selectedSupIDs.length == 0 || !!selectedStartup
+                        }
+                    />
                 </div>
                 <StartupTable
                     startups={workstream.evaluations.map(

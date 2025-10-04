@@ -97,3 +97,19 @@ def upsert_evaluations(
     session.commit()
     session.refresh(db_eval)
     return db_eval
+
+
+@router.delete("/{workstream_id}", response_model=dict)
+def delete_evaluations_bulk(
+    workstream_id: int,
+    startup_ids: list[int],
+    session: Session = Depends(get_session),
+):
+    # Delete evaluations for each startup
+    for sid in startup_ids:
+        db_eval = session.get(WorkstreamStartupEvaluation, (workstream_id, sid))
+        if not db_eval:
+            raise HTTPException(status_code=404, detail=f"Startup {sid} not found")
+        session.delete(db_eval)
+    session.commit()
+    return {"deleted": True}

@@ -11,7 +11,7 @@ export const textOrToBeFilled = (text: string | undefined | null) =>
     text ? text : <p className="text-gray-700">To be filled.</p>;
 
 interface deleteFromDBParams {
-    type: "startups" | "workstreams";
+    type: "startups" | "workstreams" | ["evaluations", number];
     idsToDel: number[];
     setIsLoading: (isLoading: boolean) => void;
     setIsDelModalOpen?: (isOpen: boolean) => void;
@@ -30,7 +30,8 @@ export function deleteFromDB({
     setIsLoading(true);
     setIsDelModalOpen(false);
     setError("");
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/${type}`, {
+    const route = type[0] == "evaluations" ? `${type[0]}/${type[1]}` : type;
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/${route}`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(idsToDel),

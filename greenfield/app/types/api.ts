@@ -176,7 +176,8 @@ export interface paths {
         put?: never;
         /** Create Evaluations Bulk */
         post: operations["create_evaluations_bulk_evaluations__workstream_id__post"];
-        delete?: never;
+        /** Delete Evaluations Bulk */
+        delete: operations["delete_evaluations_bulk_evaluations__workstream_id__delete"];
         options?: never;
         head?: never;
         patch?: never;
@@ -1008,6 +1009,43 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["WorkstreamRead"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_evaluations_bulk_evaluations__workstream_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                workstream_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": number[];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
                 };
             };
             /** @description Validation Error */
