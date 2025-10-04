@@ -1,22 +1,15 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { InputFieldType } from "./input-types";
+import { EditableInputFieldType } from "./types";
 import Icon from "../icon/icon";
 
-interface EditableFieldProps<T> extends InputFieldType<string> {
-    onSave: (field: T, value: string) => void;
-    label: string;
-    field_key: T;
-    value?: string;
+interface EditableFieldProps<V> extends EditableInputFieldType<string, V> {
     multiline?: boolean;
-    fontStyle?: string;
-    showLabel?: boolean;
     textAreaSize?: "sm" | "md" | "lg" | number;
-    placeholder?: string;
 }
 
-export default function EditableTextField<T>({
+export default function EditableTextField<V>({
     onSave,
     label,
     field_key,
@@ -27,7 +20,7 @@ export default function EditableTextField<T>({
     showLabel = true,
     textAreaSize = "md",
     placeholder = "Please fill in...",
-}: EditableFieldProps<T>) {
+}: EditableFieldProps<V>) {
     const [isEditing, setIsEditing] = useState(false);
     const [draft, setDraft] = useState<string>(value);
     const inputRef = useRef<HTMLInputElement | HTMLTextAreaElement | null>(
@@ -44,11 +37,8 @@ export default function EditableTextField<T>({
     const commitChange = () => {
         inputRef.current?.blur();
         if (draft !== value) {
-            onSave(field_key, draft);
+            onSave(field_key, draft, setIsEditing);
         }
-        setTimeout(() => {
-            setIsEditing(false); // delay exit edit mode, to give db time to update and display new value
-        }, 100);
     };
 
     const cancelChange = () => {
@@ -56,6 +46,19 @@ export default function EditableTextField<T>({
         inputRef.current?.blur();
         setIsEditing(false);
     };
+
+    function onKeyDown(
+        e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>
+    ) {
+        if (e.key === "Enter") {
+            commitChange();
+            e.stopPropagation();
+        }
+        if (e.key === "Escape") {
+            cancelChange();
+            e.stopPropagation();
+        }
+    }
 
     const textAreaSizeStyle = (() => {
         switch (textAreaSize) {
@@ -104,10 +107,7 @@ export default function EditableTextField<T>({
                             }
                             value={draft}
                             onChange={(e) => setDraft(e.target.value)}
-                            onKeyDown={(e) => {
-                                if (e.key === "Enter") commitChange();
-                                if (e.key === "Escape") cancelChange();
-                            }}
+                            onKeyDown={onKeyDown}
                             className={`rounded border min-w-full ${textAreaSizeStyle} bg-stone-100 px-1 ${fontStyle} text-wrap`}
                             placeholder={placeholder}
                         />
@@ -116,10 +116,7 @@ export default function EditableTextField<T>({
                             ref={inputRef as React.RefObject<HTMLInputElement>}
                             value={draft}
                             onChange={(e) => setDraft(e.target.value)}
-                            onKeyDown={(e) => {
-                                if (e.key === "Enter") commitChange();
-                                if (e.key === "Escape") cancelChange();
-                            }}
+                            onKeyDown={onKeyDown}
                             className={`rounded border w-fit bg-stone-100/75 px-1 ${fontStyle}`}
                             placeholder={placeholder}
                         />

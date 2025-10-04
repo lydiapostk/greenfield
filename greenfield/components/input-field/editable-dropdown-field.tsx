@@ -1,21 +1,14 @@
 "use client";
 
 import { useState, useRef, useEffect, useMemo } from "react";
-import { InputFieldType } from "./input-types";
+import { EditableInputFieldType } from "./types";
 import Icon from "../icon/icon";
 
-interface EditableFieldProps<T> extends InputFieldType<string> {
-    onSave: (field: T, value: string) => void;
-    label: string;
-    field_key: T;
-    value?: string;
+interface EditableFieldProps<V> extends EditableInputFieldType<string, V> {
     values: string[];
-    fontStyle?: string;
-    showLabel?: boolean;
-    searchable?: boolean;
 }
 
-export default function EditableDropdownField<T>({
+export default function EditableDropdownField<V>({
     onSave,
     label,
     field_key,
@@ -25,7 +18,7 @@ export default function EditableDropdownField<T>({
     disabled = false,
     showLabel = true,
     searchable = false,
-}: EditableFieldProps<T>) {
+}: EditableFieldProps<V>) {
     if (!value) value = values[0];
     const [isEditing, setIsEditing] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
@@ -55,11 +48,8 @@ export default function EditableDropdownField<T>({
     const commitChange = () => {
         inputRef.current?.blur();
         if (draft !== value) {
-            onSave(field_key, draft);
+            onSave(field_key, draft, setIsEditing);
         }
-        setTimeout(() => {
-            setIsEditing(false); // delay exit edit mode, to give db time to update and display new value
-        }, 100);
     };
 
     const cancelChange = () => {
@@ -85,7 +75,10 @@ export default function EditableDropdownField<T>({
     // cancel change on escape
     useEffect(() => {
         const handleEscapeKey = (e: KeyboardEvent) => {
-            if (e.key === "Escape") cancelChange();
+            if (e.key === "Escape") {
+                cancelChange();
+                e.stopPropagation();
+            }
         };
         document.addEventListener("keydown", handleEscapeKey);
         return () => {
@@ -96,7 +89,10 @@ export default function EditableDropdownField<T>({
     // commit change on enter
     useEffect(() => {
         const handleEnterKey = (e: KeyboardEvent) => {
-            if (e.key === "Enter") commitChange();
+            if (e.key === "Enter") {
+                commitChange();
+                e.stopPropagation();
+            }
         };
         document.addEventListener("keydown", handleEnterKey);
         return () => {

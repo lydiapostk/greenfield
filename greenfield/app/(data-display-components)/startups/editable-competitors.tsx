@@ -108,7 +108,10 @@ export default function EditableCompetitorsField<T>({
     // escape cancel
     useEffect(() => {
         const handleEscapeKey = (e: KeyboardEvent) => {
-            if (e.key === "Escape") cancelChange();
+            if (e.key === "Escape") {
+                cancelChange();
+                e.stopPropagation();
+            }
         };
         document.addEventListener("keydown", handleEscapeKey);
         return () => document.removeEventListener("keydown", handleEscapeKey);
@@ -117,7 +120,10 @@ export default function EditableCompetitorsField<T>({
     // enter commit
     useEffect(() => {
         const handleEnterKey = (e: KeyboardEvent) => {
-            if (e.key === "Enter") commitChange();
+            if (e.key === "Enter") {
+                commitChange();
+                e.stopPropagation();
+            }
         };
         document.addEventListener("keydown", handleEnterKey);
         return () => document.removeEventListener("keydown", handleEnterKey);

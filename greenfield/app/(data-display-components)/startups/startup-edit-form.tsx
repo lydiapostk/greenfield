@@ -104,7 +104,8 @@ export default function StartupEditForm({
 
     const updateField = (
         field: keyof StartupUpsertType,
-        value: StartupPropertyTypes
+        value: StartupPropertyTypes,
+        setIsEditing?: (isEditing: boolean) => void
     ) => {
         if (!startup.id) return;
         const startup_update: Record<string, StartupPropertyTypes> = {};
@@ -125,14 +126,18 @@ export default function StartupEditForm({
         )
             .then((res) =>
                 res.json().then((data: StartupReadType) => {
-                    setStartup(data);
+                    if (!res.ok)
+                        setError(`Unxpected error occured: ${res.statusText}`);
+                    else {
+                        setStartup(data);
+                        setIsEditing &&
+                            setTimeout(() => {
+                                setIsEditing(false); // delay exit edit mode, to give db time to update and display new value
+                            }, 100);
+                    }
                 })
             )
-            .catch((error) =>
-                setError(
-                    `Unexpected error occured when updating start-up!\n${error}`
-                )
-            );
+            .catch((error) => setError(`Unexpected error occured:\n${error}`));
     };
 
     return (
@@ -303,6 +308,7 @@ export default function StartupEditForm({
                                 ? founder.value
                                 : null;
                     });
+                    console.log(foundersDict);
                     updateField(field, foundersDict);
                 }}
                 checkData={async (

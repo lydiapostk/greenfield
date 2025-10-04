@@ -1,35 +1,26 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Icon from "../icon/icon";
+import { DictionaryEntry, EditableCustomFieldType } from "./types";
 
-export interface DictionaryEntry {
-    key: string;
-    value?: string;
-}
-
-interface EditableDictionaryFieldProps<T> {
-    field_key: T;
-    label: string;
-    value: DictionaryEntry[];
-    onSave: (field: T, values: DictionaryEntry[]) => void;
-    disabled?: boolean;
-    showLabel?: boolean;
+interface EditableDictionaryFieldProps<V>
+    extends EditableCustomFieldType<DictionaryEntry[], V> {
     checkData?: (
         entry: DictionaryEntry,
         setError: (error: string) => void
     ) => Promise<boolean> | boolean;
 }
 
-export default function EditableDictionaryField<T>({
+export default function EditableDictionaryField<V>({
     field_key,
     label,
-    value,
+    value = [],
     onSave,
     disabled = false,
     showLabel = true,
     checkData,
-}: EditableDictionaryFieldProps<T>) {
+}: EditableDictionaryFieldProps<V>) {
     const [error, setError] = useState<string | null>(null);
     const [entries, setEntries] = useState<DictionaryEntry[]>(value);
     const [isEditing, setIsEditing] = useState(false);
@@ -73,8 +64,7 @@ export default function EditableDictionaryField<T>({
                 }
             }
         }
-        onSave(field_key, entries);
-        setIsEditing(false);
+        onSave(field_key, entries, setIsEditing);
         setIsLoading(false);
     };
 
@@ -84,30 +74,41 @@ export default function EditableDictionaryField<T>({
         setIsEditing(false);
     };
 
-    // cancel change on escape
-    useEffect(() => {
-        const handleEscapeKey = (e: KeyboardEvent) => {
-            if (e.key === "Escape") cancelChange();
-        };
-        document.addEventListener("keydown", handleEscapeKey);
-        return () => {
-            document.removeEventListener("keydown", handleEscapeKey);
-        };
-    }, [value]);
+    // // cancel change on escape
+    // useEffect(() => {
+    //     const handleEscapeKey = (e: KeyboardEvent) => {
+    //         if (e.key === "Escape") cancelChange();
+    //     };
+    //     document.addEventListener("keydown", handleEscapeKey);
+    //     return () => {
+    //         document.removeEventListener("keydown", handleEscapeKey);
+    //     };
+    // }, [value]);
 
-    // commit change on enter
-    useEffect(() => {
-        const handleEnterKey = (e: KeyboardEvent) => {
-            if (e.key === "Enter") commitChange();
-        };
-        document.addEventListener("keydown", handleEnterKey);
-        return () => {
-            document.removeEventListener("keydown", handleEnterKey);
-        };
-    }, [commitChange]);
+    // // commit change on enter
+    // useEffect(() => {
+    //     const handleEnterKey = (e: KeyboardEvent) => {
+    //         if (e.key === "Enter") commitChange();
+    //     };
+    //     document.addEventListener("keydown", handleEnterKey);
+    //     return () => {
+    //         document.removeEventListener("keydown", handleEnterKey);
+    //     };
+    // }, [commitChange]);
+
+    function onKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
+        if (e.key === "Enter") {
+            commitChange();
+            e.stopPropagation();
+        }
+        if (e.key === "Escape") {
+            cancelChange();
+            e.stopPropagation();
+        }
+    }
 
     return (
-        <div className="flex flex-col w-full gap-2">
+        <div className="flex flex-col w-full gap-2" onKeyDown={onKeyDown}>
             {isLoading && (
                 <div className="self-center my-6">
                     <Icon

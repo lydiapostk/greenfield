@@ -1,27 +1,23 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Icon from "../icon/icon";
+import { EditableInputFieldType } from "./types";
 
-interface EditableListFieldProps<T> {
-    field_key: T;
-    label: string;
-    value: string[];
-    onSave: (field: T, value: string[]) => void;
-    disabled?: boolean;
-    showLabel?: boolean;
+interface EditableListFieldProps<V>
+    extends EditableInputFieldType<string[], V> {
     checkData?: (entry: string, setError: (error: string) => void) => boolean;
 }
 
-export default function EditableListField<T>({
+export default function EditableListField<V>({
     field_key,
     label,
-    value,
+    value = [],
     onSave,
     disabled = false,
     showLabel = true,
     checkData,
-}: EditableListFieldProps<T>) {
+}: EditableListFieldProps<V>) {
     const [error, setError] = useState<string | null>(null);
     const [entries, setEntries] = useState<string[]>(value);
     const [isEditing, setIsEditing] = useState(false);
@@ -60,8 +56,7 @@ export default function EditableListField<T>({
                 entry.trim().length > 0 &&
                 (!checkData || checkData(entry, setError))
         );
-        onSave(field_key, entries);
-        setIsEditing(false);
+        onSave(field_key, entries, setIsEditing);
     };
 
     const cancelChange = () => {
@@ -70,27 +65,16 @@ export default function EditableListField<T>({
         setIsEditing(false);
     };
 
-    // cancel change on escape
-    useEffect(() => {
-        const handleEscapeKey = (e: KeyboardEvent) => {
-            if (e.key === "Escape") cancelChange();
-        };
-        document.addEventListener("keydown", handleEscapeKey);
-        return () => {
-            document.removeEventListener("keydown", handleEscapeKey);
-        };
-    }, [value]);
-
-    // commit change on enter
-    useEffect(() => {
-        const handleEnterKey = (e: KeyboardEvent) => {
-            if (e.key === "Enter") commitChange();
-        };
-        document.addEventListener("keydown", handleEnterKey);
-        return () => {
-            document.removeEventListener("keydown", handleEnterKey);
-        };
-    }, [commitChange]);
+    function onKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
+        if (e.key === "Enter") {
+            commitChange();
+            e.stopPropagation();
+        }
+        if (e.key === "Escape") {
+            cancelChange();
+            e.stopPropagation();
+        }
+    }
 
     return (
         <div className="flex flex-col w-full gap-2">
@@ -134,7 +118,7 @@ export default function EditableListField<T>({
 
             {/* Edit Mode */}
             {isEditing && (
-                <div className="flex flex-col gap-2">
+                <div className="flex flex-col gap-2" onKeyDown={onKeyDown}>
                     {entries.map((entry, i) => (
                         <div
                             key={i}
@@ -146,10 +130,6 @@ export default function EditableListField<T>({
                                 onChange={(e) =>
                                     handleChange(i, e.target.value)
                                 }
-                                onKeyDown={(e) => {
-                                    if (e.key === "Enter") commitChange();
-                                    if (e.key === "Escape") cancelChange();
-                                }}
                                 className="rounded border px-1 flex-1 text-wrap h-fit w-2/3 bg-stone-100 custom-scroll"
                             />
                             <Icon

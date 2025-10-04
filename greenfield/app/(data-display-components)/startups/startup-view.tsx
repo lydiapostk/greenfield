@@ -49,7 +49,7 @@ export default function StartupView({
             {topToolbar}
             <a
                 className="flex flex-row justify-start items-center my-0 cursor-pointer hover:underline"
-                href={`browse/${startup.id}`}
+                href={`/browse/${startup.id}`}
             >
                 Go to startup
                 <Icon name="arrowRight" className="" />
