@@ -69,7 +69,7 @@ export default function WorkstreamTable({
                             </th>
                             <th className="p-4">Title</th>
                             <th className="p-4">Use Case</th>
-                            <th className="p-4">Startups</th>
+                            <th className="p-4">Date Created</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -112,12 +112,7 @@ export default function WorkstreamTable({
                                     {workstreams.use_case}
                                 </td>
                                 <td className="p-4 max-w-md truncate">
-                                    {workstreams.evaluations
-                                        .map(
-                                            (evaluation) =>
-                                                evaluation.startup.company_name
-                                        )
-                                        .join(", ")}
+                                    {workstreams.create_date}
                                 </td>
                             </tr>
                         ))}

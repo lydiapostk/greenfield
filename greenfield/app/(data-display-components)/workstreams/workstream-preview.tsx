@@ -13,17 +13,20 @@ export default function WorkstreamPreview({
 }: WorkstreamPreviewProps) {
     return (
         <div className="flex flex-col justify-start items-start mt-6 gap-4 w-full space-y-8 min-h-fit overflow-auto">
-            <span className="font-bold text-3xl mb-0">
-                {textOrToBeFilled(workstream.title)}
-            </span>
             {/* Redirect to view workstream in full */}
             <a
-                className="flex flex-row justify-start items-center cursor-pointer hover:underline"
+                className="flex flex-row justify-start items-center my-0 cursor-pointer hover:underline"
                 href={`analyse/${workstream.id}`}
             >
                 Go to workstream
                 <Icon name="arrowRight" className="" />
             </a>
+            <span className="font-bold text-3xl my-0">
+                {textOrToBeFilled(workstream.title)}
+            </span>
+            <span className="text-gray-500 font-medium italic text-sm my-0">
+                {`Created: ${workstream.create_date}`}
+            </span>
             <div className="flex flex-col justify-start w-full gap-6">
                 <div>
                     <span className="font-bold">Use case:</span>{" "}

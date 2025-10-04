@@ -184,7 +184,9 @@ export default function WorkstreamEditForm({
                     valueStyle="text-3xl font-bold"
                     showLabel={false}
                 />
-                <span className="text-gray-500 font-medium italic text-sm">{`Created: ${workstream.create_date}`}</span>
+                <span className="text-gray-500 font-medium italic text-sm">
+                    {`Created: ${workstream.create_date}`}
+                </span>
                 <EditableTextField
                     label="Use Case:"
                     field_key="use_case"
