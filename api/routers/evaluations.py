@@ -5,9 +5,12 @@ from typing import List
 
 from api.database import get_session
 from api.models.data_models import (
+    Startup,
+    Workstream,
     WorkstreamStartupEvaluation,
     WorkstreamStartupEvaluationUpdate,
 )
+from api.models.read_models import WorkstreamRead
 
 router = APIRouter(tags=["evaluations"])
 
@@ -21,6 +24,31 @@ def create_evaluation(
     session.commit()
     session.refresh(evaluation)
     return evaluation
+
+
+@router.post("/{workstream_id}", response_model=WorkstreamRead)
+def create_evaluations_bulk(
+    workstream_id: int,
+    startup_ids: list[int],
+    session: Session = Depends(get_session),
+):
+    db_workstream = session.get(Workstream, workstream_id)
+    if not db_workstream:
+        raise HTTPException(status_code=404, detail="Workstream not found")
+    # Create evaluations for each startup
+    for sid in startup_ids:
+        startup = session.get(Startup, sid)
+        if not startup:
+            raise HTTPException(status_code=404, detail=f"Startup {sid} not found")
+        evaluation = WorkstreamStartupEvaluation(
+            workstream=db_workstream,
+            startup=startup,
+        )
+        session.add(evaluation)
+    session.add(evaluation)
+    session.commit()
+    session.refresh(db_workstream)
+    return db_workstream
 
 
 @router.get("/", response_model=List[WorkstreamStartupEvaluation])
@@ -38,21 +66,29 @@ def list_evaluations(
 
 
 @router.put("/{workstream_id}/{startup_id}", response_model=WorkstreamStartupEvaluation)
-def update_evaluation(
+def upsert_evaluations(
     workstream_id: int,
     startup_id: int,
     evaluation: WorkstreamStartupEvaluationUpdate,
     session: Session = Depends(get_session),
 ):
-    db_eval = session.get(WorkstreamStartupEvaluation, (workstream_id, startup_id))
-    if not db_eval:
-        raise HTTPException(status_code=404, detail="Evaluation not found")
-
     try:
         WorkstreamStartupEvaluationUpdate.model_validate(evaluation)
     except ValidationError:
         raise HTTPException(
             status_code=422, detail="Evaluation update data format is invalid"
+        )
+
+    db_eval = session.get(WorkstreamStartupEvaluation, (workstream_id, startup_id))
+    if not db_eval:
+        db_startup = session.get(Startup, startup_id)
+        if not db_startup:
+            raise HTTPException(status_code=404, detail="Start-up not found")
+        db_workstream = session.get(Workstream, workstream_id)
+        if not db_workstream:
+            raise HTTPException(status_code=404, detail="Workstream not found")
+        db_eval = WorkstreamStartupEvaluation(
+            workstream=db_workstream, startup=db_startup
         )
 
     update_data = evaluation.model_dump(exclude_unset=True)

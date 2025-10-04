@@ -186,8 +186,8 @@ export default function BrowseStartups() {
             {isInsertModalOpen && (
                 <WorkstreamSelectModal
                     setIsLoading={setIsLoading}
-                    isModalOpen={setIsInsertModalOpen}
-                    startup_ids={selectedIds}
+                    setIsModalOpen={setIsInsertModalOpen}
+                    startupIds={selectedIds}
                     onSuccess={(data: WorkstreamReadType) => {
                         router.push(`/analyse/${data.id}`);
                     }}

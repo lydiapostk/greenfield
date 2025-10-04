@@ -10,6 +10,7 @@ export default function DoubleClick({
 }: {
     params: Promise<{ workstream_id: string }>;
 }) {
+    const [isLoading, setIsLoading] = useState<boolean>(true);
     const { workstream_id } = use(params); // unwrap the Promise
     const decodedWorkstreamId = decodeURIComponent(workstream_id);
     const [error, setError] = useState<string>("");
@@ -40,13 +41,14 @@ export default function DoubleClick({
                 setError(
                     `Unexpected error occured when fetching workstream!\n${error}`
                 )
-            );
+            )
+            .finally(() => setIsLoading(false));
     }, []);
 
     return (
         <div className="w-full h-full bg-stone-200">
             <div className="w-4xl overflow-hidden place-self-center my-10 flex flex-col justify-start">
-                {!workstream && (
+                {(!workstream || isLoading) && (
                     <Icon
                         name={"spinner"}
                         size={"md"}
@@ -70,6 +72,7 @@ export default function DoubleClick({
                     <WorkstreamEditForm
                         workstream={workstream}
                         updateWorkstream={setWorkstream}
+                        setIsLoading={setIsLoading}
                     />
                 )}
             </div>

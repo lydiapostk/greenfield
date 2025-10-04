@@ -165,6 +165,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/evaluations/{workstream_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Create Evaluations Bulk */
+        post: operations["create_evaluations_bulk_evaluations__workstream_id__post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/evaluations/{workstream_id}/{startup_id}": {
         parameters: {
             query?: never;
@@ -173,8 +190,8 @@ export interface paths {
             cookie?: never;
         };
         get?: never;
-        /** Update Evaluation */
-        put: operations["update_evaluation_evaluations__workstream_id___startup_id__put"];
+        /** Upsert Evaluations */
+        put: operations["upsert_evaluations_evaluations__workstream_id___startup_id__put"];
         post?: never;
         delete?: never;
         options?: never;
@@ -969,7 +986,42 @@ export interface operations {
             };
         };
     };
-    update_evaluation_evaluations__workstream_id___startup_id__put: {
+    create_evaluations_bulk_evaluations__workstream_id__post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                workstream_id: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": number[];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WorkstreamRead"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    upsert_evaluations_evaluations__workstream_id___startup_id__put: {
         parameters: {
             query?: never;
             header?: never;

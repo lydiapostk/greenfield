@@ -1,31 +1,35 @@
 "use client";
 import PopupModal from "@/components/popup-modal";
 import { useEffect, useMemo, useState } from "react";
-import { WorkstreamReadType, WorkstreamType } from "@/data_display/data-type";
+import {
+    StartupReadType,
+    WorkstreamReadType,
+    WorkstreamType,
+} from "@/data_display/data-type";
 import { getUpdateWSFunction } from "../utils";
 import { useRouter } from "next/navigation";
-import WorkstreamTable from "./workstream-table";
+import StartupTable from "../startups/startup-table";
 import Icon from "@/components/icon/icon";
 
-interface WorkstreamSelectModalProps {
+interface WorkstreamSelectSupsModalProps {
+    workstream: WorkstreamReadType;
     setIsLoading: (isLoading: boolean) => void;
     setIsModalOpen: (isOpen: boolean) => void;
-    startupIds: number[];
     onSuccess?: (ws: WorkstreamReadType) => void;
 }
 
-export default function WorkstreamSelectModal({
+export default function WorkstreamSelectSupsModal({
+    workstream,
     setIsLoading,
-    setIsModalOpen: isModalOpen,
-    startupIds = [],
+    setIsModalOpen,
     onSuccess = () => {},
-}: WorkstreamSelectModalProps) {
-    const [workstreams, setWorkstreams] = useState<WorkstreamType[]>([]);
+}: WorkstreamSelectSupsModalProps) {
+    const [startups, setStartups] = useState<StartupReadType[]>([]);
     useEffect(() => {
-        fetch(`${process.env.NEXT_PUBLIC_API_URL}/workstreams/`)
+        fetch(`${process.env.NEXT_PUBLIC_API_URL}/startups/`)
             .then((res) =>
-                res.json().then((data: WorkstreamType[]) => {
-                    setWorkstreams(data);
+                res.json().then((data: StartupReadType[]) => {
+                    setStartups(data);
                     setIsLoading(false);
                 })
             )
@@ -33,35 +37,39 @@ export default function WorkstreamSelectModal({
     }, []);
 
     const [error, setError] = useState<string>("");
-    const [selectedId, setSelectedId] = useState<number | null>(null);
+    const [selectedIds, setSelectedIds] = useState<number[]>([]);
     const [search, setSearch] = useState<string>("");
+    const workstreamCurrSupIDs = workstream.evaluations.map(
+        (evaluation) => evaluation.startup.id
+    );
     const filteredValues = useMemo(() => {
-        return workstreams.filter((ws) =>
-            ws.title.toLowerCase().includes(search.toLowerCase())
+        return startups.filter(
+            (sup) =>
+                sup.company_name
+                    ?.toLowerCase()
+                    .includes(search.toLowerCase()) &&
+                !workstreamCurrSupIDs.includes(sup.id)
         );
-    }, [workstreams, search]);
+    }, [startups, search]);
 
     // Insert selected startups to selected workstream
     const router = useRouter();
-    const insertStartupToWS = () => {
-        if (!selectedId) return;
+    const insertStartupsToWS = () => {
+        if (selectedIds.length == 0) return;
         getUpdateWSFunction({
-            workstream_id: selectedId,
+            workstream_id: workstream.id,
             setError: setError,
             onSuccess: onSuccess,
-        })("startup_ids", startupIds);
-    };
-    const toggleSelect = (id: number | null) => {
-        setSelectedId((prev) => (prev == id ? null : id));
+        })("startup_ids", selectedIds);
     };
 
     return (
         <PopupModal
             onClose={() => {
-                isModalOpen(false);
+                setIsModalOpen(false);
                 setError("");
             }}
-            onConfirm={insertStartupToWS}
+            onConfirm={insertStartupsToWS}
         >
             <div className="text-black">
                 <h1 className="text-xl font-semibold">Select workstream</h1>
@@ -85,18 +93,25 @@ export default function WorkstreamSelectModal({
                     className="max-w-4/5 px-4 py-2 my-2 self-center rounded-2xl bg-white/90 focus:outline-none focus:ring-0 focus:bg-white/70"
                     autoFocus
                 />
-                <WorkstreamTable
-                    workstreams={filteredValues}
-                    selectedId={selectedId}
-                    setSelectedId={setSelectedId}
-                    onClickWorkstream={(ws: WorkstreamType | null) =>
-                        toggleSelect(ws ? ws.id : null)
-                    }
+                <StartupTable
+                    startups={filteredValues}
+                    selectedIds={selectedIds}
+                    setSelectedIds={setSelectedIds}
+                    onClickStartup={(sup: StartupReadType | null) => {
+                        if (!sup) return;
+                        const updatedSelectedIds = [...selectedIds];
+                        if (updatedSelectedIds.includes(sup.id)) {
+                            updatedSelectedIds.filter((id) => id != sup.id);
+                        } else {
+                            updatedSelectedIds.push(sup.id);
+                        }
+                        setSelectedIds(updatedSelectedIds);
+                    }}
                 />
                 <div className="mt-6 flex justify-end space-x-3">
                     <button
                         onClick={() => {
-                            isModalOpen(false);
+                            setIsModalOpen(false);
                         }}
                         className="px-4 py-2 rounded-lg bg-stone-200 text-stone-700 hover:bg-stone-300 cursor-pointer"
                     >
@@ -104,17 +119,17 @@ export default function WorkstreamSelectModal({
                     </button>
                     <button
                         onClick={() => {
-                            insertStartupToWS();
+                            insertStartupsToWS();
                             setError("");
                         }}
                         className={`px-4 py-2 rounded-lg bg-violet-800/65 text-white ${
-                            !!selectedId
+                            !!selectedIds
                                 ? "hover:bg-violet-800/85 cursor-pointer"
                                 : ""
                         }`}
-                        disabled={!selectedId}
+                        disabled={!selectedIds}
                     >
-                        Add {startupIds.length} startups
+                        Add {selectedIds.length} startups
                     </button>
                 </div>
             </div>

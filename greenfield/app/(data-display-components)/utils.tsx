@@ -76,21 +76,38 @@ export function getUpdateWSFunction({
         value: WorkstreamPropertyTypes
     ) => {
         const workstream_update: Record<string, WorkstreamPropertyTypes> = {};
-        if (typeof value == "string") workstream_update[field] = value.trim();
-        else workstream_update[field] = value;
-        console.log(workstream_update);
-        fetch(
-            `${
-                process.env.NEXT_PUBLIC_API_URL
-            }/workstreams/${encodeURIComponent(workstream_id)}`,
-            {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(workstream_update),
-            }
-        )
+        let query;
+        if ((field = "startup_ids") && !!value) {
+            query = fetch(
+                `${
+                    process.env.NEXT_PUBLIC_API_URL
+                }/evaluations/${encodeURIComponent(workstream_id)}`, // Bulk create evaluations for workstream
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(value),
+                }
+            );
+        } else {
+            if (typeof value == "string")
+                workstream_update[field] = value.trim();
+            else workstream_update[field] = value;
+            query = fetch(
+                `${
+                    process.env.NEXT_PUBLIC_API_URL
+                }/workstreams/${encodeURIComponent(workstream_id)}`,
+                {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(workstream_update),
+                }
+            );
+        }
+        query
             .then((res) =>
                 res.json().then((data: WorkstreamReadType) => {
                     if (res.ok) onSuccess(data);
