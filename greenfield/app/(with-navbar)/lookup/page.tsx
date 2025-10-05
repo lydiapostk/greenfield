@@ -7,7 +7,11 @@ import { typingEffect } from "@/components/animate-text";
 import Icon from "@/components/icon/icon";
 import StartupDrawer from "@/components/side_drawer";
 import TextInputField from "@/components/input-field/input-text-field";
-import { StartupType, DomainCheckResponse } from "@/data_display/data-type";
+import {
+    StartupType,
+    DomainCheckResponse,
+    StartupReadType,
+} from "@/data_display/data-type";
 import StartupTable from "@/startups/startup-table";
 import StartupView from "@/startups/startup-view";
 
@@ -36,9 +40,8 @@ export default function LookupStartupInfo() {
     const [loading, setLoading] = useState(false);
 
     const [startupURL, setStartupURL] = useState<string>("");
-    const [suggestedRecord, setSuggestedRecord] = useState<StartupType | null>(
-        null
-    );
+    const [suggestedRecord, setSuggestedRecord] =
+        useState<StartupReadType | null>(null);
     const [showSideBar, setShowSideBar] = useState<boolean>(false);
     const typingInterval = useRef<ReturnType<typeof setInterval> | null>(null);
 
@@ -77,7 +80,7 @@ export default function LookupStartupInfo() {
         }
     };
 
-    const checkDB = async (url: string): Promise<StartupType | null> => {
+    const checkDB = async (url: string): Promise<StartupReadType | null> => {
         setStep(lookupSteps[2]);
         try {
             const res = await fetch(
@@ -86,7 +89,7 @@ export default function LookupStartupInfo() {
                 }/startups/by_website?lookup_url=${encodeURIComponent(url)}`
             );
 
-            const data: StartupType = await res.json();
+            const data: StartupReadType = await res.json();
             if (res.ok) return data;
             if (res.status == 404) return null; // It is expected that this could be null
             // Otherwise, this may be an unexpected error

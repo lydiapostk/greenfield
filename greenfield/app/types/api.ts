@@ -1109,7 +1109,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Startup"];
+                    "application/json": components["schemas"]["StartupReadLite"];
                 };
             };
             /** @description Validation Error */

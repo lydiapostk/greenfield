@@ -264,8 +264,10 @@ export default function StartupView({
                     )}
                 </div>
                 <div className="mt-6 w-full">
-                    <h3 className="font-bold mb-2">Workstreams</h3>
-                    {startup && (
+                    {startup?.evaluations && (
+                        <h3 className="font-bold mb-2">Workstreams</h3>
+                    )}
+                    {startup?.evaluations && (
                         <ul className="list-disc pl-5">
                             {startup.evaluations.map((evaluation) => (
                                 <li
