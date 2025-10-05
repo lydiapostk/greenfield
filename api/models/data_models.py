@@ -231,7 +231,7 @@ class WorkstreamBase(SQLModel):
     title: str = Field(default="Untitled")
     use_case: Optional[str] = None
     challenge: Optional[str] = None
-    analyst: Optional[str] = None
+    technologies: Optional[List[str]] = Field(default=None, sa_column=Column(JSON))
     overall_recommendation: Optional[str] = None
 
 

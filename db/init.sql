@@ -61,7 +61,7 @@ CREATE TABLE
         id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
         use_case TEXT,
         challenge TEXT,
-        analyst TEXT,
+        technologies JSONB,
         overall_recommendation TEXT,
         create_date DATE NOT NULL DEFAULT (CURRENT_DATE AT TIME ZONE 'Asia/Singapore')
     );

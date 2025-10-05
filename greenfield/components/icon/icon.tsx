@@ -1,7 +1,7 @@
 import { icons } from "@/components/icon/icon-svgs";
 import { sizeStyle, sizeStyleOptions } from "../style";
 
-type IconName = keyof typeof icons;
+export type IconName = keyof typeof icons;
 
 interface IconProps extends React.SVGProps<SVGSVGElement> {
     name: IconName;

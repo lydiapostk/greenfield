@@ -1,6 +1,7 @@
 import {
     EvaluationReadType,
     EvaluationUpdateType,
+    SuggestionFromUseCaseType,
     WorkstreamPropertyTypes,
     WorkstreamReadType,
     WorkstreamUpsertType,
@@ -77,7 +78,7 @@ export function getUpdateWSFunction({
     return (
         field: keyof WorkstreamUpsertType,
         value: WorkstreamPropertyTypes,
-        setIsEditing: (isEditing: boolean) => void
+        setIsEditing: (isEditing: boolean) => void = () => {}
     ) => {
         setError("");
         const workstream_update: Record<string, WorkstreamPropertyTypes> = {};
@@ -179,4 +180,50 @@ export function getUpdateEvaluationFunction({
             )
             .catch((error) => setError(`Unexpected error:\n${error}`));
     };
+}
+
+interface fetchSuggestionFromUseCaseParams {
+    useCase: string;
+    setIsLoading: (isLoading: boolean) => void;
+    onSuccess?: (suggestion: SuggestionFromUseCaseType) => void;
+    setError?: (errMsg: string) => void;
+}
+
+export function fetchSuggestionFromUseCase({
+    useCase,
+    setIsLoading,
+    setError = () => {},
+    onSuccess = () => {},
+}: fetchSuggestionFromUseCaseParams) {
+    setIsLoading(true);
+    setError("");
+    fetch(
+        `${
+            process.env.NEXT_PUBLIC_API_URL
+        }/analyse/suggest/from_use_case?use_case=${encodeURIComponent(
+            useCase
+        )}`,
+        {
+            method: "GET",
+        }
+    )
+        .then((res) =>
+            res.json().then((data: SuggestionFromUseCaseType) => {
+                if (!res.ok) {
+                    setError(`Error occurred: ${res.statusText}`);
+                } else {
+                    onSuccess(data);
+                }
+            })
+        )
+        .catch((e: unknown) => {
+            if (e instanceof Error) {
+                setError(e.message);
+            } else {
+                setError("Unexpected error");
+            }
+        })
+        .finally(() => {
+            setIsLoading(false);
+        });
 }

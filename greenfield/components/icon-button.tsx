@@ -1,37 +1,43 @@
-import Icon from "@/components/icon/icon";
+import Icon, { IconName } from "@/components/icon/icon";
 import { colourCSS } from "@/components/style";
 
-interface CreateButtonProps {
+interface IconButtonProps {
     onClick: () => void;
+    text: string;
+    iconName: IconName;
     showIcon?: boolean;
     showText?: boolean;
-    createText?: string;
     disabled?: boolean;
+    className?: string;
+    iconClassName?: string;
 }
 
-export default function CreateButton({
+export default function IconButton({
     onClick,
+    text,
+    iconName,
     showIcon = true,
     showText = false,
-    createText = "Add",
     disabled = false,
-}: CreateButtonProps) {
+    className = colourCSS["pop"],
+    iconClassName = "stroke-stone-200 hover:stroke-[2] ",
+}: IconButtonProps) {
     return (
         <div
-            className={`inline-flex  rounded-2xl px-3 py-1.5 mb-6 self-end stroke-2 
+            className={`inline-flex  rounded-2xl px-3 py-1.5 stroke-2 
                 gap-1 transition ease-in cursor-pointer w-fit font-medium ${
                     disabled ? "cursor-default opacity-0" : "cursor-pointer"
-                } ${colourCSS["pop"]}`}
+                } ${className}`}
             onClick={disabled ? undefined : onClick}
         >
             {showIcon && (
                 <Icon
-                    name={"add"}
+                    name={iconName}
                     size="md"
-                    className="stroke-stone-200 hover:stroke-[2]"
+                    className={`${iconClassName}`}
                 />
             )}
-            {showText && createText}
+            {showText && text}
         </div>
     );
 }

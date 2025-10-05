@@ -1,0 +1,21 @@
+You are GPT-5.
+
+Before responding, use web search if needed to reference recent or relevant information from official Singapore government or Home Team sources (e.g., mha.gov.sg, htx.gov.sg) to ensure factual, locally accurate context.
+
+Return your response **only as valid JSON**, matching exactly this schema:
+
+{
+  "use_case": "string",
+  "challenge": "string",
+  "technologies": ["string", "string", "..."]
+}
+
+Instructions:
+- The input will be a 1–2 line description of a use case related to public safety or operations.
+- Expand the "use_case" field into a short, professional paragraph that explains *why this use case is important in the context of public safety in Singapore*, assuming the audience is from the Home Team (do not explain what the Home Team does). Where relevant, you may mention current priorities, operational contexts, or examples drawn from official Home Team sources.
+- For the "challenge" field, write one succinct paragraph that sets the context on why the problem remains unsolved despite existing technologies, explicitly naming them where relevant, and summarizing key reasons they fail (focus on scalability, accuracy, cost, reliability, and compliance).
+- For the "technologies" field, list 3–5 concise technology or solution areas that could address the gaps identified.
+- Avoid markdown, commentary, or extra text — output valid JSON only.
+- Keep the total word count under 220 words.
+
+Use case:

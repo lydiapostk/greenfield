@@ -8,9 +8,9 @@ import { WorkstreamType } from "@/data_display/data-type";
 import { deleteFromDB } from "@/data_display/utils";
 import WorkstreamTable from "@/workstreams/workstream-table";
 import DeleteButton from "../components/delete-button";
-import CreateButton from "../components/create-button";
 import WorkstreamPreview from "@/workstreams/workstream-preview";
 import WorkstreamCreateModal from "@/workstreams/workstream-create-modal";
+import IconButton from "../../../components/icon-button";
 
 export default function BrowseWorkstreams() {
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -118,11 +118,12 @@ export default function BrowseWorkstreams() {
             )}
             <div className="self-center lg:w-3/5">
                 {/* Table tools */}
-                <div className="flex flex-row justify-start items-center py-2">
-                    <CreateButton
+                <div className="flex flex-row justify-start items-center py-2 gap-2">
+                    <IconButton
                         onClick={() => setIsCreateModalOpen(true)}
+                        text={`Add workstream`}
+                        iconName="add"
                         showText={true}
-                        createText={`Add workstream`}
                         disabled={!!selectedWorkstream}
                     />
                     <DeleteButton

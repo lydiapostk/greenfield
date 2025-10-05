@@ -73,43 +73,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/lookup/check_url": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Check Url
-         * @description Validate URL, prefer root domain but fallback to www if needed.
-         */
-        get: operations["check_url_lookup_check_url_get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/lookup/query_llm": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Lookup Startup */
-        get: operations["lookup_startup_lookup_query_llm_get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/workstreams/": {
         parameters: {
             query?: never;
@@ -193,6 +156,60 @@ export interface paths {
         get?: never;
         /** Upsert Evaluations */
         put: operations["upsert_evaluations_evaluations__workstream_id___startup_id__put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/lookup/check_url": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Check Url
+         * @description Validate URL, prefer root domain but fallback to www if needed.
+         */
+        get: operations["check_url_lookup_check_url_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/lookup/query_llm": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Lookup Startup */
+        get: operations["lookup_startup_lookup_query_llm_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/analyse/suggest/from_use_case": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Suggest From Use Case */
+        get: operations["suggest_from_use_case_analyse_suggest_from_use_case_get"];
+        put?: never;
         post?: never;
         delete?: never;
         options?: never;
@@ -423,6 +440,17 @@ export interface components {
             /** Use Cases */
             use_cases?: string[] | null;
         };
+        /** SuggestWorkstreamResponse */
+        SuggestWorkstreamResponse: {
+            /** Use Case */
+            use_case?: string | null;
+            /** Challenge */
+            challenge?: string | null;
+            /** Technologies */
+            technologies?: string[] | null;
+            /** Overall Recommendation */
+            overall_recommendation?: string | null;
+        };
         /**
          * TrlEnum
          * @enum {string}
@@ -460,8 +488,8 @@ export interface components {
             use_case?: string | null;
             /** Challenge */
             challenge?: string | null;
-            /** Analyst */
-            analyst?: string | null;
+            /** Technologies */
+            technologies?: string[] | null;
             /** Overall Recommendation */
             overall_recommendation?: string | null;
             /** Id */
@@ -488,8 +516,8 @@ export interface components {
             use_case?: string | null;
             /** Challenge */
             challenge?: string | null;
-            /** Analyst */
-            analyst?: string | null;
+            /** Technologies */
+            technologies?: string[] | null;
             /** Overall Recommendation */
             overall_recommendation?: string | null;
             /** Id */
@@ -538,8 +566,8 @@ export interface components {
             use_case?: string | null;
             /** Challenge */
             challenge?: string | null;
-            /** Analyst */
-            analyst?: string | null;
+            /** Technologies */
+            technologies?: string[] | null;
             /** Overall Recommendation */
             overall_recommendation?: string | null;
             /** Startup Ids */
@@ -693,68 +721,6 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["StartupReadLite"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    check_url_lookup_check_url_get: {
-        parameters: {
-            query: {
-                url: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CheckDomainResponse"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    lookup_startup_lookup_query_llm_get: {
-        parameters: {
-            query: {
-                startup_url: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Startup"];
                 };
             };
             /** @description Validation Error */
@@ -1082,6 +1048,99 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["EvaluationReadWithStartup"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    check_url_lookup_check_url_get: {
+        parameters: {
+            query: {
+                url: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CheckDomainResponse"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    lookup_startup_lookup_query_llm_get: {
+        parameters: {
+            query: {
+                startup_url: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Startup"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    suggest_from_use_case_analyse_suggest_from_use_case_get: {
+        parameters: {
+            query: {
+                use_case: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SuggestWorkstreamResponse"];
                 };
             };
             /** @description Validation Error */

@@ -1,4 +1,5 @@
 import { components, operations } from "@/app/types/api";
+import { DictionaryEntry } from "@/components/input-field/utils";
 
 export type StartupType = components["schemas"]["Startup"];
 export type StartupReadType = components["schemas"]["StartupReadLite"];
@@ -7,6 +8,7 @@ export type CompetitorsType = components["schemas"]["Competitors"];
 export type StartupPropertyTypes =
     | string
     | string[]
+    | DictionaryEntry[]
     | StartupFoundersType
     | CompetitorsType;
 
@@ -18,7 +20,15 @@ export type WorkstreamUpsertType = components["schemas"]["WorkstreamUpsert"];
 export type WorkstreamCreateDisplayType = WorkstreamUpsertType & {
     startups: StartupReadType[];
 };
-export type WorkstreamPropertyTypes = string | number[] | null | undefined;
+export type WorkstreamPropertyTypes =
+    | string
+    | string[]
+    | number[]
+    | null
+    | undefined;
+
+export type SuggestionFromUseCaseType =
+    components["schemas"]["SuggestWorkstreamResponse"];
 
 export type EvaluationReadType =
     components["schemas"]["EvaluationReadWithStartup"];

@@ -110,6 +110,15 @@ export default function StartupEditForm({
         const startup_update: Record<string, StartupPropertyTypes> = {};
         if (typeof value == "string") {
             startup_update[field] = value.trim();
+        } else if (field == "founders") {
+            const founders = value as DictionaryEntry[];
+            if (!founders) return;
+            const foundersDict: StartupFoundersType = {};
+            founders.forEach((founder) => {
+                foundersDict[founder.key] =
+                    founder.value && founder.value != "" ? founder.value : null;
+            });
+            startup_update[field] = foundersDict;
         } else startup_update[field] = value;
         fetch(
             `${process.env.NEXT_PUBLIC_API_URL}/startups/${encodeURIComponent(
@@ -129,6 +138,7 @@ export default function StartupEditForm({
                         setError(`Unxpected error occured: ${res.statusText}`);
                     else {
                         setStartup(data);
+                        console.log(data);
                         setIsEditing &&
                             setTimeout(() => {
                                 setIsEditing(false); // delay exit edit mode, to give db time to update and display new value
@@ -296,20 +306,7 @@ export default function StartupEditForm({
                           )
                         : []
                 }
-                onSave={function (
-                    field: "founders",
-                    founders: DictionaryEntry[]
-                ): void {
-                    const foundersDict: StartupFoundersType = {};
-                    founders.forEach((founder) => {
-                        foundersDict[founder.key] =
-                            founder.value && founder.value != ""
-                                ? founder.value
-                                : null;
-                    });
-                    console.log(foundersDict);
-                    updateField(field, foundersDict);
-                }}
+                onSave={updateField}
                 checkData={async (
                     founder: DictionaryEntry,
                     setError: (error: string) => void

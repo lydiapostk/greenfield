@@ -1,16 +1,17 @@
+import httpx
 import ipaddress
+import json
+import os
 import socket
-from typing import Optional
-from urllib.parse import urlparse
 from dotenv import load_dotenv
 from fastapi import APIRouter, Query
-import json
 from fastapi import Depends
-import httpx
 from openai import OpenAI
-import os
 from pydantic import BaseModel, ValidationError
 from sqlmodel import Session
+from typing import Optional
+from urllib.parse import urlparse
+
 from api.database import get_session
 from api.models.data_models import Startup, StartupUpsert
 
