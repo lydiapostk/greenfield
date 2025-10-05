@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Icon from "../icon/icon";
-import { EditableInputFieldType } from "./types";
+import { EditableInputFieldType, getOnKeyDownFunc } from "./utils";
 
 interface EditableListFieldProps<V>
     extends EditableInputFieldType<string[], V> {
@@ -65,16 +65,10 @@ export default function EditableListField<V>({
         setIsEditing(false);
     };
 
-    function onKeyDown(e: React.KeyboardEvent<HTMLDivElement>) {
-        if (e.key === "Enter") {
-            commitChange();
-            e.stopPropagation();
-        }
-        if (e.key === "Escape") {
-            cancelChange();
-            e.stopPropagation();
-        }
-    }
+    const onKeyDown = getOnKeyDownFunc<HTMLDivElement>({
+        commitChange: commitChange,
+        cancelChange: cancelChange,
+    });
 
     return (
         <div className="flex flex-col w-full gap-2">

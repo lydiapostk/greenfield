@@ -1,7 +1,7 @@
 "use client";
 
 import Icon from "../icon/icon";
-import { InputFieldType } from "./types";
+import { InputFieldType } from "./utils";
 
 interface InputTextFieldProp extends InputFieldType<string> {}
 

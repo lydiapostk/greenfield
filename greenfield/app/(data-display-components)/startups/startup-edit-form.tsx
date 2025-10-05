@@ -22,7 +22,7 @@ import {
     StartupReadType,
     StartupPropertyTypes,
 } from "../data-type";
-import { DictionaryEntry } from "@/components/input-field/types";
+import { DictionaryEntry } from "@/components/input-field/utils";
 
 interface StartupEditFormProps {
     startup: StartupReadType;

@@ -80,6 +80,7 @@ export function getUpdateWSFunction({
         setIsEditing: (isEditing: boolean) => void
     ) => {
         setError("");
+        console.log("Updating...");
         const workstream_update: Record<string, WorkstreamPropertyTypes> = {};
         let query;
         if (field == "startup_ids" && !!value) {

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useMemo } from "react";
-import { EditableInputFieldType } from "./types";
+import { EditableInputFieldType } from "./utils";
 import Icon from "../icon/icon";
 
 interface EditableFieldProps<V> extends EditableInputFieldType<string, V> {
@@ -90,8 +90,9 @@ export default function EditableDropdownField<V>({
     useEffect(() => {
         const handleEnterKey = (e: KeyboardEvent) => {
             if (e.key === "Enter") {
-                commitChange();
                 e.stopPropagation();
+                e.preventDefault();
+                commitChange();
             }
         };
         document.addEventListener("keydown", handleEnterKey);

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Icon from "../icon/icon";
-import { DictionaryEntry, EditableCustomFieldType } from "./types";
+import { DictionaryEntry, EditableCustomFieldType } from "./utils";
 
 interface EditableDictionaryFieldProps<V>
     extends EditableCustomFieldType<DictionaryEntry[], V> {
@@ -78,6 +78,7 @@ export default function EditableDictionaryField<V>({
         if (e.key === "Enter") {
             commitChange();
             e.stopPropagation();
+            e.preventDefault();
         }
         if (e.key === "Escape") {
             cancelChange();

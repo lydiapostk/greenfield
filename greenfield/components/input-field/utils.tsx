@@ -51,3 +51,25 @@ export interface EditableCustomFieldType<T, V> {
     rightIcon?: ReactNode;
     disabled?: boolean;
 }
+
+interface onKeyDownParams {
+    commitChange: () => void;
+    cancelChange: () => void;
+}
+
+export function getOnKeyDownFunc<T extends HTMLElement>({
+    commitChange,
+    cancelChange,
+}: onKeyDownParams) {
+    return (e: React.KeyboardEvent<T>) => {
+        if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault();
+            e.stopPropagation();
+            commitChange();
+        }
+        if (e.key === "Escape") {
+            cancelChange();
+            e.stopPropagation();
+        }
+    };
+}

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { EditableInputFieldType } from "./types";
+import { EditableInputFieldType, getOnKeyDownFunc } from "./utils";
 import Icon from "../icon/icon";
 
 interface EditableFieldProps<V> extends EditableInputFieldType<string, V> {
@@ -48,18 +48,10 @@ export default function EditableTextField<V>({
         setIsEditing(false);
     };
 
-    function onKeyDown(
-        e: React.KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>
-    ) {
-        if (e.key === "Enter") {
-            commitChange();
-            e.stopPropagation();
-        }
-        if (e.key === "Escape") {
-            cancelChange();
-            e.stopPropagation();
-        }
-    }
+    const onKeyDown = getOnKeyDownFunc<HTMLInputElement | HTMLTextAreaElement>({
+        commitChange: commitChange,
+        cancelChange: cancelChange,
+    });
 
     const textAreaSizeStyle = (() => {
         switch (textAreaSize) {
