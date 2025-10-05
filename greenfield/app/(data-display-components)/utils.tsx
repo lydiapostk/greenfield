@@ -80,7 +80,6 @@ export function getUpdateWSFunction({
         setIsEditing: (isEditing: boolean) => void
     ) => {
         setError("");
-        console.log("Updating...");
         const workstream_update: Record<string, WorkstreamPropertyTypes> = {};
         let query;
         if (field == "startup_ids" && !!value) {
@@ -100,7 +99,6 @@ export function getUpdateWSFunction({
             if (typeof value == "string")
                 workstream_update[field] = value.trim();
             else workstream_update[field] = value;
-            console.log(workstream_update);
             query = fetch(
                 `${
                     process.env.NEXT_PUBLIC_API_URL
