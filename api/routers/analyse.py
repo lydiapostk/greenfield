@@ -2,9 +2,15 @@ import json
 import os
 from typing import List, Optional
 from dotenv import load_dotenv
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
 from openai import OpenAI
 from pydantic import BaseModel, ValidationError
+from sqlalchemy import func
+from sqlmodel import Session, select
+
+from api.database import get_session
+from api.models.data_models import Startup
+from api.models.read_models import StartupReadLite
 
 load_dotenv()
 
@@ -25,6 +31,14 @@ router = APIRouter()
 client = OpenAI(
     api_key=os.getenv("OPENAI_API_KEY"),
 )
+
+
+def embed_text(text: str) -> list[float]:
+    response = client.embeddings.create(
+        model="text-embedding-3-small",  # 1536 dims
+        input=text,
+    )
+    return response.data[0].embedding
 
 
 class SuggestWorkstreamResponse(BaseModel):
@@ -69,3 +83,23 @@ def suggest_from_use_case(use_case: str = Query(...)):
                         target_dict = target_dict[key_to_delete]
                     target_dict.pop(keys_to_delete[-1])
     return parsed_suggestion
+
+
+@router.post(
+    "/suggest/startups/from_technologies", response_model=list[StartupReadLite]
+)
+def search_multi(
+    technologies: list[str], session: Session = Depends(get_session), limit: int = 5
+):
+    # 1. Embed all query strings
+    query_vecs = [embed_text(q) for q in technologies]
+
+    # 2. Use func.least for multiple queries
+    order_expr = func.least(
+        *[Startup.tech_embedding.op("<=>")(qv) for qv in query_vecs]
+    )
+
+    statement = select(Startup).order_by(order_expr).limit(limit)
+    results = session.exec(statement).all()
+
+    return results

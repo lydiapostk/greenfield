@@ -14,6 +14,7 @@ import {
 import {
     deleteFromDB,
     fetchSuggestionFromUseCase,
+    fetchSupsSuggestionFromTechnologies,
     getUpdateEvaluationFunction,
     getUpdateWSFunction,
 } from "@/data_display/utils";
@@ -27,8 +28,9 @@ import WorkstreamSelectSupsModal from "./workstream-select-sups-modal";
 import ConfirmModal from "@/components/confirm-modal";
 import EditableListField from "@/components/input-field/editable-list-field";
 import IconButton from "@/components/icon-button";
-import SuggestionField from "@/app/components/suggestion-field";
+import SuggestionField from "@/app/(data-display-components)/workstreams/suggestion-field";
 import { colourCSS } from "@/components/style";
+import SuggestionStartups from "./suggestion-startups";
 
 interface WorkstreamEditFormProps<> {
     workstream: WorkstreamReadType;
@@ -141,6 +143,35 @@ export default function WorkstreamEditForm({
         })(field, value);
     };
 
+    // Get suggestion for startups
+    const [suggestedSups, setSuggestedSups] = useState<StartupReadType[]>([]);
+    const [suggestedSupsError, setSuggestedSupsError] = useState<string>("");
+    const [isSuggestedSupsLoading, setIsSuggestedSupsLoading] =
+        useState<boolean>(false);
+    function fetchSupsSuggestion(): void {
+        if (!workstream.technologies) {
+            setSuggestionError("Technologies must not be empty!");
+            return;
+        }
+        fetchSupsSuggestionFromTechnologies({
+            technologies: workstream.technologies,
+            setIsLoading: setIsSuggestedSupsLoading,
+            setError: setSuggestedSupsError,
+            onSuccess: setSuggestedSups,
+        });
+    }
+    const _clearFromSuggestedSups = (updatedWS: WorkstreamReadType) => {
+        const updatedWsSupIds = updatedWS.evaluations.map(
+            (evaluation) => evaluation.startup.id
+        );
+        const updatedSuggestedSups = [...suggestedSups].filter(
+            (suggestion) => !updatedWsSupIds.includes(suggestion.id)
+        );
+        setTimeout(() => {
+            setSuggestedSups(updatedSuggestedSups);
+            setSelectedSupIDs([]);
+        }, 200); // Give time to close
+    };
     const startupSidedrawerToolbar = (hasFullscreenToggle = false) => (
         <div className="flex flex-row w-full justify-between items-center mt-10">
             <div className="flex flex-row w-full justify-start items-center gap-2">
@@ -329,7 +360,29 @@ export default function WorkstreamEditForm({
 
             <div className="flex flex-col justify-start w-full gap-1">
                 <span className="font-bold min-w-fit">Start-ups</span>
-                <div className="flex flex-row justify-start items-center py-2 gap-2">
+                <div className="flex flex-row justify-start items-center gap-2 my-0">
+                    {
+                        <IconButton
+                            onClick={fetchSupsSuggestion}
+                            text={`${
+                                isSuggestedSupsLoading ? "Getting" : "Get"
+                            } suggestions from technologies`}
+                            className={`${colourCSS["pop"]} mb-6`}
+                            iconName={
+                                isSuggestedSupsLoading ? "spinner" : "lightBulb"
+                            }
+                            iconClassName={
+                                isSuggestedSupsLoading
+                                    ? "text-stone-200 fill-sky-400"
+                                    : undefined
+                            }
+                            showText={true}
+                            disabled={
+                                !workstream.technologies ||
+                                workstream.technologies.length == 0
+                            }
+                        />
+                    }
                     <div
                         onClick={() => {
                             setIsInsertModalOpen(true);
@@ -354,6 +407,17 @@ export default function WorkstreamEditForm({
                         }
                     />
                 </div>
+                {suggestedSupsError !== "" && (
+                    <div className="flex flex-row items-center justify-start gap-2 font-mono italic text-red-700">
+                        <Icon
+                            name={"error"}
+                            className=""
+                            strokeWidth={2}
+                            size="sm"
+                        />
+                        {suggestedSupsError}
+                    </div>
+                )}
                 <StartupTable
                     startups={workstream.evaluations.map(
                         (evaluation) => evaluation.startup
@@ -362,6 +426,17 @@ export default function WorkstreamEditForm({
                     selectedIds={selectedSupIDs}
                     setSelectedIds={setSelectedSupIDs}
                 />
+                {suggestedSups.length > 0 && (
+                    <SuggestionStartups
+                        workstream={workstream}
+                        startups={suggestedSups}
+                        onApply={(ws: WorkstreamReadType) => {
+                            updateWorkstream(ws);
+                            _clearFromSuggestedSups(ws);
+                            setIsInsertModalOpen(false);
+                        }}
+                    />
+                )}
                 {selectedStartup && (
                     <SideDrawer
                         onClose={() => {

@@ -14,6 +14,7 @@ from urllib.parse import urlparse
 
 from api.database import get_session
 from api.models.data_models import Startup, StartupUpsert
+from api.models.read_models import StartupReadLite
 
 load_dotenv()
 
@@ -32,14 +33,6 @@ class CheckDomainResponse(BaseModel):
     error: Optional[str] = None
     note: Optional[str] = None
     hostname: Optional[str] = None
-
-
-def embed_text(text: str) -> list[float]:
-    response = client.embeddings.create(
-        model="text-embedding-3-small",  # 1536 dims
-        input=text,
-    )
-    return response.data[0].embedding
 
 
 def is_public_ip(hostname: str) -> bool:
@@ -141,7 +134,7 @@ async def check_url(url: str = Query(...)):
         return response
 
 
-@router.get("/query_llm", response_model=Startup)
+@router.get("/query_llm", response_model=StartupReadLite)
 def lookup_startup(
     startup_url: str = Query(...), session: Session = Depends(get_session)
 ):
@@ -180,6 +173,14 @@ def lookup_startup(
                     target_dict.pop(keys_to_delete[-1])
     startup.company_website = startup_url
     startup = Startup(**startup.model_dump())
+    if startup.tech_offering:
+        startup.tech_embedding = (
+            client.embeddings.create(
+                model="text-embedding-3-small", input=startup.tech_offering
+            )
+            .data[0]
+            .embedding
+        )
     session.add(startup)
     session.commit()
     session.refresh(startup)  # Fetch updated startup

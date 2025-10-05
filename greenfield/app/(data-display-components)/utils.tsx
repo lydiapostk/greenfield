@@ -1,6 +1,7 @@
 import {
     EvaluationReadType,
     EvaluationUpdateType,
+    StartupReadType,
     SuggestionFromUseCaseType,
     WorkstreamPropertyTypes,
     WorkstreamReadType,
@@ -209,6 +210,52 @@ export function fetchSuggestionFromUseCase({
     )
         .then((res) =>
             res.json().then((data: SuggestionFromUseCaseType) => {
+                if (!res.ok) {
+                    setError(`Error occurred: ${res.statusText}`);
+                } else {
+                    onSuccess(data);
+                }
+            })
+        )
+        .catch((e: unknown) => {
+            if (e instanceof Error) {
+                setError(e.message);
+            } else {
+                setError("Unexpected error");
+            }
+        })
+        .finally(() => {
+            setIsLoading(false);
+        });
+}
+
+interface fetchSupsSuggestionFromTechnologiesParams {
+    technologies: string[];
+    setIsLoading: (isLoading: boolean) => void;
+    onSuccess?: (startups: StartupReadType[]) => void;
+    setError?: (errMsg: string) => void;
+}
+
+export function fetchSupsSuggestionFromTechnologies({
+    technologies,
+    setIsLoading,
+    setError = () => {},
+    onSuccess = () => {},
+}: fetchSupsSuggestionFromTechnologiesParams) {
+    setIsLoading(true);
+    setError("");
+    fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/analyse/suggest/startups/from_technologies?limit=5`,
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(technologies),
+        }
+    )
+        .then((res) =>
+            res.json().then((data: StartupReadType[]) => {
                 if (!res.ok) {
                     setError(`Error occurred: ${res.statusText}`);
                 } else {
