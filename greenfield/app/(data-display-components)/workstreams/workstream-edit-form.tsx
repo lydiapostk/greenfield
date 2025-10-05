@@ -154,6 +154,7 @@ export default function WorkstreamEditForm({
             return;
         }
         fetchSupsSuggestionFromTechnologies({
+            workstream_id: workstream.id,
             technologies: workstream.technologies,
             setIsLoading: setIsSuggestedSupsLoading,
             setError: setSuggestedSupsError,
@@ -379,8 +380,11 @@ export default function WorkstreamEditForm({
                             showText={true}
                             disabled={
                                 !workstream.technologies ||
-                                workstream.technologies.length == 0
+                                workstream.technologies.length == 0 ||
+                                isSuggestionLoading ||
+                                isSuggestedSupsLoading
                             }
+                            hideWhenDisabled={false}
                         />
                     }
                     <div

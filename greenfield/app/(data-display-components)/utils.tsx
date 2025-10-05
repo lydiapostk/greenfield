@@ -230,6 +230,7 @@ export function fetchSuggestionFromUseCase({
 }
 
 interface fetchSupsSuggestionFromTechnologiesParams {
+    workstream_id: number;
     technologies: string[];
     setIsLoading: (isLoading: boolean) => void;
     onSuccess?: (startups: StartupReadType[]) => void;
@@ -237,6 +238,7 @@ interface fetchSupsSuggestionFromTechnologiesParams {
 }
 
 export function fetchSupsSuggestionFromTechnologies({
+    workstream_id,
     technologies,
     setIsLoading,
     setError = () => {},
@@ -245,7 +247,7 @@ export function fetchSupsSuggestionFromTechnologies({
     setIsLoading(true);
     setError("");
     fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/analyse/suggest/startups/from_technologies?limit=5`,
+        `${process.env.NEXT_PUBLIC_API_URL}/analyse/suggest/startups/from_technologies?workstream_id=${workstream_id}&limit=5`,
         {
             method: "POST",
             headers: {

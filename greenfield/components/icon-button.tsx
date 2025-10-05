@@ -10,6 +10,7 @@ interface IconButtonProps {
     disabled?: boolean;
     className?: string;
     iconClassName?: string;
+    hideWhenDisabled?: boolean;
 }
 
 export default function IconButton({
@@ -20,13 +21,16 @@ export default function IconButton({
     showText = false,
     disabled = false,
     className = colourCSS["pop"],
+    hideWhenDisabled = true,
     iconClassName = "stroke-stone-200 hover:stroke-[2] ",
 }: IconButtonProps) {
     return (
         <div
             className={`inline-flex  rounded-2xl px-3 py-1.5 stroke-2 
                 gap-1 transition ease-in cursor-pointer w-fit font-medium ${
-                    disabled ? "cursor-default opacity-0" : "cursor-pointer"
+                    disabled && hideWhenDisabled
+                        ? "cursor-default opacity-0"
+                        : "cursor-pointer"
                 } ${className}`}
             onClick={disabled ? undefined : onClick}
         >

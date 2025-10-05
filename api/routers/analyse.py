@@ -9,7 +9,7 @@ from sqlalchemy import func
 from sqlmodel import Session, select
 
 from api.database import get_session
-from api.models.data_models import Startup
+from api.models.data_models import Startup, WorkstreamStartupEvaluation
 from api.models.read_models import StartupReadLite
 
 load_dotenv()
@@ -88,18 +88,33 @@ def suggest_from_use_case(use_case: str = Query(...)):
 @router.post(
     "/suggest/startups/from_technologies", response_model=list[StartupReadLite]
 )
-def search_multi(
-    technologies: list[str], session: Session = Depends(get_session), limit: int = 5
+def suggest_startups_from_technologies(
+    workstream_id: int,
+    technologies: list[str],
+    session: Session = Depends(get_session),
+    limit: int = 5,
 ):
-    # 1. Embed all query strings
-    query_vecs = [embed_text(q) for q in technologies]
+    # Generate embeddings for each input technology
+    query_vecs = [embed_text(t) for t in technologies]
 
-    # 2. Use func.least for multiple queries
+    # Build a similarity expression: least distance across all query vectors
     order_expr = func.least(
         *[Startup.tech_embedding.op("<=>")(qv) for qv in query_vecs]
     )
 
-    statement = select(Startup).order_by(order_expr).limit(limit)
-    results = session.exec(statement).all()
+    # Subquery of startups already linked to this workstream
+    evaluated_startups = select(WorkstreamStartupEvaluation.startup_id).where(
+        WorkstreamStartupEvaluation.workstream_id == workstream_id
+    )
 
+    # Main query: exclude already-evaluated startups
+    statement = (
+        select(Startup)
+        .where(Startup.id.not_in(evaluated_startups))
+        .order_by(order_expr)
+        .limit(limit)
+    )
+
+    # Execute and return
+    results = session.exec(statement).all()
     return results

@@ -11,30 +11,15 @@ interface SuggestionStartupsProps {
     workstream: WorkstreamReadType;
     startups: StartupReadType[];
     onApply: (ws: WorkstreamReadType) => void;
-    onCancel?: () => void;
 }
 
 export default function SuggestionStartups({
     workstream,
     startups,
     onApply,
-    onCancel = () => {},
 }: SuggestionStartupsProps) {
     const [error, setError] = useState<string>("");
     const [selectedIds, setSelectedIds] = useState<number[]>([]);
-    const [search, setSearch] = useState<string>("");
-    const workstreamCurrSupIDs = workstream.evaluations.map(
-        (evaluation) => evaluation.startup.id
-    );
-    const filteredValues = useMemo(() => {
-        return startups.filter(
-            (sup) =>
-                sup.company_name
-                    ?.toLowerCase()
-                    .includes(search.toLowerCase()) &&
-                !workstreamCurrSupIDs.includes(sup.id)
-        );
-    }, [startups, search]);
 
     // Insert selected startups to selected workstream
     const insertStartupsToWS = () => {
@@ -71,17 +56,8 @@ export default function SuggestionStartups({
                         {error}
                     </div>
                 )}
-                <input
-                    id="table_search"
-                    type="text"
-                    placeholder="Search..."
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    className="max-w-4/5 px-4 py-2 my-2 self-center rounded-2xl bg-white/90 focus:outline-none focus:ring-0 focus:bg-white/70"
-                    autoFocus
-                />
                 <StartupTable
-                    startups={filteredValues}
+                    startups={startups}
                     selectedIds={selectedIds}
                     setSelectedIds={setSelectedIds}
                     onClickStartup={(sup: StartupReadType | null) => {
@@ -97,7 +73,7 @@ export default function SuggestionStartups({
                 />
                 <IconButton
                     onClick={handleApplyClick}
-                    text={`Apply Suggestion ${selectedIds.length}`}
+                    text={`Apply Suggestion (${selectedIds.length})`}
                     iconName={"tick"}
                     showText={true}
                     showIcon={false}

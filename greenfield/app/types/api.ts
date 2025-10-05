@@ -226,8 +226,8 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Search Multi */
-        post: operations["search_multi_analyse_suggest_startups_from_technologies_post"];
+        /** Suggest Startups From Technologies */
+        post: operations["suggest_startups_from_technologies_analyse_suggest_startups_from_technologies_post"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1171,9 +1171,10 @@ export interface operations {
             };
         };
     };
-    search_multi_analyse_suggest_startups_from_technologies_post: {
+    suggest_startups_from_technologies_analyse_suggest_startups_from_technologies_post: {
         parameters: {
-            query?: {
+            query: {
+                workstream_id: number;
                 limit?: number;
             };
             header?: never;
