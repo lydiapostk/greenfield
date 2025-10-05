@@ -50,6 +50,15 @@ def update_startup_by_id(
     if not db_startup:
         raise HTTPException(status_code=404, detail="Start-up not found")
     update_data = startup_update.model_dump(exclude_unset=True)
+    # Generate embeddings
+    if startup_update.tech_offering:
+        update_data["tech_embedding"] = (
+            client.embeddings.create(
+                model="text-embedding-3-small", input=startup_update.tech_offering
+            )
+            .data[0]
+            .embedding
+        )
     db_startup.sqlmodel_update(update_data)
     session.add(db_startup)
     session.commit()

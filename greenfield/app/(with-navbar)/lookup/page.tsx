@@ -87,7 +87,6 @@ export default function LookupStartupInfo() {
             );
 
             const data: StartupType = await res.json();
-            console.log(data);
             if (res.ok) return data;
             if (res.status == 404) return null; // It is expected that this could be null
             // Otherwise, this may be an unexpected error

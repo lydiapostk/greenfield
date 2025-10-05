@@ -34,6 +34,14 @@ class CheckDomainResponse(BaseModel):
     hostname: Optional[str] = None
 
 
+def embed_text(text: str) -> list[float]:
+    response = client.embeddings.create(
+        model="text-embedding-3-small",  # 1536 dims
+        input=text,
+    )
+    return response.data[0].embedding
+
+
 def is_public_ip(hostname: str) -> bool:
     """Check if hostname resolves to a public IP address."""
     try:
