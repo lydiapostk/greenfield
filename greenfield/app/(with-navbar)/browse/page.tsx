@@ -66,9 +66,9 @@ export default function BrowseStartups() {
     );
     const toggleFullscreenComponent = () => (
         <div
-            className={`inline-flex w-fit rounded-2xl px-3 py-1.5 mb-6 self-end 
-                                        stroke-2 gap-1 transition ease-in cursor-pointer 
-                                        hover:bg-stone-300`}
+            className={`inline-flex w-fit rounded-2xl px-3 py-1.5 self-end 
+                        stroke-2 gap-1 transition ease-in cursor-pointer 
+                        hover:bg-stone-300`}
             onClick={() => setInFullScreen(!inFullScreen)}
         >
             <Icon

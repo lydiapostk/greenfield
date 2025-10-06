@@ -18,9 +18,14 @@ export default function WorkstreamCreateForm({
     updateWorkstream,
     error,
 }: WorkstreamCreateFormProps) {
-    const updateField = (field: keyof WorkstreamUpsertType, value: string) => {
+    const updateField = (
+        field: keyof WorkstreamUpsertType,
+        value: string,
+        setIsEditing: (isEditing: boolean) => void
+    ) => {
         const updated = { ...workstream, [field]: value.trim() };
         updateWorkstream(updated);
+        setIsEditing(false);
     };
 
     return (

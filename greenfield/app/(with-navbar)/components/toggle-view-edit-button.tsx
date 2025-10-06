@@ -11,7 +11,7 @@ export default function ToggleViewEditButton({
 }: ToggleViewEditButtonProps) {
     return (
         <div
-            className={`inline-flex w-fit rounded-2xl px-3 py-1.5 mb-6 self-end 
+            className={`inline-flex w-fit rounded-2xl px-3 py-1.5 self-end 
                             stroke-2 gap-1 transition ease-in cursor-pointer 
                             ${
                                 inEditMode
