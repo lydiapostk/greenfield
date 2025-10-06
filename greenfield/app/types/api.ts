@@ -347,14 +347,10 @@ export interface components {
             tech_offering?: string | null;
             /** Ref Tech */
             ref_tech?: string[] | null;
-            /** Tech Embedding */
-            tech_embedding?: number[] | null;
             /** Uvp */
             uvp?: string | null;
             /** Ref Uvp */
             ref_uvp?: string[] | null;
-            /** Uvp Embedding */
-            uvp_embedding?: number[] | null;
             trl?: components["schemas"]["TrlEnum"] | null;
             /** Trl Explanation */
             trl_explanation?: string | null;
@@ -363,6 +359,10 @@ export interface components {
             use_cases?: string[] | null;
             /** Id */
             id?: number | null;
+            /** Tech Embedding */
+            tech_embedding?: number[] | null;
+            /** Uvp Embedding */
+            uvp_embedding?: number[] | null;
         };
         /** StartupLite */
         StartupLite: {
@@ -398,14 +398,10 @@ export interface components {
             tech_offering?: string | null;
             /** Ref Tech */
             ref_tech?: string[] | null;
-            /** Tech Embedding */
-            tech_embedding?: number[] | null;
             /** Uvp */
             uvp?: string | null;
             /** Ref Uvp */
             ref_uvp?: string[] | null;
-            /** Uvp Embedding */
-            uvp_embedding?: number[] | null;
             trl?: components["schemas"]["TrlEnum"] | null;
             /** Trl Explanation */
             trl_explanation?: string | null;
@@ -442,14 +438,10 @@ export interface components {
             tech_offering?: string | null;
             /** Ref Tech */
             ref_tech?: string[] | null;
-            /** Tech Embedding */
-            tech_embedding?: number[] | null;
             /** Uvp */
             uvp?: string | null;
             /** Ref Uvp */
             ref_uvp?: string[] | null;
-            /** Uvp Embedding */
-            uvp_embedding?: number[] | null;
             trl?: components["schemas"]["TrlEnum"] | null;
             /** Trl Explanation */
             trl_explanation?: string | null;

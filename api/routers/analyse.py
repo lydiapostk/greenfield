@@ -9,8 +9,11 @@ from sqlalchemy import func
 from sqlmodel import Session, select
 
 from api.database import get_session
-from api.models.data_models import Startup, WorkstreamStartupEvaluation
-from api.models.read_models import StartupReadLite
+from api.models.data_models import (
+    Startup,
+    WorkstreamStartupEvaluation,
+)
+from api.models.read_models import StartupReadLite, WorkstreamRead
 
 load_dotenv()
 

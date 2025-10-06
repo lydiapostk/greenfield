@@ -181,15 +181,9 @@ class StartupBase(SQLModel):
 
     tech_offering: Optional[str] = None
     ref_tech: Optional[List[str]] = Field(default=None, sa_column=Column(JSON))
-    tech_embedding: Optional[List[float]] = Field(
-        default=None, sa_column=Column(Vector(1536))
-    )
 
     uvp: Optional[str] = None
     ref_uvp: Optional[List[str]] = Field(default=None, sa_column=Column(JSON))
-    uvp_embedding: Optional[List[float]] = Field(
-        default=None, sa_column=Column(Vector(1536))
-    )
 
     trl: Optional[TrlEnum] = Field(
         default=None,
@@ -220,6 +214,12 @@ class Startup(StartupBase, table=True):
     evaluations: List["WorkstreamStartupEvaluation"] = Relationship(
         back_populates="startup",
         sa_relationship_kwargs={"cascade": "all, delete-orphan"},
+    )
+    tech_embedding: Optional[List[float]] = Field(
+        default=None, sa_column=Column(Vector(1536))
+    )
+    uvp_embedding: Optional[List[float]] = Field(
+        default=None, sa_column=Column(Vector(1536))
     )
 
 
