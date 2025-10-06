@@ -30,7 +30,7 @@ def get_startup_by_id(startup_id: int, session: Session = Depends(get_session)):
     return db_startup
 
 
-@router.get("/by_website", response_model=Startup | None)
+@router.get("/by_website", response_model=StartupReadLite | None)
 def get_startup_by_website(
     lookup_url: str = Query(...), session: Session = Depends(get_session)
 ):
