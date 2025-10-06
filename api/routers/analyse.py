@@ -121,3 +121,53 @@ def suggest_startups_from_technologies(
     # Execute and return
     results = session.exec(statement).all()
     return results
+
+
+class SuggestStartupEvaluationResponse(BaseModel):
+    competitive_advantage: Optional[str] = None
+    risks: Optional[str] = None
+    collaboration_potential: Optional[str] = None
+
+
+@router.post(
+    "/suggest/startup_eval/from_workstream",
+    response_model=SuggestStartupEvaluationResponse,
+)
+def suggest_startup_eval_from_workstream(
+    workstream: WorkstreamRead,
+    company_name: str = Query(...),
+):
+    with open("api/startup_evaluation.txt", "r", encoding="utf-8") as f:
+        instruction = f.read()
+    input = f"{instruction}\nWorkstream:{workstream}\nStart-up:{company_name}"
+    response = client.responses.create(
+        model="gpt-5-mini",
+        reasoning={"effort": "low"},
+        instructions=instruction,
+        input=input,
+        store=True,
+        tools=[{"type": "web_search"}],
+        stream=False,
+    )
+    suggestion = json.loads(response.output_text)
+    parsed_suggestion = None
+    while not parsed_suggestion:
+        if len(suggestion) == 0:
+            raise HTTPException(
+                status_code=500, detail="Unable to fetch a valid suggestion from LLM."
+            )
+        try:
+            parsed_suggestion = SuggestStartupEvaluationResponse.model_validate(
+                suggestion
+            )
+        except ValidationError as e:
+            e_locs = [err["loc"] for err in e.errors()]
+            for keys_to_delete in e_locs:
+                if (len(keys_to_delete)) == 1:
+                    suggestion.pop(keys_to_delete[0])
+                else:
+                    target_dict = suggestion
+                    for key_to_delete in keys_to_delete[:-1]:
+                        target_dict = target_dict[key_to_delete]
+                    target_dict.pop(keys_to_delete[-1])
+    return parsed_suggestion

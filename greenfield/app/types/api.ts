@@ -234,6 +234,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/analyse/suggest/startup_eval/from_workstream": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Suggest Startup Eval From Workstream */
+        post: operations["suggest_startup_eval_from_workstream_analyse_suggest_startup_eval_from_workstream_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -269,14 +286,24 @@ export interface components {
             [key: string]: components["schemas"]["CompetitorInfo"];
         }[];
         /** EvaluationReadWithStartup */
-        EvaluationReadWithStartup: {
+        "EvaluationReadWithStartup-Input": {
             /** Competitive Advantage */
             competitive_advantage?: string | null;
             /** Risks */
             risks?: string | null;
             /** Collaboration Potential */
             collaboration_potential?: string | null;
-            startup: components["schemas"]["StartupReadLite"];
+            startup: components["schemas"]["StartupReadLite-Input"];
+        };
+        /** EvaluationReadWithStartup */
+        "EvaluationReadWithStartup-Output": {
+            /** Competitive Advantage */
+            competitive_advantage?: string | null;
+            /** Risks */
+            risks?: string | null;
+            /** Collaboration Potential */
+            collaboration_potential?: string | null;
+            startup: components["schemas"]["StartupReadLite-Output"];
         };
         /** EvaluationReadWithStartupLite */
         EvaluationReadWithStartupLite: {
@@ -377,7 +404,47 @@ export interface components {
             founders?: components["schemas"]["Founders"] | null;
         };
         /** StartupReadLite */
-        StartupReadLite: {
+        "StartupReadLite-Input": {
+            /** Company Name */
+            company_name?: string | null;
+            /** Company Website */
+            company_website?: string | null;
+            /** Year Founded */
+            year_founded?: string | null;
+            /** Country */
+            country?: string | null;
+            num_employees?: components["schemas"]["NumEmployeesEnum"] | null;
+            founders?: components["schemas"]["Founders"] | null;
+            /** Investors */
+            investors?: string[] | null;
+            funding_stage?: components["schemas"]["FundingStageEnum"] | null;
+            funds_raised?: components["schemas"]["FundsRaisedEnum"] | null;
+            /** Ref Funding */
+            ref_funding?: string[] | null;
+            /** Tech Offering */
+            tech_offering?: string | null;
+            /** Ref Tech */
+            ref_tech?: string[] | null;
+            /** Uvp */
+            uvp?: string | null;
+            /** Ref Uvp */
+            ref_uvp?: string[] | null;
+            trl?: components["schemas"]["TrlEnum"] | null;
+            /** Trl Explanation */
+            trl_explanation?: string | null;
+            competitors?: components["schemas"]["Competitors"] | null;
+            /** Use Cases */
+            use_cases?: string[] | null;
+            /** Id */
+            id: number;
+            /**
+             * Evaluations
+             * @default []
+             */
+            evaluations: components["schemas"]["EvaluationReadWithWorkstreamLite"][];
+        };
+        /** StartupReadLite */
+        "StartupReadLite-Output": {
             /** Company Name */
             company_name?: string | null;
             /** Company Website */
@@ -449,6 +516,15 @@ export interface components {
             /** Use Cases */
             use_cases?: string[] | null;
         };
+        /** SuggestStartupEvaluationResponse */
+        SuggestStartupEvaluationResponse: {
+            /** Competitive Advantage */
+            competitive_advantage?: string | null;
+            /** Risks */
+            risks?: string | null;
+            /** Collaboration Potential */
+            collaboration_potential?: string | null;
+        };
         /** SuggestWorkstreamResponse */
         SuggestWorkstreamResponse: {
             /** Use Case */
@@ -487,7 +563,7 @@ export interface components {
             title: string | null;
         };
         /** WorkstreamRead */
-        WorkstreamRead: {
+        "WorkstreamRead-Input": {
             /**
              * Title
              * @default Untitled
@@ -512,7 +588,35 @@ export interface components {
              * Evaluations
              * @default []
              */
-            evaluations: components["schemas"]["EvaluationReadWithStartup"][];
+            evaluations: components["schemas"]["EvaluationReadWithStartup-Input"][];
+        };
+        /** WorkstreamRead */
+        "WorkstreamRead-Output": {
+            /**
+             * Title
+             * @default Untitled
+             */
+            title: string;
+            /** Use Case */
+            use_case?: string | null;
+            /** Challenge */
+            challenge?: string | null;
+            /** Technologies */
+            technologies?: string[] | null;
+            /** Overall Recommendation */
+            overall_recommendation?: string | null;
+            /** Id */
+            id: number;
+            /**
+             * Create Date
+             * Format: date
+             */
+            create_date: string;
+            /**
+             * Evaluations
+             * @default []
+             */
+            evaluations: components["schemas"]["EvaluationReadWithStartup-Output"][];
         };
         /** WorkstreamReadLite */
         WorkstreamReadLite: {
@@ -606,7 +710,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["StartupReadLite"][];
+                    "application/json": components["schemas"]["StartupReadLite-Output"][];
                 };
             };
         };
@@ -663,7 +767,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["StartupReadLite"];
+                    "application/json": components["schemas"]["StartupReadLite-Output"];
                 };
             };
             /** @description Validation Error */
@@ -729,7 +833,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["StartupReadLite"];
+                    "application/json": components["schemas"]["StartupReadLite-Output"];
                 };
             };
             /** @description Validation Error */
@@ -848,7 +952,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["WorkstreamRead"];
+                    "application/json": components["schemas"]["WorkstreamRead-Output"];
                 };
             };
             /** @description Validation Error */
@@ -883,7 +987,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["WorkstreamRead"];
+                    "application/json": components["schemas"]["WorkstreamRead-Output"];
                 };
             };
             /** @description Validation Error */
@@ -983,7 +1087,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["WorkstreamRead"];
+                    "application/json": components["schemas"]["WorkstreamRead-Output"];
                 };
             };
             /** @description Validation Error */
@@ -1056,7 +1160,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["EvaluationReadWithStartup"];
+                    "application/json": components["schemas"]["EvaluationReadWithStartup-Output"];
                 };
             };
             /** @description Validation Error */
@@ -1118,7 +1222,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["StartupReadLite"];
+                    "application/json": components["schemas"]["StartupReadLite-Output"];
                 };
             };
             /** @description Validation Error */
@@ -1185,7 +1289,42 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["StartupReadLite"][];
+                    "application/json": components["schemas"]["StartupReadLite-Output"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    suggest_startup_eval_from_workstream_analyse_suggest_startup_eval_from_workstream_post: {
+        parameters: {
+            query: {
+                company_name: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WorkstreamRead-Input"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SuggestStartupEvaluationResponse"];
                 };
             };
             /** @description Validation Error */

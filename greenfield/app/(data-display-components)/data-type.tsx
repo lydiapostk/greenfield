@@ -2,7 +2,7 @@ import { components, operations } from "@/app/types/api";
 import { DictionaryEntry } from "@/components/input-field/utils";
 
 export type StartupType = components["schemas"]["Startup"];
-export type StartupReadType = components["schemas"]["StartupReadLite"];
+export type StartupReadType = components["schemas"]["StartupReadLite-Input"];
 export type StartupFoundersType = components["schemas"]["Startup"]["founders"];
 export type CompetitorsType = components["schemas"]["Competitors"];
 export type StartupPropertyTypes =
@@ -14,7 +14,7 @@ export type StartupPropertyTypes =
 
 export type StartupUpsertType = components["schemas"]["StartupUpsert"];
 
-export type WorkstreamReadType = components["schemas"]["WorkstreamRead"];
+export type WorkstreamReadType = components["schemas"]["WorkstreamRead-Input"];
 export type WorkstreamType = components["schemas"]["WorkstreamReadLite"];
 export type WorkstreamUpsertType = components["schemas"]["WorkstreamUpsert"];
 export type WorkstreamCreateDisplayType = WorkstreamUpsertType & {
@@ -29,9 +29,11 @@ export type WorkstreamPropertyTypes =
 
 export type SuggestionFromUseCaseType =
     components["schemas"]["SuggestWorkstreamResponse"];
+export type SuggestionForStartupEvaluationType =
+    components["schemas"]["SuggestStartupEvaluationResponse"];
 
 export type EvaluationReadType =
-    components["schemas"]["EvaluationReadWithStartup"];
+    components["schemas"]["EvaluationReadWithStartup-Input"];
 export type EvaluationUpdateType =
     components["schemas"]["WorkstreamStartupEvaluationUpdate"];
 

@@ -2,6 +2,7 @@ import {
     EvaluationReadType,
     EvaluationUpdateType,
     StartupReadType,
+    SuggestionForStartupEvaluationType,
     SuggestionFromUseCaseType,
     WorkstreamPropertyTypes,
     WorkstreamReadType,
@@ -173,7 +174,6 @@ export function getUpdateEvaluationFunction({
             .then((res) =>
                 res.json().then((data: EvaluationReadType) => {
                     if (res.ok) {
-                        console.log(data);
                         onSuccess(data);
                         setIsEditing(false);
                     } else setError(`Unexpected error:\n${res.statusText}`);
@@ -258,6 +258,54 @@ export function fetchSupsSuggestionFromTechnologies({
     )
         .then((res) =>
             res.json().then((data: StartupReadType[]) => {
+                if (!res.ok) {
+                    setError(`Error occurred: ${res.statusText}`);
+                } else {
+                    onSuccess(data);
+                }
+            })
+        )
+        .catch((e: unknown) => {
+            if (e instanceof Error) {
+                setError(e.message);
+            } else {
+                setError("Unexpected error");
+            }
+        })
+        .finally(() => {
+            setIsLoading(false);
+        });
+}
+
+interface fetchSupEvalSuggestionFromWSParams {
+    companyName: string;
+    workstream: WorkstreamReadType;
+    setIsLoading: (isLoading: boolean) => void;
+    onSuccess?: (startupEval: SuggestionForStartupEvaluationType) => void;
+    setError?: (errMsg: string) => void;
+}
+
+export function fetchSupEvalSuggestionFromWS({
+    companyName,
+    workstream,
+    setIsLoading,
+    setError = () => {},
+    onSuccess = () => {},
+}: fetchSupEvalSuggestionFromWSParams) {
+    setIsLoading(true);
+    setError("");
+    fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/analyse/suggest/startup_eval/from_workstream?company_name=${companyName}`,
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(workstream),
+        }
+    )
+        .then((res) =>
+            res.json().then((data: SuggestionForStartupEvaluationType) => {
                 if (!res.ok) {
                     setError(`Error occurred: ${res.statusText}`);
                 } else {

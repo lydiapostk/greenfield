@@ -7,6 +7,7 @@ import SideDrawer from "@/components/side_drawer";
 import {
     EvaluationReadType,
     StartupReadType,
+    SuggestionForStartupEvaluationType,
     SuggestionFromUseCaseType,
     WorkstreamPropertyTypes,
     WorkstreamReadType,
@@ -14,6 +15,7 @@ import {
 import {
     deleteFromDB,
     fetchSuggestionFromUseCase,
+    fetchSupEvalSuggestionFromWS,
     fetchSupsSuggestionFromTechnologies,
     getUpdateEvaluationFunction,
     getUpdateWSFunction,
@@ -31,6 +33,8 @@ import IconButton from "@/components/icon-button";
 import SuggestionField from "@/app/(data-display-components)/workstreams/suggestion-field";
 import { colourCSS } from "@/components/style";
 import SuggestionStartups from "./suggestion-startups";
+import WorkstreamStartupEvaluation from "./workstream-startup-eval";
+import { components } from "@/app/types/api";
 
 interface WorkstreamEditFormProps<> {
     workstream: WorkstreamReadType;
@@ -472,68 +476,15 @@ export default function WorkstreamEditForm({
                     </SideDrawer>
                 )}
                 <div className="flex flex-col gap-6">
-                    {workstream.evaluations.map((evaluation, idx) => {
-                        const onConfirm = getUpdateEvaluationFunction({
-                            workstream_id: workstream.id,
-                            startup_id: evaluation.startup.id,
-                            onSuccess: (evaluation: EvaluationReadType) => {
-                                const updatedEvaluations = [
-                                    ...workstream.evaluations,
-                                ];
-                                updatedEvaluations[idx] = evaluation;
-                                const updatedWorkstream = {
-                                    ...workstream,
-                                    evaluations: updatedEvaluations,
-                                };
-                                updateWorkstream(updatedWorkstream);
-                            },
-                            setError: setError,
-                        });
-                        return (
-                            <div
-                                key={evaluation.startup.id}
-                                className="w-full flex flex-col gap-4"
-                            >
-                                <div className="font-bold text-md text-slate-800 border-b py-2">
-                                    {evaluation.startup.company_name}
-                                </div>
-                                <EditableTextField
-                                    onSave={onConfirm}
-                                    label={"Competitive advantage:"}
-                                    field_key={"competitive_advantage"}
-                                    value={
-                                        evaluation.competitive_advantage
-                                            ? evaluation.competitive_advantage
-                                            : ""
-                                    }
-                                    multiline={true}
-                                    textAreaSize={"sm"}
-                                />
-                                <EditableTextField
-                                    onSave={onConfirm}
-                                    label={"Risks:"}
-                                    field_key={"risks"}
-                                    value={
-                                        evaluation.risks ? evaluation.risks : ""
-                                    }
-                                    multiline={true}
-                                    textAreaSize={"sm"}
-                                />
-                                <EditableTextField
-                                    onSave={onConfirm}
-                                    label={"Collaboration potential:"}
-                                    field_key={"collaboration_potential"}
-                                    value={
-                                        evaluation.collaboration_potential
-                                            ? evaluation.collaboration_potential
-                                            : ""
-                                    }
-                                    multiline={true}
-                                    textAreaSize={"sm"}
-                                />
-                            </div>
-                        );
-                    })}
+                    {workstream.evaluations.map((evaluation, idx) => (
+                        <WorkstreamStartupEvaluation
+                            key={`evaluation-${evaluation.startup.id}`}
+                            workstream={workstream}
+                            evaluationIdx={idx}
+                            evaluation={evaluation}
+                            updateWorkstream={updateWorkstream}
+                        />
+                    ))}
                     <div className="w-full">
                         <EditableTextField
                             onSave={funcUpdateWS}
