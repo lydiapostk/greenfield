@@ -3,7 +3,7 @@ import {
     EvaluationUpdateType,
     StartupReadType,
     SuggestionForStartupEvaluationType,
-    SuggestionFromUseCaseType,
+    SuggestionForWorkstreamType,
     WorkstreamPropertyTypes,
     WorkstreamReadType,
     WorkstreamUpsertType,
@@ -186,7 +186,7 @@ export function getUpdateEvaluationFunction({
 interface fetchSuggestionFromUseCaseParams {
     useCase: string;
     setIsLoading: (isLoading: boolean) => void;
-    onSuccess?: (suggestion: SuggestionFromUseCaseType) => void;
+    onSuccess?: (suggestion: SuggestionForWorkstreamType) => void;
     setError?: (errMsg: string) => void;
 }
 
@@ -209,7 +209,7 @@ export function fetchSuggestionFromUseCase({
         }
     )
         .then((res) =>
-            res.json().then((data: SuggestionFromUseCaseType) => {
+            res.json().then((data: SuggestionForWorkstreamType) => {
                 if (!res.ok) {
                     setError(`Error occurred: ${res.statusText}`);
                 } else {
@@ -306,6 +306,52 @@ export function fetchSupEvalSuggestionFromWS({
     )
         .then((res) =>
             res.json().then((data: SuggestionForStartupEvaluationType) => {
+                if (!res.ok) {
+                    setError(`Error occurred: ${res.statusText}`);
+                } else {
+                    onSuccess(data);
+                }
+            })
+        )
+        .catch((e: unknown) => {
+            if (e instanceof Error) {
+                setError(e.message);
+            } else {
+                setError("Unexpected error");
+            }
+        })
+        .finally(() => {
+            setIsLoading(false);
+        });
+}
+
+interface fetchConclusionFromWSParams {
+    workstream: WorkstreamReadType;
+    setIsLoading: (isLoading: boolean) => void;
+    onSuccess?: (startupEval: SuggestionForWorkstreamType) => void;
+    setError?: (errMsg: string) => void;
+}
+
+export function fetchConclusionFromWS({
+    workstream,
+    setIsLoading,
+    setError = () => {},
+    onSuccess = () => {},
+}: fetchConclusionFromWSParams) {
+    setIsLoading(true);
+    setError("");
+    fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/analyse/suggest/conclusion/from_workstream`,
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(workstream),
+        }
+    )
+        .then((res) =>
+            res.json().then((data: SuggestionForWorkstreamType) => {
                 if (!res.ok) {
                     setError(`Error occurred: ${res.statusText}`);
                 } else {

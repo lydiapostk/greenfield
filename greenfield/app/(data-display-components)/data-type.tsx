@@ -27,7 +27,7 @@ export type WorkstreamPropertyTypes =
     | null
     | undefined;
 
-export type SuggestionFromUseCaseType =
+export type SuggestionForWorkstreamType =
     components["schemas"]["SuggestWorkstreamResponse"];
 export type SuggestionForStartupEvaluationType =
     components["schemas"]["SuggestStartupEvaluationResponse"];

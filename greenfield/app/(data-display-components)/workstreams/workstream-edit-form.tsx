@@ -5,19 +5,16 @@ import Icon from "@/components/icon/icon";
 import SideDrawer from "@/components/side_drawer";
 
 import {
-    EvaluationReadType,
     StartupReadType,
-    SuggestionForStartupEvaluationType,
-    SuggestionFromUseCaseType,
+    SuggestionForWorkstreamType,
     WorkstreamPropertyTypes,
     WorkstreamReadType,
 } from "@/data_display/data-type";
 import {
     deleteFromDB,
+    fetchConclusionFromWS,
     fetchSuggestionFromUseCase,
-    fetchSupEvalSuggestionFromWS,
     fetchSupsSuggestionFromTechnologies,
-    getUpdateEvaluationFunction,
     getUpdateWSFunction,
 } from "@/data_display/utils";
 
@@ -41,6 +38,25 @@ interface WorkstreamEditFormProps<> {
     updateWorkstream: Dispatch<SetStateAction<WorkstreamReadType | null>>;
     setIsLoading: (isOpen: boolean) => void;
 }
+
+const DownloadButton = (data: any, fileName = "temp") => {
+    const handleDownload = () => {
+        const json = JSON.stringify(data, null, 2); // Pretty print JSON
+        const blob = new Blob([json], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = `${fileName}.json`;
+        document.body.appendChild(link);
+        link.click();
+
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+    };
+
+    return <button onClick={handleDownload}>Download JSON</button>;
+};
 
 export default function WorkstreamEditForm({
     workstream,
@@ -109,7 +125,7 @@ export default function WorkstreamEditForm({
 
     // Get suggestion for use case / challenge / technology areas
     const [suggestion, setSuggestion] =
-        useState<SuggestionFromUseCaseType | null>(null);
+        useState<SuggestionForWorkstreamType | null>(null);
     const [suggestionError, setSuggestionError] = useState<string>("");
     const [isSuggestionLoading, setIsSuggestionLoading] =
         useState<boolean>(false);
@@ -125,7 +141,24 @@ export default function WorkstreamEditForm({
             onSuccess: setSuggestion,
         });
     }
-    const _clearFromSuggestion = (field: keyof SuggestionFromUseCaseType) => {
+
+    const [isConclusionSuggestionLoading, setIsConclusionSuggestionLoading] =
+        useState<boolean>(false);
+    const [conclusionSuggestionError, setConclusionSuggestionError] =
+        useState<string>("");
+    function fetchConclusionSuggestion(): void {
+        if (!workstream.use_case) {
+            setConclusionSuggestionError("Use case must not be empty!");
+            return;
+        }
+        fetchConclusionFromWS({
+            workstream: workstream,
+            setIsLoading: setIsConclusionSuggestionLoading,
+            setError: setConclusionSuggestionError,
+            onSuccess: setSuggestion,
+        });
+    }
+    const _clearFromSuggestion = (field: keyof SuggestionForWorkstreamType) => {
         const updatedSuggestion = { ...suggestion };
         delete updatedSuggestion[field];
         setTimeout(() => {
@@ -133,7 +166,7 @@ export default function WorkstreamEditForm({
         }, 200); // Give time to close
     };
     const funcUpdateWSFromSuggestion = (
-        field: keyof SuggestionFromUseCaseType,
+        field: keyof SuggestionForWorkstreamType,
         value: WorkstreamPropertyTypes
     ) => {
         if (!suggestion) return;
@@ -213,6 +246,7 @@ export default function WorkstreamEditForm({
 
     return (
         <div className="flex flex-col justify-start items-start mt-6 gap-4 w-full space-y-8 min-h-fit">
+            {DownloadButton(workstream)}
             {error && error !== "" && (
                 <div className="flex flex-row items-center justify-start gap-2 font-mono italic text-red-700">
                     <Icon
@@ -485,11 +519,53 @@ export default function WorkstreamEditForm({
                             updateWorkstream={updateWorkstream}
                         />
                     ))}
-                    <div className="w-full">
+                    <div className="w-full flex flex-col gap-2">
+                        <span
+                            className={`font-bold min-w-fit text-2xl text-semibold mt-6 border-b`}
+                        >
+                            Conclusion
+                        </span>
+                        {workstream && workstream.evaluations.length > 0 && (
+                            <IconButton
+                                onClick={() => fetchConclusionSuggestion()}
+                                text={`${
+                                    isConclusionSuggestionLoading
+                                        ? "Generating"
+                                        : "Generate"
+                                } conclusion`}
+                                className={`${colourCSS["pop"]} mb-6`}
+                                iconName={
+                                    isConclusionSuggestionLoading
+                                        ? "spinner"
+                                        : "lightBulb"
+                                }
+                                iconClassName={
+                                    isConclusionSuggestionLoading
+                                        ? "text-stone-200 fill-sky-400"
+                                        : undefined
+                                }
+                                showText={true}
+                                disabled={
+                                    !workstream.use_case ||
+                                    workstream.use_case == ""
+                                }
+                            />
+                        )}
+                        {conclusionSuggestionError !== "" && (
+                            <div className="flex flex-row items-center justify-start gap-2 font-mono italic text-red-700">
+                                <Icon
+                                    name={"error"}
+                                    className=""
+                                    strokeWidth={2}
+                                    size="sm"
+                                />
+                                {conclusionSuggestionError}
+                            </div>
+                        )}
                         <EditableTextField
                             onSave={funcUpdateWS}
                             label={"Conclusion"}
-                            labelStyle="text-2xl text-semibold mt-6 border-b"
+                            showLabel={false}
                             field_key={"overall_recommendation"}
                             value={
                                 workstream.overall_recommendation
@@ -499,6 +575,22 @@ export default function WorkstreamEditForm({
                             multiline={true}
                             textAreaSize={"sm"}
                         />
+                        {suggestion?.overall_recommendation && (
+                            <SuggestionField
+                                suggestion={suggestion.overall_recommendation}
+                                onApply={() => {
+                                    funcUpdateWSFromSuggestion(
+                                        "overall_recommendation",
+                                        suggestion.overall_recommendation
+                                    );
+                                }}
+                                onCancel={() =>
+                                    _clearFromSuggestion(
+                                        "overall_recommendation"
+                                    )
+                                }
+                            />
+                        )}
                     </div>
                 </div>
             </div>
