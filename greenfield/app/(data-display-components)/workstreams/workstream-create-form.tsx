@@ -42,7 +42,7 @@ export default function WorkstreamCreateForm({
                     field_key="title"
                     value={workstream.title}
                     onSave={updateField}
-                    fontStyle="text-3xl font-bold"
+                    valueStyle="text-3xl font-bold"
                     showLabel={false}
                 />
                 <EditableTextField

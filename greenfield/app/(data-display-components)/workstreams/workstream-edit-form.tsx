@@ -423,6 +423,7 @@ export default function WorkstreamEditForm({
                     </div>
                 )}
                 <StartupTable
+                    key={`main-table-${workstream.id}`}
                     startups={workstream.evaluations.map(
                         (evaluation) => evaluation.startup
                     )}
@@ -432,6 +433,7 @@ export default function WorkstreamEditForm({
                 />
                 {suggestedSups.length > 0 && (
                     <SuggestionStartups
+                        key={`suggestion-component-${workstream.id}`}
                         workstream={workstream}
                         startups={suggestedSups}
                         onApply={(ws: WorkstreamReadType) => {

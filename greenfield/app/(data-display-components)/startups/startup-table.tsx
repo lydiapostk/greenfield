@@ -2,6 +2,7 @@
 
 import Checkbox from "@/components/checkbox";
 import { StartupReadType, StartupType } from "@/data_display/data-type";
+import { useCallback } from "react";
 
 interface StartupTableProps<T extends StartupReadType | StartupType> {
     startups: T[];
@@ -16,22 +17,20 @@ export default function StartupTable<T extends StartupReadType | StartupType>({
     selectedIds,
     setSelectedIds,
 }: StartupTableProps<T>) {
-    // Toggle single row
     const toggleRow = (id: number) => {
         setSelectedIds?.((prev) =>
             prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
         );
     };
 
-    // Toggle all rows
-    const toggleAll = () => {
+    const toggleAll = useCallback(() => {
         if (!setSelectedIds || !selectedIds) return;
-        if (selectedIds.length === startups.length) {
-            setSelectedIds([]);
-        } else {
-            setSelectedIds(startups.map((row) => row.id as number));
-        }
-    };
+        setSelectedIds((prev) =>
+            prev.length === startups.length
+                ? []
+                : startups.map((r) => r.id as number)
+        );
+    }, [setSelectedIds, startups]);
 
     return (
         <div className="pb-6 animate-fadeIn">
@@ -43,7 +42,9 @@ export default function StartupTable<T extends StartupReadType | StartupType>({
                             {selectedIds && setSelectedIds && (
                                 <th className="w-12 p-3 text-center align-middle">
                                     <Checkbox
-                                        id="check_all"
+                                        id={`${startups
+                                            .map((startup) => startup.id)
+                                            .join("-")}-check-all`}
                                         checked={
                                             selectedIds.length > 0 &&
                                             selectedIds.length ===

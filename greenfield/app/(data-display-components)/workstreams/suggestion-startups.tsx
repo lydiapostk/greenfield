@@ -2,7 +2,7 @@
 
 import IconButton from "@/components/icon-button";
 import Icon from "@/components/icon/icon";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { StartupReadType, WorkstreamReadType } from "../data-type";
 import { getUpdateWSFunction } from "../utils";
 import StartupTable from "../startups/startup-table";
@@ -37,6 +37,7 @@ export default function SuggestionStartups({
     const handleApplyClick = () => {
         insertStartupsToWS();
     };
+
     return (
         <div className="w-full space-y-3">
             <div className="rounded-lg border border-dashed border-blue-300 bg-violet-50 p-3 flex flex-col text-sm text-slate-600 gap-2">
@@ -57,18 +58,17 @@ export default function SuggestionStartups({
                     </div>
                 )}
                 <StartupTable
+                    key={`workstream-${workstream.id}-suggestions`}
                     startups={startups}
                     selectedIds={selectedIds}
                     setSelectedIds={setSelectedIds}
-                    onClickStartup={(sup: StartupReadType | null) => {
+                    onClickStartup={(sup) => {
                         if (!sup) return;
-                        const updatedSelectedIds = [...selectedIds];
-                        if (updatedSelectedIds.includes(sup.id)) {
-                            updatedSelectedIds.filter((id) => id != sup.id);
-                        } else {
-                            updatedSelectedIds.push(sup.id);
-                        }
-                        setSelectedIds(updatedSelectedIds);
+                        setSelectedIds((prev) =>
+                            prev.includes(sup.id)
+                                ? prev.filter((id) => id !== sup.id)
+                                : [...prev, sup.id]
+                        );
                     }}
                 />
                 <IconButton
